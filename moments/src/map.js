@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View  } from 'react-native';
+import { StyleSheet, View, Image } from 'react-native';
 //import { NavigationContainer } from '@react-navigation/native';
 import Geolocation from 'react-native-geolocation-service';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
@@ -22,11 +22,10 @@ function MapDisplay() {
 
 	const GetmyLocation = async () => {
 		await Geolocation.getCurrentPosition(info => {
-				setLatitude(info.coords.latitude)
-				setLongitude(info.coords.longitude)
+			setLatitude(info.coords.latitude)
+			setLongitude(info.coords.longitude)
 		})
 	}
-
 
 	return (
 		<View style={styles.container}>
@@ -41,6 +40,10 @@ function MapDisplay() {
 					}}
       		showsUserLocation={true}>
 			</MapView>
+			<View style={styles.messageIconContainer}>
+				<Image style={styles.messageIcon} source={require('../Photos/Frame63.png')}/>
+			</View>
+			
 		</View>
 	);    
 };
@@ -54,6 +57,17 @@ const styles = StyleSheet.create({
 		height: '100%',
 		width: '100%',
 	},
+	messageIconContainer: {
+		position: 'absolute',
+		bottom: '3%',
+		left: '6%',
+	},
+	messageIcon: {
+		width: 60,	
+		height: 60,
+	}
+
+	
 })
 
 export default MapDisplay;
