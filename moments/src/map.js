@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Image } from 'react-native';
-//import { NavigationContainer } from '@react-navigation/native';
+import { StyleSheet, View, Image, Button, Text } from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import Icon from 'react-native-vector-icons/AntDesign';
+import Icon2 from 'react-native-vector-icons/MaterialIcons';
+
+
+
 /*import {
 	Colors,
 	DebugInstructions,
@@ -11,7 +16,7 @@ import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 	ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';*/
 
-function MapDisplay() {
+function MapDisplay({ navigation }) {
 
 	const [longitude, setLongitude] = useState(0)
   const [latitude, setLatitude] = useState(0)
@@ -26,26 +31,32 @@ function MapDisplay() {
 			setLongitude(info.coords.longitude)
 		})
 	}
-
 	return (
-		<View style={styles.container}>
+		<View>
 			<MapView
 					provider={PROVIDER_GOOGLE}
 					style={styles.map}
 					region={{
 						latitude: latitude,
 						longitude: longitude,
-						latitudeDelta: 0.0421,
-						longitudeDelta: 0.0421,
+						latitudeDelta: 0.007,
+						longitudeDelta: 0.007,
 					}}
       		showsUserLocation={true}>
 			</MapView>
+
 			<View style={styles.messageIconContainer}>
-				<Image style={styles.messageIcon} source={require('../Photos/Frame63.png')}/>
+				<TouchableOpacity onPress={() => navigation.navigate('Dms')}>
+					<Icon2 style={styles.messageIcon} name='forum' size={40}/>
+				</TouchableOpacity>				
 			</View>
-			
+
+			<View style={styles.profileIconContainer}>
+				<Button title='profile'/>
+			</View>
+
 		</View>
-	);    
+	);
 };
 
 const styles = StyleSheet.create({
@@ -58,16 +69,25 @@ const styles = StyleSheet.create({
 		width: '100%',
 	},
 	messageIconContainer: {
+		backgroundColor: '#C1C1C1',
+		height: 70, 
+		width: 70, 
+		borderRadius: 35,
+		justifyContent: 'center',
 		position: 'absolute',
-		bottom: '3%',
+		bottom: '8%',
 		left: '6%',
 	},
 	messageIcon: {
+		color: 'black',
 		width: 60,	
 		height: 60,
+	},
+	profileIconContainer: {
+		position: 'absolute',
+		top: '8%',
+		left: '6%'
 	}
-
-	
 })
 
 export default MapDisplay;
