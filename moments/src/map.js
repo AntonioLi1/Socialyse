@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Image, Button, Text } from 'react-native';
+import { View, Image, Button, Text } from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import Icon from 'react-native-vector-icons/AntDesign';
-import Icon2 from 'react-native-vector-icons/MaterialIcons';
-
-
+import styles from './styles'
+import MIIcon from 'react-native-vector-icons/MaterialIcons';
+import MTIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import IIcon from 'react-native-vector-icons/Ionicons'
 
 /*import {
 	Colors,
@@ -33,61 +33,46 @@ function MapDisplay({ navigation }) {
 	}
 	return (
 		<View>
+			
 			<MapView
-					provider={PROVIDER_GOOGLE}
-					style={styles.map}
-					region={{
-						latitude: latitude,
-						longitude: longitude,
-						latitudeDelta: 0.007,
-						longitudeDelta: 0.007,
-					}}
-      		showsUserLocation={true}>
+				provider={PROVIDER_GOOGLE}
+				style={styles.map}
+				region={{
+					latitude: latitude,
+					longitude: longitude,
+					latitudeDelta: 0.007,
+					longitudeDelta: 0.007,
+				}}
+				showsUserLocation={true}>
 			</MapView>
 
 			<View style={styles.messageIconContainer}>
-				<TouchableOpacity onPress={() => navigation.navigate('Dms')}>
-					<Icon2 style={styles.messageIcon} name='forum' size={40}/>
+				<TouchableOpacity style={styles.messageButton} onPress={() => navigation.navigate('Dms')}>
+					<MTIcon style={styles.messageIcon} name='message-text-outline' size={33}/>
 				</TouchableOpacity>				
 			</View>
-
+			
 			<View style={styles.profileIconContainer}>
-				<Button title='profile'/>
+				<TouchableOpacity style={styles.profileButton} onPress={() => navigation.navigate('profile')} >
+					<IIcon name='person' size={36} color='black'/>
+				</TouchableOpacity>	
+			</View>
+
+			<View style={styles.notificationContainer}>
+				<TouchableOpacity style={styles.notificationButton} onPress={() => navigation.navigate('notifications')}>
+					<IIcon name='notifications-outline' size={32} color='black'/>
+				</TouchableOpacity>
+			</View>
+
+			<View style={styles.mapPinContaner}>
+				<TouchableOpacity style={styles.mapPinButton}>
+					<MIIcon name='person-pin' size={32} color='black'/>
+				</TouchableOpacity>
+
 			</View>
 
 		</View>
 	);
 };
-
-const styles = StyleSheet.create({
-	map: {
-		height: '100%',
-		width: '100%'
-	},
-	container: {
-		height: '100%',
-		width: '100%',
-	},
-	messageIconContainer: {
-		backgroundColor: '#C1C1C1',
-		height: 70, 
-		width: 70, 
-		borderRadius: 35,
-		justifyContent: 'center',
-		position: 'absolute',
-		bottom: '8%',
-		left: '6%',
-	},
-	messageIcon: {
-		color: 'black',
-		width: 60,	
-		height: 60,
-	},
-	profileIconContainer: {
-		position: 'absolute',
-		top: '8%',
-		left: '6%'
-	}
-})
 
 export default MapDisplay;
