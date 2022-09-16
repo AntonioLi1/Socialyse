@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { View, Image, Button, Text } from 'react-native';
+import { View } from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import styles from './styles'
-import MIIcon from 'react-native-vector-icons/MaterialIcons';
+import LocationModal from './locationModal';
+//import MIIcon from 'react-native-vector-icons/MaterialIcons';
 import MTIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import IIcon from 'react-native-vector-icons/Ionicons'
+//import AIcon from 'react-native-vector-icons/AntDesign'
 
 /*import {
 	Colors,
@@ -20,20 +22,25 @@ function MapDisplay({ navigation }) {
 
 	const [longitude, setLongitude] = useState(0)
   const [latitude, setLatitude] = useState(0)
+	const [modalDisplay, setModalDisplay] = useState(false);
+	const [messageDisplay, setMessageDisplay] = useState(true);
+	const [notifDisplay, setNotifDisplay] = useState(true);
 
-  useEffect(() => {
+
+  /*useEffect(() => {
 		GetmyLocation();
-  }, []);
+  }, []);*/
 
 	const GetmyLocation = async () => {
-		await Geolocation.getCurrentPosition(info => {
+		Geolocation.getCurrentPosition(info => {
 			setLatitude(info.coords.latitude)
 			setLongitude(info.coords.longitude)
 		})
 	}
+
+	GetmyLocation();
 	return (
 		<View>
-			
 			<MapView
 				provider={PROVIDER_GOOGLE}
 				style={styles.map}
@@ -44,32 +51,25 @@ function MapDisplay({ navigation }) {
 					longitudeDelta: 0.007,
 				}}
 				showsUserLocation={true}>
+					<Marker coordinate={{latitude: 37.4221, longitude: -122.0841}} 
+					onPress={() => {setModalDisplay(true); setMessageDisplay(false); setNotifDisplay(false);}}/>
 			</MapView>
-
-			<View style={styles.messageIconContainer}>
-				<TouchableOpacity style={styles.messageButton} onPress={() => navigation.navigate('Dms')}>
-					<MTIcon style={styles.messageIcon} name='message-text-outline' size={33}/>
-				</TouchableOpacity>				
-			</View>
 			
-			<View style={styles.profileIconContainer}>
-				<TouchableOpacity style={styles.profileButton} onPress={() => navigation.navigate('profile')} >
-					<IIcon name='person' size={36} color='black'/>
-				</TouchableOpacity>	
-			</View>
+			<LocationModal modalDisplay={modalDisplay} setModalDisplay={setModalDisplay} setMessageDisplay={setMessageDisplay} setNotifDisplay={setNotifDisplay} />
 
-			<View style={styles.notificationContainer}>
-				<TouchableOpacity style={styles.notificationButton} onPress={() => navigation.navigate('notifications')}>
-					<IIcon name='notifications-outline' size={32} color='black'/>
-				</TouchableOpacity>
-			</View>
+			{messageDisplay ? 
+				<View style={styles.messageIconContainer}>
+					<TouchableOpacity style={styles.messageButton} onPress={() => navigation.navigate('Dms')}>
+						<MTIcon style={styles.messageIcon} name='message-text-outline' size={33}/>
+					</TouchableOpacity>				
+				</View> : null}
 
-			<View style={styles.mapPinContaner}>
-				<TouchableOpacity style={styles.mapPinButton}>
-					<MIIcon name='person-pin' size={32} color='black'/>
-				</TouchableOpacity>
-
-			</View>
+			{notifDisplay ? 
+				<View style={styles.notificationContainerMap}>
+					<TouchableOpacity style={styles.notificationButton} onPress={() => navigation.navigate('notifications')}>
+						<IIcon name='notifications-outline' size={32} color='black'/>
+					</TouchableOpacity>
+				</View> : null}
 
 		</View>
 	);
