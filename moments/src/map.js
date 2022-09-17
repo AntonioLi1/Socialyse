@@ -6,7 +6,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import styles from './styles'
 import LocationModal from './locationModal';
 //import MIIcon from 'react-native-vector-icons/MaterialIcons';
-import MTIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import IIcon from 'react-native-vector-icons/Ionicons'
 //import AIcon from 'react-native-vector-icons/AntDesign'
 
@@ -60,7 +60,7 @@ function MapDisplay({ navigation }) {
 			{messageDisplay ? 
 				<View style={styles.messageIconContainer}>
 					<TouchableOpacity style={styles.messageButton} onPress={() => navigation.navigate('Dms')}>
-						<MTIcon style={styles.messageIcon} name='message-text-outline' size={33}/>
+						<MCIcon style={styles.messageIcon} name='message-text-outline' size={33}/>
 					</TouchableOpacity>				
 				</View> : null}
 

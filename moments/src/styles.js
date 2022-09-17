@@ -7,8 +7,8 @@ const styles = StyleSheet.create({
 	},
 	messageIconContainer: {
 		position: 'absolute',
-		bottom: '5%',
-		left: '8%',
+		marginTop: 685,
+		marginLeft: 16,
 	},
 	messageButton: {
 		width: 50,
@@ -32,15 +32,15 @@ const styles = StyleSheet.create({
 	},
 	profileIconContainer: {
 		marginTop: '5%',
-		marginLeft: '5%',
 		display: 'flex',
 		flexDirection: 'row',
-		justifyContent: 'space-between',
+		justifyContent: 'space-evenly',
 		alignItems: 'center'
 	}, 
 	profileButton: {
 		width: 50,
 		height: 50,
+		right: '60%',
 		justifyContent: 'center',
 		alignItems: 'center',
 		borderRadius: 100,
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
 		elevation: 10,
 	},
 	dmBackButton: {
-		marginRight: '7%'
+		left: '60%'
 	},
 	locationModal: {
 		backgroundColor: 'white',
@@ -164,9 +164,9 @@ const styles = StyleSheet.create({
 				width: 0,
 				height: 5,
 			},
-			shadowOpacity: 0.34,
-			shadowRadius: 6.27,
-			elevation: 10,
+		shadowOpacity: 0.34,
+		shadowRadius: 6.27,
+		elevation: 10,
 	},
 	MBBackButton: {
 		transform: [{rotateY: '180deg'}],
@@ -188,7 +188,88 @@ const styles = StyleSheet.create({
 		alignItems: 'center', 
 		borderRadius: 10,
 	},
-	
+	messageButtonMB: {
+		width: 50,
+		height: 50,
+		justifyContent: 'center',
+		alignItems: 'center',
+		borderRadius: 100,
+		backgroundColor: '#C0C0C0',
+		shadowColor: "#000",
+		shadowOffset: {
+			width: 0,
+			height: 2,
+		},
+		shadowOpacity: 0.25,
+		shadowRadius: 3.84,
+		elevation: 5,
+		marginLeft: 20,
+		marginTop: 10,
+	},
+	postButton: {
+		width: 50,
+		height: 50,
+		justifyContent: 'center',
+		alignItems: 'center',
+		borderRadius: 100,
+		backgroundColor: '#C0C0C0',
+		shadowColor: "#000",
+		shadowOffset: {
+			width: 0,
+			height: 2,
+		},
+		shadowOpacity: 0.25,
+		shadowRadius: 3.84,
+		elevation: 5,
+		marginRight: 20,
+		marginTop: 10,
+	},
+	MBFooter: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		borderTopColor: '#C8C8C8',
+		borderTopWidth: 1,
+	},
+	MBFeed: {
+		marginTop: 15,
+		height: '81%',
+	},
+	post: {
+		borderTopColor: '#C8C8C8',
+		borderTopWidth: 1,
+
+	},
+	postUsername: {
+		marginLeft: 45,
+		marginTop: 5,
+		fontWeight: '700',
+		color: 'black',
+		fontSize: 16,
+	},
+	postContent: {
+		marginLeft: 45,
+		fontSize: 14,
+	},
+	postLikeCommentContainer: {
+		flexDirection: 'row',
+		marginBottom: 5,
+		alignItems: 'center'
+	},
+	postLikeAndCount: {
+		marginLeft: 45,
+		flexDirection: 'row',
+		alignItems: 'center',
+	},
+	postCommentAndCount: {
+		marginLeft: 75,
+		flexDirection: 'row',
+		alignItems: 'center',
+		backgroundColor: 'pink'
+	},
+	commentIcon: {
+		position: 'absolute',
+		bottom: -5,
+	}
 })
 
 export default styles;
