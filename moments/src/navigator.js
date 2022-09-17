@@ -16,7 +16,7 @@ function Navigator() {
 				<Stack.Screen options={{headerShown: false}} name="Map"component={MapDisplay}></Stack.Screen>
 				<Stack.Screen options={{headerShown: false}} name="Dms" component={DmDisplay}></Stack.Screen>
 				<Stack.Screen name="profile" component={ProfileDisplay}></Stack.Screen>
-				<Stack.Screen name="notifications" component={NotificationDisplay}></Stack.Screen>
+				<Stack.Screen options={{headerShown: false}} name="notifications" component={NotificationDisplay}></Stack.Screen>
 				<Stack.Screen options={{headerShown: false}} name="MB" component={MicroBlog}></Stack.Screen>
 			</Stack.Navigator>
 		</NavigationContainer>

@@ -10,35 +10,63 @@ import ADIcon from 'react-native-vector-icons/AntDesign'
 const posts = [
 	{
 		postContent: "hello 1",
-		username: 'john'
+		username: 'john',
+		likeCount: 5,
+		commentCount: 2,
 	},
 	{
 		postContent: "hello 2",
-		username: 'jim'
+		username: 'jim',
+		likeCount: 532,
+		commentCount: 22,
 	},
 	{
 		postContent: "hello 3",
-		username: 'kazi'
+		username: 'rtjh',
+		likeCount: 15,
+		commentCount: 422,
 	},
 	{
 		postContent: "hello 4",
-		username: 'ant'
+		username: 'rytnj',
+		likeCount: 523,
+		commentCount: 243,
 	},
 	{
 		postContent: "hello 5",
-		username: 'god'
+		username: 'serg',
+		likeCount: 65,
+		commentCount: 223,
 	},
 	{
-		postContent: "hello 5",
-		username: 'god'
+		postContent: "hello 6",
+		username: 'qwe',
+		likeCount: 52,
+		commentCount: 23,
 	},
 	{
-		postContent: "hello 5",
-		username: 'god'
+		postContent: "hello 7",
+		username: 'rtyjn',
+		likeCount: 56,
+		commentCount: 20,
 	},
 	{
-		postContent: "hello 5",
-		username: 'god'
+		postContent: "hello 8",
+		username: 'efw',
+		likeCount: 55,
+		commentCount: 22,
+	},
+	{
+		postContent: "hello 9",
+		username: 'tyj',
+		likeCount: 53,
+		commentCount: 2,
+	},
+	{
+		postContent: "hello 10",
+		username: 'ew4rty',
+		likeCount: 7,
+		commentCount: 56,
 	},
 ];
 
@@ -54,11 +82,18 @@ function MicroBlog({navigation}) {
 					<Text style={{color: 'black', fontSize: 20}}>
 						UNSW Roundhouse
 					</Text>
-				</View>
+				</View> 
 
-				<Pressable style={styles.notificationButtonMB} onPress={() => navigation.navigate('notifications')}>
-					<IIcon name='notifications-outline' size={32} color='black'/>
-				</Pressable>
+				<View style={styles.notificationContainer}>
+					<Pressable style={styles.notificationButtonMB} onPress={() => navigation.navigate('notifications')}>
+						<IIcon name='notifications-outline' size={32} color='black'/>
+					</Pressable>
+					<View style={styles.notificationCountContainer}>
+						<Text style={{fontSize:10, color: 'white'}}>
+							5
+						</Text>
+					</View>
+				</View>
 			</View>
 
 			<ScrollView style={styles.MBFeed}>
@@ -73,15 +108,15 @@ function MicroBlog({navigation}) {
 							</Text>
 							<View style={styles.postLikeCommentContainer}>
 								<View style={styles.postLikeAndCount}>
-									<ADIcon name='like2' size={25}/>
-									<Text>
-										5
+									<ADIcon name='like2' size={25} />
+									<Text style={styles.likeCount}>
+									{post.likeCount}
 									</Text>
 								</View>
 								<View style={styles.postCommentAndCount}>
-									<IIcon style={styles.commentIcon} name='chatbox-outline' size={25}/>
-									<Text>
-										5
+									<IIcon style={styles.commentIcon} name='chatbox-outline' size={25} />
+									<Text style={styles.commentCount}>
+									{post.commentCount}
 									</Text>
 								</View>
 							</View>
@@ -130,4 +165,17 @@ export default MicroBlog;
 					</View>
 				</Pressable>
 </ScrollView>
+
+
+<View style={styles.notificationContainer}>
+	<Pressable style={styles.notificationButton} onPress={() => navigation.navigate('notifications')}>
+		<IIcon name='notifications-outline' size={32} color='black'/>
+	</Pressable>
+	<View style={styles.notificationCountContainer}>
+		<Text style={{fontSize:10, color: 'white'}}>
+			5
+		</Text>
+	</View>
+</View>
+
 */

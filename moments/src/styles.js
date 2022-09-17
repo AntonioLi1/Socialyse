@@ -1,9 +1,11 @@
+import { cloneElement } from 'react';
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
 	map: {
 		height: '100%',
 		width: '100%',
+		zIndex: -1
 	},
 	messageIconContainer: {
 		position: 'absolute',
@@ -30,17 +32,16 @@ const styles = StyleSheet.create({
 		color: '#333',
 		justifyContent: 'center',
 	},
-	profileIconContainer: {
-		marginTop: '5%',
-		display: 'flex',
+	DMHeader: {
+		marginTop: 10,
 		flexDirection: 'row',
-		justifyContent: 'space-evenly',
-		alignItems: 'center'
+		justifyContent: 'space-around',
+		alignItems: 'center',
 	}, 
 	profileButton: {
 		width: 50,
 		height: 50,
-		right: '60%',
+		right: 10,
 		justifyContent: 'center',
 		alignItems: 'center',
 		borderRadius: 100,
@@ -50,16 +51,61 @@ const styles = StyleSheet.create({
 				width: 0,
 				height: 5,
 			},
-			shadowOpacity: 0.34,
-			shadowRadius: 6.27,
-			elevation: 10,
+		shadowOpacity: 0.34,
+		shadowRadius: 6.27,
+		elevation: 10,
 	},
-	notificationContainerMap: {
+	newConnectionsContainer: {
+		height: 150,
+		marginTop: 10,
+		marginLeft: 15,
+		marginRight: 15,
+		borderTopColor: '#D8D8D8',
+		borderTopWidth: 1,
+		borderBottomColor: '#D8D8D8',
+		borderBottomWidth: 1,
+	},
+	newConnectionProfile: {
+		marginTop: 10,
+		marginLeft: 10,
+		marginRight: 10,
+		backgroundColor: 'pink',
+		height: 90,
+		width: 80,
+		flexDirection: 'row',
+		justifyContent: 'center'  
+	},
+	messagesContainer: {
+		marginTop: 15,
+		marginLeft: 15,
+		marginRight: 15,
+	},
+	dm: {
+		borderBottomColor: '#C8C8C8',
+		borderBottomWidth: 1,
+		marginLeft: 15,
+		marginRight: 15,
+	},
+	username: {
+		fontWeight: 'bold',
+		fontSize: 14,
+		marginLeft: 100,
+		color: 'black',
+		marginTop: 30,
+	},
+	lastMessage: {
+		fontSize: 11,
+		marginLeft: 100,
+		color: '#575757',
+		marginBottom: 30
+	},
+	notificationContainer: {
 		position: 'absolute',
-	},
-	notificationButton: {
 		marginTop: 15,
 		marginLeft: 320,
+		alignItems: 'flex-end'
+	},
+	notificationButton: {
 		width: 50,
 		height: 50,
 		justifyContent: 'center',
@@ -71,9 +117,18 @@ const styles = StyleSheet.create({
 				width: 0,
 				height: 5,
 			},
-			shadowOpacity: 0.34,
-			shadowRadius: 6.27,
-			elevation: 10,
+		shadowOpacity: 0.34,
+		shadowRadius: 6.27,
+		elevation: 10,
+	},
+	notificationCountContainer: {
+		backgroundColor: 'red',
+		width: 16,
+		height: 16, 
+		borderRadius: 100,
+		justifyContent: 'center',
+		alignItems: 'center',
+		position: 'absolute',
 	},
 	mapPinContaner: {
 		position: 'absolute',
@@ -97,7 +152,7 @@ const styles = StyleSheet.create({
 		elevation: 10,
 	},
 	dmBackButton: {
-		left: '60%'
+		left: 15
 	},
 	locationModal: {
 		backgroundColor: 'white',
@@ -151,10 +206,8 @@ const styles = StyleSheet.create({
 		fontWeight: '500',
 	}, 
 	notificationButtonMB: {
-		position: 'absolute',
 		width: 50,
 		height: 50,
-		marginLeft: 320,
 		justifyContent: 'center',
 		alignItems: 'center',
 		borderRadius: 100,
@@ -237,7 +290,6 @@ const styles = StyleSheet.create({
 	post: {
 		borderTopColor: '#C8C8C8',
 		borderTopWidth: 1,
-
 	},
 	postUsername: {
 		marginLeft: 45,
@@ -249,6 +301,7 @@ const styles = StyleSheet.create({
 	postContent: {
 		marginLeft: 45,
 		fontSize: 14,
+		color: 'black',
 	},
 	postLikeCommentContainer: {
 		flexDirection: 'row',
@@ -260,16 +313,59 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 	},
+	likeCount: {
+		marginLeft: 1 ,
+	},
 	postCommentAndCount: {
-		marginLeft: 75,
 		flexDirection: 'row',
 		alignItems: 'center',
-		backgroundColor: 'pink'
+		position: 'absolute',
+		left: 150
 	},
 	commentIcon: {
 		position: 'absolute',
-		bottom: -5,
-	}
+		bottom: -7,
+	},
+	commentCount: {
+		marginLeft: 27,
+	},
+	notifHeader: {
+		backgroundColor: '#E5E5E5',
+		marginLeft: 8,
+		marginRight: 8, 
+		marginTop: 15,
+		borderRadius: 10,
+		marginBottom: 15,
+		height: 40,
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center'
+	},
+	notifBackButton: {
+		transform: [{rotateY: '180deg'}],
+		right: 110 
+	},
+	notif: {
+		borderTopColor: '#C8C8C8',
+		borderTopWidth: 1,
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center',
+	},
+	notifMessage: {
+		marginLeft: 40, 
+		marginTop: 10, 
+		marginBottom: 10, 
+		fontSize: 16
+	},
+	notifTime: {
+		marginRight: 20, 
+		marginTop: 10, 
+		marginBottom: 10, 
+		fontSize: 16
+	},
+
+
 })
 
 export default styles;

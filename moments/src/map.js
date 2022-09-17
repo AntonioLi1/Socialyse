@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View } from 'react-native';
+import { View, Pressable, Text } from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -65,11 +65,17 @@ function MapDisplay({ navigation }) {
 				</View> : null}
 
 			{notifDisplay ? 
-				<View style={styles.notificationContainerMap}>
-					<TouchableOpacity style={styles.notificationButton} onPress={() => navigation.navigate('notifications')}>
+				<View style={styles.notificationContainer}>
+					<Pressable style={styles.notificationButton} onPress={() => navigation.navigate('notifications')}>
 						<IIcon name='notifications-outline' size={32} color='black'/>
-					</TouchableOpacity>
-				</View> : null}
+					</Pressable>
+					<View style={styles.notificationCountContainer}>
+						<Text style={{fontSize:10, color: 'white'}}>
+							5
+						</Text>
+					</View>
+				</View>
+				: null}
 
 		</View>
 	);
