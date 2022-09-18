@@ -21,7 +21,7 @@ import IIcon from 'react-native-vector-icons/Ionicons'
 function MapDisplay({ navigation }) {
 
 	const [longitude, setLongitude] = useState(0)
-  const [latitude, setLatitude] = useState(0)
+  	const [latitude, setLatitude] = useState(0)
 	const [modalDisplay, setModalDisplay] = useState(false);
 	const [messageDisplay, setMessageDisplay] = useState(true);
 	const [notifDisplay, setNotifDisplay] = useState(true);

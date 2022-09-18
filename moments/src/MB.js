@@ -135,7 +135,7 @@ function MicroBlog({navigation}) {
 				</View>
 
 				<View>
-					<Pressable style={styles.postButton}>
+					<Pressable style={styles.postButton} onPress={() => navigation.navigate('Posting')}>
 						<MCIcon style={styles.messageIcon} name='thought-bubble-outline' size={33}/>
 					</Pressable>
 				</View>

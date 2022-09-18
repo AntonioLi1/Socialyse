@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-around',
 		alignItems: 'center',
 	}, 
-	profileButton: {
+	profileButtonDM: {
 		width: 50,
 		height: 50,
 		right: 10,
@@ -112,11 +112,11 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		borderRadius: 100,
 		backgroundColor: '#F2F2F2',
-			shadowColor: "#000",
-			shadowOffset: {
-				width: 0,
-				height: 5,
-			},
+		shadowColor: "#000",
+		shadowOffset: {
+			width: 0,
+			height: 5,
+		},
 		shadowOpacity: 0.34,
 		shadowRadius: 6.27,
 		elevation: 10,
@@ -253,9 +253,9 @@ const styles = StyleSheet.create({
 			width: 0,
 			height: 2,
 		},
-		shadowOpacity: 0.25,
+		shadowOpacity: 0.1,
 		shadowRadius: 3.84,
-		elevation: 5,
+		elevation: 3,
 		marginLeft: 20,
 		marginTop: 10,
 	},
@@ -271,9 +271,9 @@ const styles = StyleSheet.create({
 			width: 0,
 			height: 2,
 		},
-		shadowOpacity: 0.25,
+		shadowOpacity: 0.1,
 		shadowRadius: 3.84,
-		elevation: 5,
+		elevation: 3,
 		marginRight: 20,
 		marginTop: 10,
 	},
@@ -345,7 +345,7 @@ const styles = StyleSheet.create({
 		transform: [{rotateY: '180deg'}],
 		right: 110 
 	},
-	notif: {
+	notif0: {
 		borderTopColor: '#C8C8C8',
 		borderTopWidth: 1,
 		flexDirection: 'row',
@@ -354,15 +354,86 @@ const styles = StyleSheet.create({
 	},
 	notifMessage: {
 		marginLeft: 40, 
-		marginTop: 10, 
-		marginBottom: 10, 
-		fontSize: 16
+		marginTop: 10,
+		marginBottom: 10,
+		fontSize: 16,
+		flexShrink: 1,
+		width: 200,
+		color: 'black'
+		
 	},
 	notifTime: {
 		marginRight: 20, 
 		marginTop: 10, 
 		marginBottom: 10, 
 		fontSize: 16
+	},
+	notifProfile: {
+		height: 60,
+		width: 60,
+		borderRadius: 100,
+		backgroundColor: 'grey',
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center',
+		marginTop: 10,
+		marginBottom: 10,
+	},
+	notif1: {
+		borderTopColor: '#C8C8C8',
+		borderTopWidth: 1,
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center',
+	},
+	profileTopContainer: {
+		marginLeft: 30,
+		marginRight: 30,
+		backgroundColor: 'pink',
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+	},
+	profilePageProfile: {
+		height: 60,
+		width: 60,
+		borderRadius: 100,
+		backgroundColor: 'grey',
+		marginTop: 10,
+	},
+	UNBEPContainer: {
+		marginTop: 10,
+	},
+	thoughtsContainer: {
+		backgroundColor: 'grey',
+		marginLeft: 30,
+		marginRight: 30,
+		marginTop: 10,
+		height: 580
+	},
+	postInputContainer: {
+		marginTop: 20,
+		borderTopColor: 'black',
+		borderTopWidth: 1,
+		borderBottomColor: 'black',
+		borderBottomWidth: 1,
+		height: '45%'
+	},
+	postInnerContainer: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center'
+	},
+	postPostButton: {
+		marginRight: 20
+	},
+	inputRemainingContainer: {
+		flex: 1,
+		justifyContent: 'flex-end',
+		alignItems: 'flex-end'
+	},
+	inputRemaining: {
+		marginBottom: 10,
+		marginRight: 20
 	},
 
 

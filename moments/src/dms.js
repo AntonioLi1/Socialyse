@@ -41,7 +41,7 @@ function DmDisplay({navigation}) {
 	return (
 		<View>
 			<View style={styles.DMHeader}>
-				<Pressable style={styles.profileButton} onPress={() => navigation.navigate('profile')} >
+				<Pressable style={styles.profileButtonDM} onPress={() => navigation.navigate('profile')} >
 					<IIcon name='person' size={36} color='black'/>
 				</Pressable>	
 
