@@ -2,58 +2,89 @@ import React, { useEffect, useState } from 'react';
 import { View, Image, Text, Pressable } from 'react-native';
 import styles from './styles';
 import IIcon from 'react-native-vector-icons/Ionicons'
+import MIIcon from 'react-native-vector-icons/MaterialIcons';
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 
 function OwnProfile ({navigation}) {
-	const config = {
+
+	return (
+	<View style={styles.profileScreen}>
+		<View style={styles.profilePageHeader}>
+			<Text style={{fontSize: 20, color: 'black',}}>
+				Moments
+			</Text>
+			<Pressable style={styles.profileBackButton} onPress={() => navigation.navigate('Dms')}>
+					<MIIcon name='arrow-forward-ios' size={32} color='black'/>
+			</Pressable>
+		</View>
+
+		<View style={styles.profilePageProfile}>
+			<View style={styles.profilePageNameAndBioContainer}>
+				<Text style={styles.profilePageName}>
+						kazi
+				</Text>
+				<Text style={styles.profilePageBio}>
+					disd is my bio
+				</Text>
+			</View>
+				
+		</View>   
+
+		<View style={styles.settingEditProfileContainer}>
+			<View style={styles.editProfileButton}>
+				<Text>
+					edit profile
+				</Text>
+			</View>
+			<View style={styles.settingsButton}>
+				<Text>
+					settings
+				</Text>
+			</View>
+		</View>
+	</View>
+
+	)	
+}
+
+export default OwnProfile;
+
+/* 
+const config = {
 		velocityThreshold: 0.3,
 		directionalOffsetThreshold: 80
 	};
 
 	return (
 	<GestureRecognizer
-	onSwipeLeft={() => navigation.navigate('Map')}
+	onSwipeLeft={() => navigation.navigate('Dms')}
 	config={config}>
-		<View>
-			<View style={styles.profileTopContainer}>
-				<View style={styles.profilePageProfile}/>
+		<View style={styles.profileScreen}>
+			<View style={styles.profilePageProfile}>
+				<View style={styles.profilePageNameAndBioContainer}>
+					<Text style={styles.profilePageName}>
+							kazi
+					</Text>
+					<Text style={styles.profilePageBio}>
+						disd is my bio
+					</Text>
+				</View>
+					
+			</View>   
 
-				<View style={styles.UNBEPContainer}>
-					<Text style={{fontWeight: 'bold', color: 'black'}}>
-						USERNAME
-					</Text>
-					<Text style={{marginTop: 10, color: 'black'}}>
-						name
-					</Text>
+			<View style={styles.settingEditProfileContainer}>
+				<View style={styles.editProfileButton}>
 					<Text>
-						bio
+						edit profile
 					</Text>
-					<Pressable>
-						<Text>
-							edit profile
-						</Text>
-					</Pressable>
 				</View>
-
-				<View style={{marginTop: 10}}>
-					<IIcon name='ios-settings-outline' size={30} color='black'/>
+				<View style={styles.settingsButton}>
+					<Text>
+						settings
+					</Text>
 				</View>
-
 			</View>
-
-			<View style={{alignItems: 'center'}}>
-				<Text>
-					Thoughts          
-				</Text>
-			</View>
-
-			<View style={styles.thoughtsContainer}>
-
-			</View>
-			
-		</View>	
+		</View>
 	</GestureRecognizer>
 	)	
-}
-
-export default OwnProfile;
+*/

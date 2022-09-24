@@ -1,56 +1,23 @@
 import 'react-native-gesture-handler';
-import React from 'react';
-
-/*import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';*/
-
-//import  MapDisplay  from './src/map';
+import React, {Context, createContext, useState} from 'react';
 import Navigator from './src/navigator';
-//import { NavigationContainer } from '@react-navigation/native';
-//import { createStackNavigator } from '@react-navigation/stack';
-//import { StyleSheet, View, Image, Button, Text } from 'react-native';
-//import Geolocation from 'react-native-geolocation-service';
-//import MapDisplay from './src/map';
-/*
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';*/
+
+export const GettingStartedContext = createContext({
+  messageDisplay: true,
+  setMessageDisplay: (value) => {},
+  notifDisplay: true,
+  setNotifDisplay: (value) => {},
+});
 
 function App () {
+  const [messageDisplay, setMessageDisplay] = useState(true);
+	const [notifDisplay, setNotifDisplay] = useState(true);
 
-  /*React.useEffect(() => {
-    let isMounted = true;
-
-    if (isMounted) {
-      if (Platform.OS === 'android') {
-        requestPermission()
-      } else {
-        Geolocation.requestAuthorization()
-      }
-
-    }
-
-    return () => {
-      return () => { isMounted = false };
-    }
-  }, [])*/
-
-  /*return (
-    <MapDisplay></MapDisplay>
-  );*/
   return (
-    <Navigator></Navigator>
+    <GettingStartedContext.Provider value={{messageDisplay, setMessageDisplay, notifDisplay, setNotifDisplay}}>
+      <Navigator></Navigator>
+    </GettingStartedContext.Provider>
+    
   );
 };
 
