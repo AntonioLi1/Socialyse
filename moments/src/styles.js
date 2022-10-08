@@ -1,4 +1,3 @@
-import { cloneElement } from 'react';
 import { StyleSheet, Dimensions } from 'react-native';
 
 const screenWidth = Dimensions.get("screen").width
@@ -164,7 +163,7 @@ const styles = StyleSheet.create({
 		left: '30%'
 	},
 	locationModal: {
-		backgroundColor: 'white',
+		backgroundColor: '#393939',
 		flex: 1,
 		marginTop: screenHeight * 0.62,
 		marginBottom: screenHeight * 0.09, 
@@ -183,7 +182,7 @@ const styles = StyleSheet.create({
 	},
 	locationModalClose: {
 		marginLeft: '90%',
-		color: 'black',
+		color: 'white',
 	},
 	checkInButton: {
 		height: '25%',
@@ -208,7 +207,7 @@ const styles = StyleSheet.create({
 		color: 'white',
 	},
 	locationNameModal: {
-		color: 'black',
+		color: 'white',
 		fontSize: 20,
 		position: 'absolute',
 		top: '20%',
@@ -473,7 +472,8 @@ const styles = StyleSheet.create({
 		height: screenHeight,
 		width: screenWidth,
 		flex: 1,
-		alignItems: 'center'
+		alignItems: 'center',
+		backgroundColor: 'black'
 	},
 	profilePageHeader: {
 		height: screenHeight * 0.08,
@@ -487,50 +487,27 @@ const styles = StyleSheet.create({
 		left: '85%'
 	},
 	profilePageProfile: {
-		height: screenHeight * 0.67,
+		height: screenHeight * 0.55,
 		width: screenWidth * 0.9,
 		borderRadius: 30,
 		backgroundColor: 'grey',
-		justifyContent: 'flex-end'
-	},
-	editProfileButton: {
-		width: screenWidth * 0.16,
-		height: screenHeight * 0.073,
-		borderRadius: 100,
-		backgroundColor: 'grey',
-		flexDirection: 'row',
-		justifyContent: 'center',
+		justifyContent: 'flex-end',
 		alignItems: 'center',
-		left: screenWidth * 0.05
 	},
-	settingsButton: { 
-		width: screenWidth * 0.16,
-		height: screenHeight * 0.073,
-		borderRadius: 100,
-		backgroundColor: 'grey',
-		flexDirection: 'row',
-		justifyContent: 'center',
-		alignItems: 'center',
-		right: screenWidth * 0.05
-	},
-	settingEditProfileContainer: {
-		flexDirection: 'row',
-		width: screenWidth,
-		justifyContent: 'space-around',
-		marginTop: screenHeight * 0.02,
-	},
-	profilePageNameAndBioContainer: {
+	profilePicEdit: {
+		marginLeft: '80%',
 		marginBottom: '5%'
 	},
+
 	profilePageName: {
 		marginLeft: '5%',
 		fontSize: 30,
 		color: 'black',
 		fontWeight: 'bold'
 	},
-	profilePageBio: {
-		marginLeft: '5%',
-		fontSize: 16
+	profilePageSettings: {
+		marginLeft: '80%',
+		marginTop: '10%'
 	},
 	activeNowProfilePlaceHolder: {
 		height: screenHeight * 0.25,
@@ -587,7 +564,7 @@ const styles = StyleSheet.create({
 		paddingVertical: screenHeight * 0.02
 	},
 	threadParentUsername: {
-		marginLeft: screenWidth * 0.12,
+		marginLeft: screenWidth * 0.12,            
 		fontWeight: '700',
 		color: 'black',
 		fontSize: 20,
@@ -602,6 +579,47 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 		marginLeft: '12%',
+	},
+	MBBackground: {
+		height: screenHeight,
+		width: screenWidth,
+		backgroundColor: '#6398FF',
+		alignItems: 'center'
+	},
+	takeAPhotoBackButton: {
+		transform: [{rotateY: '180deg'}],
+		marginTop: screenHeight * 0.67,
+		marginRight: screenWidth * 0.8
+		 
+	},
+	takeAPhotoText: {
+		fontWeight: '900',
+		fontSize: 30,
+		color: 'white',
+		fontStyle: 'italic',
+		marginTop: screenHeight * 0.05 
+	},
+	socialTextYellow: {
+		fontSize: 30,
+		fontStyle: 'italic',
+		color: '#FAFF00',
+		fontWeight: '900',
+		zIndex: 1,
+		position: 'absolute'
+	},
+	socialTextGradient: {
+		fontSize: 30,
+		fontStyle: 'italic',
+		fontWeight: '900',
+		marginRight: 4,
+		
+	},
+	yseTextWhite: {
+		fontSize: 30,
+		fontStyle: 'italic',
+		fontWeight: '900',
+		color: 'white',
+		
 	}
 	
 

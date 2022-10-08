@@ -7,85 +7,81 @@ import IIcon from 'react-native-vector-icons/Ionicons'
 import MIIcon from 'react-native-vector-icons/MaterialIcons';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ADIcon from 'react-native-vector-icons/AntDesign'
-import {GettingStartedContext} from '../App'
-const posts = [
-	{
-		postContent: "hello 1",
-		username: 'john',
-		likeCount: 5,
-		commentCount: 2,
-		id: 0
-	},
-	{
-		postContent: "hello 2",
-		username: 'jim',
-		likeCount: 532,
-		commentCount: 22,
-		id: 1
-	},
-	{
-		postContent: "hello 3",
-		username: 'rtjh',
-		likeCount: 15,
-		commentCount: 422,
-		id: 2
-	},
-	{
-		postContent: "hello 4",
-		username: 'rytnj',
-		likeCount: 523,
-		commentCount: 243,
-		id: 3
-	},
-	{
-		postContent: "hello 5",
-		username: 'serg',
-		likeCount: 65,
-		commentCount: 223,
-		id: 4
-	},
-	{
-		postContent: "hello 6",
-		username: 'qwe',
-		likeCount: 52,
-		commentCount: 23,
-		id: 5
-	},
-	{
-		postContent: "hello 7",
-		username: 'rtyjn',
-		likeCount: 56,
-		commentCount: 20,
-		id: 6
-	},
-	{
-		postContent: "hello 8",
-		username: 'efw',
-		likeCount: 55,
-		commentCount: 22,
-		id: 7
-	},
-	{
-		postContent: "hello 9",
-		username: 'tyj',
-		likeCount: 53,
-		commentCount: 2,
-		id: 8
-	},
-	{
-		postContent: "hello 10",
-		username: 'ew4rty',
-		likeCount: 7,
-		commentCount: 56,
-		id: 9
-	},
-];
+import {GettingStartedContext} from '../App';
+import LinearGradient from 'react-native-linear-gradient';
+import MaskedView from '@react-native-community/masked-view';
+
+const GradientText = (props) => {
+	return (
+	  <MaskedView maskElement={<Text {...props} />}>
+		<LinearGradient
+		  colors={["#AD00FF", "#00FFA3"]}
+		  start={{ x: 0, y: 0.35 }}
+		  end={{ x: 0, y: 0.7 }}
+		>
+		  <Text {...props} style={[props.style, { opacity: 0.3 }]} />
+		</LinearGradient>
+	  </MaskedView>
+	);
+  };
+
 
 function MicroBlog({}) {
 	const navigation = useNavigation();
 	//setMessageDisplay(true); setNotifDisplay(true)
 	//<IIcon style={styles.commentIcon} name='chatbox-outline' size={25} />
     const {messageDisplay, setMessageDisplay, notifDisplay, setNotifDisplay} = useContext(GettingStartedContext);
+	
+	return (
+		<View style={styles.MBBackground}>
+			<Text style={styles.takeAPhotoText}>
+				TAKE A PHOTO TO
+			</Text>
+			<View style={{flexDirection: 'row', width: '100%', justifyContent: 'center'}}>
+				
+				<Text style={styles.socialTextYellow}>
+					SOCIALYSE
+				</Text>
+				<GradientText style={styles.socialTextGradient}>
+					SOCIALYSE
+				</GradientText>
+				
+				
+				
+			</View>
+			
+
+			<Pressable style={styles.takeAPhotoBackButton} onPress={() => {setMessageDisplay(true); navigation.goBack(); setNotifDisplay(true) }}>
+				<MIIcon name='arrow-forward-ios' size={32} color='white'/>
+			</Pressable>
+		</View>
+	);
+
+
+	/*
+				<View style={{flex: 1, alignItems: 'flex-end'}}>
+					<Text style={styles.socialTextYellow}>
+						SOCIAL
+					</Text>
+					<GradientText style={styles.socialTextGradient}>
+						SOCIAL
+					</GradientText>
+				</View>
+				<View style={{flex: 1}}>
+					<Text style={styles.yseTextWhite}>
+						YSE 
+					</Text>
+					<Text>
+						yse
+					</Text>
+				</View>
+	
+	
+	
+	
+	
+	
+	
 	
 	return (
 		<View style={{height: '100%', width: '100%'}} >
@@ -166,10 +162,11 @@ function MicroBlog({}) {
 
 
 		</View>
-	)  
+	)*/ 
 }
 
 export default MicroBlog;
+
 /*
 <ScrollView style={styles.MBFeed}>
 				<Pressable>
