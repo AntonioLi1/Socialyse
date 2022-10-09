@@ -26,27 +26,40 @@ function OwnProfile ({navigation}) {
 
 	return (
 	<View style={styles.profileScreen}>
-		<View style={styles.profilePageHeader}>
-			<Text style={styles.socialTextYellow}>
-					SOCIALYSE
-				</Text>
-				<GradientText style={styles.socialTextGradient}>
-					SOCIALYSE
-				</GradientText>
-			<Pressable style={styles.profileBackButton} onPress={() => navigation.navigate('Dms')}>
-					<MIIcon name='arrow-forward-ios' size={32} color='white'/>
-			</Pressable>
-		</View>
-
 		<View style={styles.profilePageProfile}>
 			<Pressable style={styles.profilePicEdit}>
 				<FIcon name="edit" size={32} color='white'/>
 			</Pressable>
 		</View>   
+		
+		<View style={styles.profilePageUsernameAndSettingsContainer}>
+			<Text style={styles.profilePageUsername}>
+				dababy_leshgo
+			</Text>
+			<Pressable style={styles.profilePageSettings}>
+				<IIcon name="ios-settings-outline" size={35} color="white"/>
+			</Pressable>
+		</View>
 
-		<Pressable style={styles.profilePageSettings}>
-			<IIcon name="ios-settings-outline" size={32} color="white"/>
+		<View style={styles.profilePageHeader}>
+			<Text style={{color: 'white', fontSize: 30, marginTop: '5%'}}>
+				You've {'\u00A0'}
+				<Text style={styles.socialTextYellow}>
+					 SOCIALYSED {'\u00A0'}
+				</Text>
+				with {'\n'}
+				
+			</Text>
+				
+			<GradientText style={styles.socialTextGradient}>
+					SOCIALYSED
+			</GradientText>
+		</View>
+
+		<Pressable style={styles.profileBackButton} onPress={() => navigation.navigate('Dms')}>
+					<MIIcon name='arrow-forward-ios' size={32} color='white'/>
 		</Pressable>
+		
 	</View>
 
 	)	
@@ -55,6 +68,19 @@ function OwnProfile ({navigation}) {
 export default OwnProfile;
 
 /* 
+
+
+
+
+		<View style={styles.profilePageHeader}>
+				<Text style={styles.socialTextYellow}>
+					SOCIALYSE
+				</Text>
+				<GradientText style={styles.socialTextGradient}>
+					SOCIALYSE
+				</GradientText>
+		</View>
+
 const config = {
 		velocityThreshold: 0.3,
 		directionalOffsetThreshold: 80

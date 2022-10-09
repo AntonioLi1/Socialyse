@@ -42,33 +42,51 @@ const dms = [
 		lastMessage: 'wewerg',
 		id: '7'
 	},
+	{
+		username: 'tyweuk',
+		lastMessage: 'wewerg',
+		id: '8'
+	},
+	{
+		username: 'tyweuk',
+		lastMessage: 'wewerg',
+		id: '9'
+	},
+	{
+		username: 'tyweuk',
+		lastMessage: 'wewerg',
+		id: '10'
+	},
+	
 ]
 
 function DmDisplay({navigation}) {
 	return (
-		<View style={{height: '100%', width: '100%'}}>
+		<View style={styles.DMScreen}>
 			<View style={styles.DMHeader}>
 				<Pressable style={styles.profileButtonDM} onPress={() => navigation.navigate('profile')} >
 					<IIcon name='person' size={36} color='black'/>
 				</Pressable>	
 
-				<MCIcon name='message-text-outline' size={40} color='black'/>
+				<MCIcon name='message-text-outline' size={40} color='white'/>
 				
 				<Pressable style={styles.dmBackButton} onPress={() => navigation.goBack()}>
-					<MIIcon name='arrow-forward-ios' size={32} color='black'/>
+					<MIIcon name='arrow-forward-ios' size={32} color='white'/>
 				</Pressable>
 			</View>
 
 			<View style={styles.newConnectionsContainer}>
-				<Text style={{color: 'black', marginTop: 15, marginLeft: 10}}>
-					NEW CONNECTIONS
+				<Text style={styles.newFriendsText}>
+					NEW FRIENDS
 				</Text> 
 
 				<ScrollView horizontal>
 					{dms.map((dm)=>
 						<Pressable key={dm.id}>
 							<View style={styles.newConnectionProfile}>
-								<Text style={{marginTop: '90%'}}>
+								<View style={styles.newConnectionProfilePic}/>
+																
+								<Text style={styles.newConnectionUsername}>
 									{dm.username}
 								</Text>
 							</View>
@@ -78,23 +96,27 @@ function DmDisplay({navigation}) {
 				</ScrollView>
 			</View>
 
-			<View style={styles.messagesContainer}>
-				<Text style={{color: 'black', marginLeft: '3%', paddingBottom: '2%'}}>
-					MESSAGES
-				</Text>
-			</View>
-
-			<View style={{flex: 1}}>
+			<Text style={styles.messagesText}>
+				MESSAGES
+			</Text>
+		
+			<View style={styles.allDmsContainer}>
 				<ScrollView>
 					{dms.map((dm) => 
 						<Pressable>
 							<View style={styles.dm}>
-								<Text style={styles.username}>
-									{dm.username}
-								</Text>
-								<Text style={styles.lastMessage}>
-									{dm.lastMessage}
-								</Text>
+								<View style={styles.messagesProfilePic}>
+									
+								</View>
+								<View style={styles.usernameAndLastMessageContainer}>
+									<Text style={styles.username}>
+										{dm.username}
+									</Text>
+									<Text style={styles.lastMessage}>
+										{dm.lastMessage}
+									</Text>
+								</View>
+								
 							</View>
 						</Pressable>
 						)
@@ -107,3 +129,6 @@ function DmDisplay({navigation}) {
 }
 
 export default DmDisplay;
+/*
+
+*/

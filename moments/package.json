@@ -27,7 +27,8 @@
     "react-native-screens": "^3.17.0",
     "react-native-swipe-gestures": "^1.0.5",
     "react-native-text-gradient": "^0.1.7",
-    "react-native-vector-icons": "^9.2.0"
+    "react-native-vector-icons": "^9.2.0",
+    "react-native-vision-camera": "^2.14.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

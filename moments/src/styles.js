@@ -7,6 +7,7 @@ const styles = StyleSheet.create({
 	fullScreen: {
 		height: screenHeight,
 		width: screenWidth,
+		
 	},
 	map: {
 		height: screenHeight,
@@ -39,16 +40,23 @@ const styles = StyleSheet.create({
 		color: '#333',
 		justifyContent: 'center',
 	},
+	DMScreen: {
+		height: screenHeight,
+		width: screenWidth,
+		backgroundColor: 'black',
+		alignItems: 'center'
+	},
 	DMHeader: {
 		marginTop: screenHeight * 0.015,
 		flexDirection: 'row',
-		justifyContent: 'space-around',
+		justifyContent: 'space-between',
 		alignItems: 'center',
+		width: screenWidth
 	}, 
 	profileButtonDM: {
 		width: screenWidth * 0.13,
 		height: screenHeight * 0.06,
-		right: '30%',
+		marginLeft: '5%',
 		justifyContent: 'center',
 		alignItems: 'center',
 		borderRadius: 100,
@@ -63,49 +71,84 @@ const styles = StyleSheet.create({
 		elevation: 10,
 	},
 	newConnectionsContainer: {
-		height: '20%',
-		marginTop: '3%',
-		marginLeft: '3%',
-		marginRight: '3%',
-		borderTopColor: '#D8D8D8',
-		borderTopWidth: 1,
-		borderBottomColor: '#D8D8D8',
-		borderBottomWidth: 1,
-		backgroundColor: 'aqua'
+		height: screenHeight * 0.2,
+		marginTop: screenHeight * 0.015,
+		borderTopColor: 'white',
+		borderTopWidth: 0.5,
+		borderBottomColor: 'white',
+		borderBottomWidth: 0.5,
+		width: screenWidth * 0.95
+	},
+	newFriendsText: {
+		color: 'white', 
+		marginTop: screenHeight * 0.01, 
+		marginLeft: '3%', 
+		fontStyle: 'italic', 
+		fontWeight: '700',
+		fontSize: 16
 	},
 	newConnectionProfile: {
 		marginTop: screenHeight * 0.01,
-		marginLeft: 10,
-		marginRight: 10,
-		backgroundColor: 'pink',
+		marginLeft: screenHeight * 0.005,
+		marginRight: screenHeight * 0.005,
+		
 		height: '80%',
 		width: (screenWidth/5),
-		flexDirection: 'row',
-		justifyContent: 'center'  
+		justifyContent: 'space-between',
+		alignItems: 'center'
 	},
-	messagesContainer: {
-		marginTop: '4%',
-		marginLeft: '3%',
-		marginRight: '3%',
+	newConnectionProfilePic: {
+		width: screenWidth * 0.175,
+		height: screenHeight * 0.08,
+		borderRadius: 100,
+		backgroundColor: '#F2F2F2',
+		marginTop: screenHeight * 0.015
+	},
+	newConnectionUsername: {
+		color: 'white'
+	},
+	messagesText: {
+		color: 'white', 
+		marginTop: screenHeight * 0.01, 
+		paddingBottom: screenHeight * 0.005,
+		marginRight: screenWidth * 0.7,
+		fontStyle: 'italic', 
+		fontWeight: '700',
+		fontSize: 16,
+	},
+	allDmsContainer: {
+		flex: 1, 
+		width: screenWidth,
+		paddingBottom: '5%',
 	},
 	dm: {
-		borderBottomColor: '#C8C8C8',
-		borderBottomWidth: 1,
 		marginLeft: '4%',
 		marginRight: '4%',
+		flexDirection: 'row',
+		height: screenHeight * 0.1,
+		width: screenWidth,
+		alignItems: 'center'
+	},
+	messagesProfilePic: {
+		marginLeft: screenHeight * 0.005,
+		width: screenWidth * 0.175,
+		height: screenHeight * 0.08,
+		borderRadius: 100,
+		backgroundColor: '#F2F2F2',
+	},
+	usernameAndLastMessageContainer: {
+		marginLeft: '5%',
 	},
 	username: {
-		fontWeight: 'bold',
+		fontWeight: '600',
 		fontSize: 14,
-		marginLeft: '27%',
-		color: 'black',
-		marginTop: '8%',
+		color: 'white',
+		fontStyle: 'italic'
 	},
 	lastMessage: {
 		fontSize: 11,
-		marginLeft: '27%',
-		color: '#575757',
-		marginBottom: '8%'
+		color: 'white',
+		
 	},
 	notificationContainerMap: {
 		position: 'absolute',
@@ -160,15 +203,14 @@ const styles = StyleSheet.create({
 		elevation: 10,
 	},
 	dmBackButton: {
-		left: '30%'
+		marginRight: '5%'
 	},
 	locationModal: {
-		backgroundColor: '#393939',
-		flex: 1,
-		marginTop: screenHeight * 0.62,
-		marginBottom: screenHeight * 0.09, 
-		marginRight: screenWidth * 0.03,
-		marginLeft: screenWidth * 0.03,
+		backgroundColor: 'black',
+		height: screenHeight * 0.15,
+		width: screenWidth * 0.96,
+		marginLeft: screenWidth * 0.02,
+		marginTop: screenHeight * 0.63,
 		borderRadius: 20,
 		shadowColor: "#000",
 		shadowOffset: {
@@ -178,15 +220,28 @@ const styles = StyleSheet.create({
 		shadowOpacity: 0.34,
 		shadowRadius: 6.27,
 		elevation: 10,
-		alignItems:'center'
+		alignItems:'center',
+		flexDirection: 'row',
+		justifyContent: 'space-evenly'
+	},
+	locationImagePlaceholder: {
+		backgroundColor: 'grey',
+		width: '35%',
+		height: '80%',
+		borderRadius: 10,
+		
+	},
+	locationNameActiveAndJoinButtonContainer: {
+		
 	},
 	locationModalClose: {
-		marginLeft: '90%',
 		color: 'white',
+		alignSelf: 'flex-start'
 	},
 	checkInButton: {
 		height: '25%',
-		width: '33%', 
+		width: '80%', 
+		alignSelf: 'flex-end',
 		flexDirection: 'row',
 		justifyContent: 'center',
 		alignItems: 'center',
@@ -199,9 +254,7 @@ const styles = StyleSheet.create({
 		shadowOpacity: 0.34,
 		shadowRadius: 6.27,
 		elevation: 10,
-		position: 'absolute',
-		bottom: '20%',
-		left: '60%'
+		
 	},
 	checkInText: {
 		color: 'white',
@@ -209,9 +262,6 @@ const styles = StyleSheet.create({
 	locationNameModal: {
 		color: 'white',
 		fontSize: 20,
-		position: 'absolute',
-		top: '20%',
-		right: '20%',
 		fontWeight: '500',
 	}, 
 	notificationContainerMB: {
@@ -480,16 +530,19 @@ const styles = StyleSheet.create({
 		width: screenWidth,
 		flexDirection: 'row',
 		justifyContent: 'center',
-		alignItems: 'center'
+		alignItems: 'center',
+		flexWrap: 'wrap',
 	},
 	profileBackButton: {
-		position: 'absolute',
-		left: '85%'
+		alignSelf: 'flex-end',
+		marginTop: screenHeight * 0.05,
+		marginRight: screenWidth * 0.05
 	},
 	profilePageProfile: {
 		height: screenHeight * 0.55,
 		width: screenWidth * 0.9,
 		borderRadius: 30,
+		marginTop: screenHeight * 0.05,
 		backgroundColor: 'grey',
 		justifyContent: 'flex-end',
 		alignItems: 'center',
@@ -499,15 +552,25 @@ const styles = StyleSheet.create({
 		marginBottom: '5%'
 	},
 
-	profilePageName: {
+	profilePageUsername: {
 		marginLeft: '5%',
+		marginTop: '2%',
 		fontSize: 30,
-		color: 'black',
-		fontWeight: 'bold'
+		color: 'white',
+		fontWeight: 'bold',
+		fontStyle: 'italic'
 	},
 	profilePageSettings: {
-		marginLeft: '80%',
-		marginTop: '10%'
+		marginTop: '2%',
+		marginRight: screenWidth * 0.05
+	},
+	profilePageUsernameAndSettingsContainer: {
+		marginTop: screenHeight * 0.03,
+		width: screenWidth,
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		borderTopColor: '#545454',
+		borderTopWidth: 1 
 	},
 	activeNowProfilePlaceHolder: {
 		height: screenHeight * 0.25,
@@ -619,6 +682,41 @@ const styles = StyleSheet.create({
 		fontStyle: 'italic',
 		fontWeight: '900',
 		color: 'white',
+	},
+	happySocialysingLoadingScreen: {
+		height: screenHeight * 0.99,
+		width: screenWidth,
+		backgroundColor: '#6398FF',
+		
+		justifyContent: 'center',
+		alignItems: 'center'
+		
+	},
+	yourPostTextContainer: {
+		fontSize: 30,
+		width: screenWidth,
+		flexDirection: 'row',
+		justifyContent: 'center',
+		marginTop: screenHeight * 0.2,
+		
+	},
+	yourPostTextBlack: {
+		fontSize: 30,
+		textAlign: 'center',
+		fontStyle: 'italic',
+		color: 'black',
+		fontWeight: '700',
+		marginRight: 4
+	},
+	yourPostTextWhite: {
+		fontSize: 30,
+		textAlign: 'center',
+		fontStyle: 'italic',
+		color: 'white',
+		fontWeight: '700',
+		position: 'absolute',
+		zIndex: 1,
+		
 		
 	}
 	
