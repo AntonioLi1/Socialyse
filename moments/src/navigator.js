@@ -26,7 +26,6 @@ function Navigator() {
 				<Stack.Screen options={{headerShown: false}} name="Posting" component={Posting}></Stack.Screen>
 				<Stack.Screen options={{headerShown: false}} name="ActiveNow" component={ActiveNow}></Stack.Screen>
 				<Stack.Screen options={{headerShown: false}} name="PostThread" component={PostThread}></Stack.Screen>
-				<Stack.Screen name="AddCaption" component={AddACaption}></Stack.Screen>
 				<Stack.Screen options={{headerShown: false}} name="SocialyseLoading" component={HappySocialysing}></Stack.Screen>
 			
 			</Stack.Navigator>

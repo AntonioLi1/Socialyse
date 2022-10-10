@@ -30,8 +30,6 @@ function MapDisplay({ navigation }) {
 
 	const GetmyLocation = async () => {
 		await Geolocation.getCurrentPosition(info => {
-			console.log('info')
-			console.log(info);
 			setLatitude(info.coords.latitude)
 			setLongitude(info.coords.longitude)
 		})

@@ -55,7 +55,7 @@ function OwnProfile ({navigation}) {
 					SOCIALYSED
 			</GradientText>
 		</View>
-
+		
 		<Pressable style={styles.profileBackButton} onPress={() => navigation.navigate('Dms')}>
 					<MIIcon name='arrow-forward-ios' size={32} color='white'/>
 		</Pressable>

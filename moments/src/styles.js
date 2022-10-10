@@ -651,7 +651,7 @@ const styles = StyleSheet.create({
 	},
 	takeAPhotoBackButton: {
 		transform: [{rotateY: '180deg'}],
-		marginTop: screenHeight * 0.67,
+		
 		marginRight: screenWidth * 0.8
 		 
 	},
@@ -660,7 +660,7 @@ const styles = StyleSheet.create({
 		fontSize: 30,
 		color: 'white',
 		fontStyle: 'italic',
-		marginTop: screenHeight * 0.05 
+		marginTop: screenHeight * 0.02 
 	},
 	socialTextYellow: {
 		fontSize: 30,
@@ -716,9 +716,36 @@ const styles = StyleSheet.create({
 		fontWeight: '700',
 		position: 'absolute',
 		zIndex: 1,
-		
-		
-	}
+	},
+	camera: {
+		height: screenHeight * 0.5, 
+		width: screenWidth * 0.9, 
+		marginTop: screenHeight * 0.02,
+	},
+	takePhotoButton: {
+		backgroundColor: 'black',
+		width: screenWidth * 0.175,
+		height: screenHeight * 0.08,
+		borderRadius: 100,
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center',
+		marginTop: screenHeight * 0.03,
+		borderColor: 'white',
+		borderWidth: 2.5
+	},
+	justTakenPhoto: {
+		height: screenHeight * 0.5, 
+		width: screenWidth * 0.9, 
+		marginTop: screenHeight * 0.02,
+	},
+	justTakenPhotoClose: {
+		alignSelf: 'flex-end', 
+		marginRight: '3%',
+		marginTop: '3%'
+	},
+
+
 	
 
 	

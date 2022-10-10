@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect, useRef } from 'react';
-import { View, Text, Pressable, ScrollView, Image } from 'react-native';
+import { View, Text, Pressable, ScrollView, Image, ImageBackground } from 'react-native';
 import styles from './styles';
 import { useNavigation } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -7,6 +7,7 @@ import IIcon from 'react-native-vector-icons/Ionicons'
 import MIIcon from 'react-native-vector-icons/MaterialIcons';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ADIcon from 'react-native-vector-icons/AntDesign'
+import FIcon from 'react-native-vector-icons/Fontisto';
 import {GettingStartedContext} from '../App';
 import LinearGradient from 'react-native-linear-gradient';
 import MaskedView from '@react-native-community/masked-view';
@@ -30,7 +31,7 @@ const GradientText = (props) => {
 function MicroBlog({}) {
 	const navigation = useNavigation();
 	const devices = useCameraDevices()
-	const device = devices?.back
+	const device = devices.back
 
     const {messageDisplay, setMessageDisplay, notifDisplay, setNotifDisplay} = useContext(GettingStartedContext);
 	
@@ -45,7 +46,7 @@ function MicroBlog({}) {
 			skipMetadata: true
 		})
 		setImageURL(photo.path);
-		console.log(photo)
+		
 	}
 
 	useEffect(() => {
@@ -58,17 +59,17 @@ function MicroBlog({}) {
 		try {
 			const newCameraPermission = await Camera.requestCameraPermission()
 			const newMicrophonePermission = await Camera.requestMicrophonePermission()
-			console.log(newCameraPermission);
-			console.log(newMicrophonePermission);
+			
 		} catch (error) {
 			console.log(error)
 		}
 	}
-	console.log(devices)
+	
 	if (cameraPermission == null || microphonePermission == null) {
 	// still loading
 	return null;
 	}
+	console.log(imageURL);
 
 	return (
 		<View style={styles.MBBackground}>
@@ -87,23 +88,30 @@ function MicroBlog({}) {
 			</View>
 			{
 				imageURL ? 
-				<Image style={{height: 200, width: 150}} source={{uri:'file://' + imageURL}}/> :
+					<ImageBackground style={styles.justTakenPhoto} source={{uri:'file://' + imageURL}}>
+						<FIcon name='close' style={styles.justTakenPhotoClose} size={25} color='black'/>
+					</ImageBackground>	
+				:
 				 (cameraPermission && device) ?
-					<Camera
-					isActive
-					device={device}
-					style={{ height: "50%", width: "100%" }}
-					ref={cameraref}
-					photo={true}
-					/>
-					: <Text>You must accept camera permission</Text>
+				 	<View style={{borderRadius: 100}}>
+						<Camera
+						video={false}
+						isActive
+						device={device}
+						style={styles.camera}
+						ref={cameraref}
+						photo={true}
+						enableZoomGesture={true}
+						/>
+					</View>
+					: 
+					<Text>You must accept camera permission</Text>
 			}
-			
 
 			<Pressable onPress={() => takePhoto()}>
-				<Text>
-					take photo
-				</Text>
+				<View style={styles.takePhotoButton}>
+					<IIcon name="ios-camera-outline" size={39} color='white'/>
+				</View>
 			</Pressable>
 			
 
@@ -111,9 +119,9 @@ function MicroBlog({}) {
 				<MIIcon name='arrow-forward-ios' size={32} color='white'/>
 			</Pressable>
 
-			<Pressable onPress={() => navigation.navigate('AddCaption')}>
+			<Pressable onPress={() => navigation.navigate('SocialyseLoading')}>
 				<Text>
-					go to add a captiioin screen
+					go to add a loading
 				</Text>
 			</Pressable>
 		</View>
