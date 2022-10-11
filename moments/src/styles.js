@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center',
 		borderRadius: 100,
-		backgroundColor: '#F2F2F2',
+		backgroundColor: 'black',
 			shadowColor: "#000",
 			shadowOffset: {
 				width: 0,
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
 		elevation: 10,
 	},
 	messageIcon: {
-		color: '#333',
+		color: 'white',
 		justifyContent: 'center',
 	},
 	DMScreen: {
@@ -74,9 +74,9 @@ const styles = StyleSheet.create({
 		height: screenHeight * 0.2,
 		marginTop: screenHeight * 0.015,
 		borderTopColor: 'white',
-		borderTopWidth: 0.5,
+		borderTopWidth: 1,
 		borderBottomColor: 'white',
-		borderBottomWidth: 0.5,
+		borderBottomWidth: 1,
 		width: screenWidth * 0.95
 	},
 	newFriendsText: {
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center',
 		borderRadius: 100,
-		backgroundColor: '#F2F2F2',
+		backgroundColor: 'black',
 		shadowColor: "#000",
 		shadowOffset: {
 			width: 0,
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
 		elevation: 10,
 	},
 	notificationCountContainer: {
-		backgroundColor: 'red',
+		backgroundColor: '#FAFF00',
 		width: '35%',
 		height: '35%', 
 		borderRadius: 100,
@@ -506,17 +506,19 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-between',
 		alignItems: 'center'
 	},
-	postPostButton: {
-		marginRight: '5%'
-	},
-	inputRemainingContainer: {
-		flex: 1,
-		justifyContent: 'flex-end',
-		alignItems: 'flex-end'
+	captionDone: {
+		
+		marginRight: '3%',
+		fontSize: 18,
+		fontWeight: '600',
+		color: 'black'
 	},
 	inputRemaining: {
-		marginBottom: '3%',
-		marginRight: '5%'
+		position: 'absolute',
+		bottom: 0,
+		alignSelf: 'flex-end',
+		marginRight: '5%',
+		marginBottom: '2%'
 	},
 	profileScreen: {
 		height: screenHeight,
@@ -644,15 +646,17 @@ const styles = StyleSheet.create({
 		marginLeft: '12%',
 	},
 	MBBackground: {
-		height: screenHeight,
+		flex: 1,
 		width: screenWidth,
 		backgroundColor: '#6398FF',
-		alignItems: 'center'
+		alignItems: 'center',
 	},
 	takeAPhotoBackButton: {
 		transform: [{rotateY: '180deg'}],
-		
-		marginRight: screenWidth * 0.8
+		position: 'absolute',
+		alignSelf: 'flex-start',
+		marginTop: screenHeight * 0.8,
+		marginLeft: screenWidth * 0.07
 		 
 	},
 	takeAPhotoText: {
@@ -674,7 +678,7 @@ const styles = StyleSheet.create({
 		fontSize: 30,
 		fontStyle: 'italic',
 		fontWeight: '900',
-		marginRight: 4,
+		marginRight: 5,
 		
 	},
 	yseTextWhite: {
@@ -717,10 +721,20 @@ const styles = StyleSheet.create({
 		position: 'absolute',
 		zIndex: 1,
 	},
+	cameraContaner: {
+		marginTop: screenHeight * 0.02,
+		overflow: 'hidden',
+		borderRadius: 15
+	},
 	camera: {
 		height: screenHeight * 0.5, 
 		width: screenWidth * 0.9, 
-		marginTop: screenHeight * 0.02,
+	},
+	reverseCameraButton: {
+		position: 'absolute',
+		alignSelf: 'flex-end',
+		marginTop: '97%',
+		marginRight: '3%'
 	},
 	takePhotoButton: {
 		backgroundColor: 'black',
@@ -734,16 +748,118 @@ const styles = StyleSheet.create({
 		borderColor: 'white',
 		borderWidth: 2.5
 	},
+	justTakenPhotoContainer: {
+		overflow:'hidden',
+		borderRadius: 15,
+		marginTop: screenHeight * 0.02,
+	},
 	justTakenPhoto: {
 		height: screenHeight * 0.5, 
 		width: screenWidth * 0.9, 
-		marginTop: screenHeight * 0.02,
 	},
 	justTakenPhotoClose: {
 		alignSelf: 'flex-end', 
 		marginRight: '3%',
 		marginTop: '3%'
 	},
+	addACaptionPlaceHolder: {
+		fontStyle: 'italic',
+		fontSize: 20,
+		paddingTop: 0,
+		paddingBottom: 0,
+		color: 'white'
+	},
+	sendPhotoButton: {
+		backgroundColor: 'black',
+		width: screenWidth * 0.175,
+		height: screenHeight * 0.08,
+		borderRadius: 100,
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center',
+		borderColor: 'white',
+		borderWidth: 2.5,
+		position: 'absolute',
+		marginTop: screenHeight * 0.115,
+		marginLeft: screenWidth * 0.27
+	},
+	captionModal: {
+		height: screenHeight * 0.28,
+		width: screenWidth * 0.96,
+		backgroundColor: 'white',
+		borderRadius: 20,
+		alignSelf: 'center',
+		marginTop: screenHeight * 0.13,
+		
+	},
+	captionModalPlaceholder: {
+		marginLeft: '3%',
+		
+	},
+	captionModalHeader: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center',
+	},
+	postsFeedHeader: {
+		borderBottomColor: '#383838',
+		borderBottomWidth: 0.7,
+		width: screenWidth,
+		flexDirection: 'row',
+		justifyContent: 'space-around',
+		alignItems: 'center',
+		
+	},
+	postsFeedHeaderBackButton: {
+		transform: [{rotateY: '180deg'}],
+		marginLeft: '2%' 
+	},
+	notificationContainerPostsFeed: {
+		alignItems: 'flex-end',
+		marginBottom: '2%',
+		marginTop: '2%',
+		marginRight: '2%'
+	},
+	postsFeedFooter: {
+		backgroundColor: 'grey',
+		width: '100%',
+		flex: 1,
+		justifyContent: 'center'
+	},
+	messageButtonPostsFeed: {
+		width: screenWidth * 0.13,
+		height: screenHeight * 0.06,
+		justifyContent: 'center',
+		alignItems: 'center',
+		borderRadius: 100,
+		backgroundColor: 'black',
+		shadowColor: "#000",
+		shadowOffset: {
+			width: 0,
+			height: 5,
+		},
+		shadowOpacity: 0.34,
+		shadowRadius: 6.27,
+		elevation: 10,
+		marginLeft: '5%'
+	},
+	dmHeader: {
+		flex: 1,
+		width: screenWidth,
+		backgroundColor: 'grey'
+	},
+	messagesScreen: {
+		flex: 1,
+		width: screenWidth,
+		backgroundColor: 'white',
+		alignItems: 'center'
+	},
+	messagesBody: {
+		flex: 11,
+		width: screenWidth,
+		backgroundColor: 'blue'
+	}
+
 
 
 	

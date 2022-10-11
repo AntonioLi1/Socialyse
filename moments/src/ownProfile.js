@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Image, Text, Pressable } from 'react-native';
+import { View,  Text, Pressable,  } from 'react-native';
 import styles from './styles';
 import IIcon from 'react-native-vector-icons/Ionicons'
 import MIIcon from 'react-native-vector-icons/MaterialIcons';
@@ -36,6 +36,7 @@ function OwnProfile ({navigation}) {
 			<Text style={styles.profilePageUsername}>
 				dababy_leshgo
 			</Text>
+
 			<Pressable style={styles.profilePageSettings}>
 				<IIcon name="ios-settings-outline" size={35} color="white"/>
 			</Pressable>

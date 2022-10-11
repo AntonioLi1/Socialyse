@@ -8,7 +8,8 @@ import LocationModal from './locationModal';
 import { GettingStartedContext } from '../App'
 //import MIIcon from 'react-native-vector-icons/MaterialIcons';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import IIcon from 'react-native-vector-icons/Ionicons'
+import IIcon from 'react-native-vector-icons/Ionicons';
+import EIcon from 'react-native-vector-icons/Entypo';
 import { DrawerContentScrollView } from '@react-navigation/drawer';
 //import AIcon from 'react-native-vector-icons/AntDesign'
 
@@ -60,17 +61,17 @@ function MapDisplay({ navigation }) {
 			{messageDisplay ?
 				<View style={styles.messageIconContainer}>
 					<TouchableOpacity style={styles.messageButton} onPress={() => navigation.navigate('Dms')}>
-						<MCIcon style={styles.messageIcon} name='message-text-outline' size={33} />
+						<IIcon style={styles.messageIcon} name='ios-chatbubbles-outline' size={33} />
 					</TouchableOpacity>
 				</View> : null}
 
 			{notifDisplay ?
 				<View style={styles.notificationContainerMap}>
 					<Pressable style={styles.notificationButton} onPress={() => navigation.navigate('notifications')}>
-						<IIcon name='notifications-outline' size={32} color='black' />
+						<IIcon name='notifications-outline' size={32} color='white' />
 					</Pressable>
 					<View style={styles.notificationCountContainer}>
-						<Text style={{ fontSize: 10, color: 'white' }}>
+						<Text style={{ fontSize: 10, color: 'black' }}>
 							5
 						</Text>
 					</View>

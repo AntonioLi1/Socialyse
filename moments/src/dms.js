@@ -103,7 +103,7 @@ function DmDisplay({navigation}) {
 			<View style={styles.allDmsContainer}>
 				<ScrollView>
 					{dms.map((dm) => 
-						<Pressable>
+						<Pressable onPress={() => {navigation.navigate('Dm')}}>
 							<View style={styles.dm}>
 								<View style={styles.messagesProfilePic}>
 									

@@ -25,7 +25,7 @@ const GradientText = (props) => {
 	);
   };
 
-function HappySocialysing() {
+function HappySocialysing({navigation}) {
     return (
         <View style={styles.happySocialysingLoadingScreen}>
             <View style={styles.yourPostTextContainer}>
@@ -40,7 +40,7 @@ function HappySocialysing() {
                     MINUTES. {'\n'} {'\n'}
                 </Text>
             </View>
-            <View style={{width: '100%', marginBottom: '70%'}}>
+            <View style={{width: '100%', marginBottom: '70%', backgroundColor: 'grey'}}>
                 <Text style={{textAlign: 'center' }}>
                     <View style={styles.yourPostTextContainer}>
                         <Text style={styles.yourPostTextBlack}>
@@ -62,6 +62,12 @@ function HappySocialysing() {
                     </View>
                 </Text>
             </View>
+            <View style={{marginBottom: 100}}>
+                <Text onPress={() => {navigation.navigate('PostsFeed')}}>
+                    go to posts
+                </Text>
+            </View>
+            
         </View>
     )
 }

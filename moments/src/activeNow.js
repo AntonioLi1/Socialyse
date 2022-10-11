@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Image, Text, Pressable, FlatList } from 'react-native';
 import styles from './styles';
-import ActiveNowModal from './activeNowModal';
+import ActiveNowModal from './captionModal';
 import IIcon from 'react-native-vector-icons/Ionicons'
 import MIIcon from 'react-native-vector-icons/MaterialIcons';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
