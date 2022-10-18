@@ -82,7 +82,7 @@ function DmDisplay({navigation}) {
 
 				<ScrollView horizontal>
 					{dms.map((dm)=>
-						<Pressable key={dm.id}>
+						<Pressable key={dm.id} onPress={() => {navigation.navigate('Dm')}}>
 							<View style={styles.newConnectionProfile}>
 								<View style={styles.newConnectionProfilePic}/>
 																

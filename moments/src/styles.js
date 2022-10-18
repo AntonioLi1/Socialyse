@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
 	},
 	messageIconContainer: {
 		position: 'absolute',
-		marginTop: screenHeight * 0.79,
+		marginTop: screenHeight * 0.83,
 		marginLeft: screenWidth * 0.05
 	},
 	messageButton: {
@@ -383,10 +383,7 @@ const styles = StyleSheet.create({
 	MBFeed: {
 		marginTop: '3%',
 	},
-	post: {
-		borderTopColor: '#C8C8C8',
-		borderTopWidth: 1,
-	},
+	
 	postUsername: {
 		marginLeft: screenWidth * 0.12,
 		marginTop: '2%',
@@ -532,8 +529,9 @@ const styles = StyleSheet.create({
 		width: screenWidth,
 		flexDirection: 'row',
 		justifyContent: 'center',
-		alignItems: 'center',
+		
 		flexWrap: 'wrap',
+		backgroundColor: 'pink'
 	},
 	profileBackButton: {
 		alignSelf: 'flex-end',
@@ -545,7 +543,7 @@ const styles = StyleSheet.create({
 		width: screenWidth * 0.9,
 		borderRadius: 30,
 		marginTop: screenHeight * 0.05,
-		backgroundColor: 'grey',
+		backgroundColor: 'green',
 		justifyContent: 'flex-end',
 		alignItems: 'center',
 	},
@@ -821,10 +819,14 @@ const styles = StyleSheet.create({
 		marginRight: '2%'
 	},
 	postsFeedFooter: {
-		backgroundColor: 'grey',
 		width: '100%',
 		flex: 1,
-		justifyContent: 'center'
+		justifyContent: 'space-between',
+		flexDirection: 'row',
+		alignItems: 'center',
+		borderTopColor: '#383838',
+		borderTopWidth: 0.7
+
 	},
 	messageButtonPostsFeed: {
 		width: screenWidth * 0.13,
@@ -843,10 +845,42 @@ const styles = StyleSheet.create({
 		elevation: 10,
 		marginLeft: '5%'
 	},
-	dmHeader: {
+	ownPostsButton: {
+		width: screenWidth * 0.13,
+		height: screenHeight * 0.06,
+		justifyContent: 'center',
+		alignItems: 'center',
+		borderRadius: 100,
+		backgroundColor: 'black',
+		shadowColor: "#000",
+		shadowOffset: {
+			width: 0,
+			height: 5,
+		},
+		shadowOpacity: 0.34,
+		shadowRadius: 6.27,
+		elevation: 10,
+		marginRight: '5%'
+		
+	},
+	messagesHeader: {
 		flex: 1,
 		width: screenWidth,
-		backgroundColor: 'grey'
+		backgroundColor: 'black',
+		justifyContent: 'center',
+		borderBottomColor: 'white',
+		borderBottomWidth: 1
+	},
+	messagesHeaderUsername: {
+		color: 'white',
+		fontSize: 20,
+		fontWeight: '900',
+		marginLeft: '2%'
+	},
+	messagesBackButton: {
+		position: 'absolute',
+		alignSelf: 'flex-end',
+		marginRight: '2%'
 	},
 	messagesScreen: {
 		flex: 1,
@@ -855,11 +889,161 @@ const styles = StyleSheet.create({
 		alignItems: 'center'
 	},
 	messagesBody: {
-		flex: 11,
+		flex: 12,
 		width: screenWidth,
-		backgroundColor: 'blue'
-	}
+		backgroundColor: 'black'
+	},
+	messagesFooter: {
+		flex: 1
+	},
+	post: {
+		height: screenHeight * 0.3,
+		width: screenWidth * 0.4,
+		
+		borderColor: 'black',
+		borderWidth: 1,
+		flexDirection: 'row',
+		justifyContent: 'center'
+		
+	},
+	blank: {
+		height: screenHeight * 0.3,
+		width: screenWidth * 0.4,
+		backgroundColor: 'transparent',
+	},
+	postModal: {
+		height: screenHeight * 0.55,
+		width: screenWidth * 0.9,
+		backgroundColor: 'black',
+		alignSelf: 'center',
+		marginTop: screenHeight * 0.15,
+		justifyContent: 'space-between',
+		
+		
+	},
+	postModalBottomBorder: {
+		backgroundColor: 'white',
+		width: '100%',
+		height: '10%',
+		alignSelf: 'flex-end',
+		borderRadius: 15
+	},
+	signUpScreen: {
+		height: screenHeight,
+		width: screenWidth,
+		backgroundColor: '#6398FF',
+		alignItems: 'center'
+	},
+	signUpScreenSocialyse: {
+		
+		alignItems: 'center',
+		marginTop: screenHeight * 0.15
+	},
+	signUpInputContainer: {
+		width: screenWidth,
+		marginTop: screenHeight * 0.01,
+		alignItems: 'center',
+	}, 
+	inputs: {
+		borderWidth: 1,
+		borderColor: '#CACACA',
+		marginTop: '1%',
+		width: screenWidth * 0.8,
+		backgroundColor: '#FFFFFF',
+		borderRadius: 5
+	},
+	signUpSocialTextYellow: {
+		fontSize: 50,
+		fontStyle: 'italic',
+		color: '#FAFF00',
+		fontWeight: '900',
+		zIndex: 1,
+		position: 'absolute'
+	},
+	signUpSocialTextGradient: {
+		fontSize: 50,
+		fontStyle: 'italic',
+		fontWeight: '900',
+		marginRight: 8,
+	},
+	signUpInfo: {
+		textAlign: 'center',
+		fontSize: 15,
+		fontWeight: '600'
+	},
+	signUpInfoContainer: {
+		marginTop: screenHeight * 0.02
+	},
+	signUpButton: {
+		width: screenWidth * 0.8,
+		height: screenHeight * 0.05,
+		marginTop: screenHeight * 0.03,
+		borderRadius: 10,
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center'
+	},
+	loginButton: {
+		
+		width: screenWidth * 0.8,
+		height: screenHeight * 0.05,
+		marginTop: screenHeight * 0.03,
+		backgroundColor: 'white',
+		borderRadius: 10,
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center'
+		
+	},
+	loginInput: {
 
+	},
+	or: {
+		marginTop: screenHeight * 0.01,
+		fontWeight: '700',
+
+	},
+	ownPostModal: {
+		height: screenHeight * 0.55,
+		width: screenWidth * 0.9,
+		backgroundColor: 'black',
+		alignSelf: 'center',
+		marginTop: screenHeight * 0.15,
+		justifyContent: 'space-between',
+	},
+	settingsScreen: {
+		flex: 1,
+		width: screenWidth,
+		backgroundColor: 'black',
+		alignItems: 'center',
+	},
+	settingsHeader: {
+		height: screenHeight * 0.08,
+		width: screenWidth,
+		
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'center'
+	},
+	settingsBackButton: {
+		left: '180%'
+	},
+	settingsLogout: {
+		backgroundColor: '#464646',
+		height: screenHeight * 0.05,
+		width: screenWidth * 0.85,
+		borderRadius: 10,
+		marginTop: screenHeight * 0.1,
+		justifyContent: 'center',
+		alignItems: 'center'
+	},
+	settingsProfile: {
+		backgroundColor: '#464646',
+		height: screenHeight * 0.12,
+		width: screenWidth * 0.85,
+		borderRadius: 10,
+		marginTop: screenHeight * 0.03
+	},
 
 
 	

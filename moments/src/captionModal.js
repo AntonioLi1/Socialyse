@@ -8,16 +8,16 @@ import ADIcon from 'react-native-vector-icons/AntDesign'
 import { TextInput } from 'react-native-gesture-handler';
 
 
-function CaptionModal({captionModal, setCaptionModal, caption, setCaption}) {
+function CaptionModal({captionModal, setCaptionModal, setCaption, setAddedCaption}) {
     const [inputCount, setInputCount] = useState(0); 
-    
+    const [input, setInput] = useState(null);
     return (
         <Modal visible={captionModal} transparent={true} >
             <View style={styles.captionModal}>
                 <View style={styles.captionModalHeader}>
-                    <IIcon style={{marginLeft: '2%', }} name="ios-close-outline" size={35} color='black'
-                    onPress={() => {setCaptionModal(false); setCaption('add a caption...')}}/>
-                    <Pressable onPress={() => {setCaptionModal(false);}}>
+                    <IIcon style={{marginLeft: '2%', marginTop: '2%' }} name="ios-close-outline" size={35} color='black'
+                    onPress={() => {setCaptionModal(false);}}/>
+                    <Pressable onPress={() => {setCaptionModal(false); setCaption(input); setAddedCaption(true)}}>
                         <Text style={styles.captionDone}>
                             Done
                         </Text>
@@ -26,7 +26,7 @@ function CaptionModal({captionModal, setCaptionModal, caption, setCaption}) {
                 </View>
               
                 <TextInput style={styles.captionModalPlaceholder} placeholder="caption..." autoFocus={true}
-                onChangeText={(text) => {setInputCount(text.length); setCaption(text)}} maxLength={150} multiline={true}
+                onChangeText={(text) => {setInputCount(text.length); setInput(text)}} maxLength={150} multiline={true}
                 />
 
                 <Text style={styles.inputRemaining}>

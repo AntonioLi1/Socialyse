@@ -40,7 +40,7 @@ function HappySocialysing({navigation}) {
                     MINUTES. {'\n'} {'\n'}
                 </Text>
             </View>
-            <View style={{width: '100%', marginBottom: '70%', backgroundColor: 'grey'}}>
+            <View style={{width: '100%', marginBottom: '70%',}}>
                 <Text style={{textAlign: 'center' }}>
                     <View style={styles.yourPostTextContainer}>
                         <Text style={styles.yourPostTextBlack}>

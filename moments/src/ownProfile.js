@@ -27,6 +27,11 @@ function OwnProfile ({navigation}) {
 	return (
 	<View style={styles.profileScreen}>
 		<View style={styles.profilePageProfile}>
+			<Pressable onPress={() => {navigation.navigate('SignUp')}}>
+				<Text>
+					go to signup
+				</Text>
+			</Pressable>
 			<Pressable style={styles.profilePicEdit}>
 				<FIcon name="edit" size={32} color='white'/>
 			</Pressable>
@@ -37,24 +42,26 @@ function OwnProfile ({navigation}) {
 				dababy_leshgo
 			</Text>
 
-			<Pressable style={styles.profilePageSettings}>
+			<Pressable style={styles.profilePageSettings} onPress={() => {navigation.navigate('Settings')}}>
 				<IIcon name="ios-settings-outline" size={35} color="white"/>
 			</Pressable>
 		</View>
 
 		<View style={styles.profilePageHeader}>
-			<Text style={{color: 'white', fontSize: 30, marginTop: '5%'}}>
-				You've {'\u00A0'}
-				<Text style={styles.socialTextYellow}>
-					 SOCIALYSED {'\u00A0'}
-				</Text>
-				with {'\n'}
-				
+			<Text style={{color: 'white', flexDirection: 'row', fontSize: 20, }}>
+				You've {'\u00A0'}							
+				<View style={{alignItems: 'center'}}>
+					<Text style={styles.socialTextYellow}>
+						SOCIALYSED
+					</Text>
+					<GradientText style={styles.socialTextGradient}>
+						SOCIALYSED
+					</GradientText>
+				</View>				
+				{'\u00A0'} with {'\n'}
 			</Text>
 				
-			<GradientText style={styles.socialTextGradient}>
-					SOCIALYSED
-			</GradientText>
+			
 		</View>
 		
 		<Pressable style={styles.profileBackButton} onPress={() => navigation.navigate('Dms')}>

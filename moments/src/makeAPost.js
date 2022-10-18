@@ -43,6 +43,7 @@ function MakeAPost({}) {
 	const [takePhotoButton, setTakePhotoButton] = useState(true);
 	const [backCamera, setbackCamera] = useState(true);
 	const [caption, setCaption] = useState('add a caption...');
+	const [addedCaption, setAddedCaption] = useState(false);
 	const [captionModal, setCaptionModal] = useState(false);
 	const cameraref = useRef();
 
@@ -112,13 +113,20 @@ function MakeAPost({}) {
 						</View>
 						
 						<Pressable onPress={() => {setCaptionModal(true)}}>
-							<Text style={styles.addACaptionPlaceHolder}>
-								{caption}
-							</Text>	
+							{
+								addedCaption ? 
+									<Text style={styles.addACaptionPlaceHolder}>
+									{caption}
+									</Text>	
+									// add a remove caption button!
+									: 
+									<Text style={styles.addACaptionPlaceHolder}>
+									add a caption...
+									</Text>	
+							}
 						</Pressable>
-						<CaptionModal captionModal={captionModal} setCaptionModal={setCaptionModal} caption={caption} setCaption={setCaption}>
+						<CaptionModal captionModal={captionModal} setCaptionModal={setCaptionModal} caption={caption} setCaption={setCaption} setAddedCaption={setAddedCaption}/>
 
-						</CaptionModal>
 							
 					</View>
 				:
