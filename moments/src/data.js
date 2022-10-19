@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getDatabase, ref, child, push, update, get } from "firebase/database";
+import { getDatabase, ref, child, push, update, get, query, limitToLast, orderByChild, equalTo } from "firebase/database";
 import { getAuth } from "firebase/auth";
 import { getStorage } from "firebase/storage";
 
@@ -21,14 +21,10 @@ export const auth = getAuth(app);
 export const storage = getStorage(app);
 
 // registering a user
-
-
-// logging in a user
-
 const dbRef = ref(getDatabase());
 get(child(dbRef, 'channels/test3/posts')).then((snapshot)=> {
     if (snapshot.exists()) {
-      console.log(snapshot.val());
+      console.log(snapshot.orderByChild("caption").equalTo("banton"));
     } else {
       console.log("No data available");
     }
@@ -37,6 +33,10 @@ get(child(dbRef, 'channels/test3/posts')).then((snapshot)=> {
   }), {
     onlyOnce: true
   };
+
+
+
+// logging in a user
 
 // Function to create a new user with basic information
 function create_user(email, name, username) {
@@ -58,6 +58,7 @@ function create_user(email, name, username) {
   return update(ref(db), updates);
 }
 
+//
 function create_posts(caption, image, time, username, channel_name) {
   const db = getDatabase();
 
@@ -77,3 +78,27 @@ function create_posts(caption, image, time, username, channel_name) {
 
   return update(ref(db), updates);
 }
+
+// Functions to update specific user information
+function update_user_info(user_id, email, name, username) {
+  const db = getDatabase();
+
+  update(ref(db, "/users/" + user_id), {
+    "email": email,
+    "name": name, 
+    "username": username
+  });
+}
+
+// Add channel_id later?
+// function list_posts(channel_name) {
+//   const db = getDatabase();
+
+//   const posts_by_time = query(ref(db, "channels/" + channel_name + "/posts/"), orderByKey("time"));
+
+
+//   console.log(posts_by_time);
+
+// }
+
+// list_posts("test3")
