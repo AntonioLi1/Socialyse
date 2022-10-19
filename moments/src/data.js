@@ -57,3 +57,23 @@ function create_user(email, name, username) {
 
   return update(ref(db), updates);
 }
+
+function create_posts(caption, image, time, username, channel_name) {
+  const db = getDatabase();
+
+  const post_info = {
+    "caption": caption,
+    "image": image,
+    "time": time,
+    "username": username
+  }
+
+  // Get a key for a new post.
+  const new_post_key = push(child(ref(db), 'posts')).key;
+
+  // Write the new post's data simultaneously in the posts list and the user's post list.
+  const updates = {};
+  updates["/channels/" + channel_name + "/posts/" + new_post_key] = post_info;
+
+  return update(ref(db), updates);
+}
