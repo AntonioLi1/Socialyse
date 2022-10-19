@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
 	notificationCountContainer: {
 		backgroundColor: '#FAFF00',
 		width: '35%',
-		height: '35%', 
+		height: '25%', 
 		borderRadius: 100,
 		justifyContent: 'center',
 		alignItems: 'center',
@@ -803,20 +803,18 @@ const styles = StyleSheet.create({
 		borderBottomColor: '#383838',
 		borderBottomWidth: 0.7,
 		width: screenWidth,
-		flexDirection: 'row',
-		justifyContent: 'space-around',
+		flex: 1,
+		
 		alignItems: 'center',
 		
 	},
 	postsFeedHeaderBackButton: {
 		transform: [{rotateY: '180deg'}],
-		marginLeft: '2%' 
+		marginLeft: '3%'
 	},
 	notificationContainerPostsFeed: {
 		alignItems: 'flex-end',
-		marginBottom: '2%',
-		marginTop: '2%',
-		marginRight: '2%'
+		marginRight: '3%'
 	},
 	postsFeedFooter: {
 		width: '100%',
@@ -896,20 +894,27 @@ const styles = StyleSheet.create({
 	messagesFooter: {
 		flex: 1
 	},
-	post: {
+	postContainer: {
 		height: screenHeight * 0.3,
-		width: screenWidth * 0.4,
-		
-		borderColor: 'black',
-		borderWidth: 1,
+		width: screenWidth * 0.45,
+		marginTop: '10%',
 		flexDirection: 'row',
-		justifyContent: 'center'
-		
+		justifyContent: 'center',
 	},
 	blank: {
 		height: screenHeight * 0.3,
-		width: screenWidth * 0.4,
+		width: screenWidth * 0.45,
 		backgroundColor: 'transparent',
+	},
+	fullPost: {
+		height: '100%', 
+		width: '80%', 
+
+	},
+	postPhoto: {
+		backgroundColor: 'red', 
+		height: '85%', 
+		borderRadius: 10
 	},
 	postModal: {
 		height: screenHeight * 0.55,

@@ -44,38 +44,34 @@ function PostsFeed ({navigation}) {
     return (
         <View style={styles.MBBackground}>
             <View style={styles.postsFeedHeader}>
-                
-                <Pressable style={styles.postsFeedHeaderBackButton} onPress={() => {setMessageDisplay(true); navigation.navigate('Map'); setNotifDisplay(true) }}>
-                    <MIIcon name='arrow-forward-ios' size={32} color='white'/>
-                </Pressable>
-                
-                <View style={{flex: 1, alignItems: 'center'}}>
-                    <Text style={styles.socialTextYellow}>
-                        SOCIALYSE
-                    </Text>
-                    <GradientText style={styles.socialTextGradient}>
-                        SOCIALYSE
-                    </GradientText>
+                <View style={{flex: 1, width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                    <Pressable style={styles.postsFeedHeaderBackButton} onPress={() => {setMessageDisplay(true); navigation.navigate('Map'); setNotifDisplay(true) }}>
+                        <MIIcon name='arrow-forward-ios' size={32} color='white'/>
+                    </Pressable>
+                    <View style={{alignItems: 'center'}}>
+                        <Text style={styles.socialTextYellow}>
+                            SOCIALYSE
+                        </Text>
+                        <GradientText style={styles.socialTextGradient}>
+                            SOCIALYSE
+                        </GradientText>
+                    </View>
+                    <View style={styles.notificationContainerPostsFeed}>
+                        <Pressable style={styles.notificationButton} onPress={() => navigation.navigate('notifications')}>
+                            <IIcon name='notifications-outline' size={32} color='white' />
+                        </Pressable>
+                        <View style={styles.notificationCountContainer}>
+                            <Text style={{ fontSize: 10, color: 'black' }}>
+                                6
+                            </Text>
+                        </View>
+                    </View>
                 </View>
-
-                
-
-                <View style={styles.notificationContainerPostsFeed}>
-					<Pressable style={styles.notificationButton} onPress={() => navigation.navigate('notifications')}>
-						<IIcon name='notifications-outline' size={32} color='white' />
-					</Pressable>
-					<View style={styles.notificationCountContainer}>
-						<Text style={{ fontSize: 10, color: 'black' }}>
-							6
-						</Text>
-					</View>
-				</View>
-
-                <Text style={{position:'absolute', alignSelf: 'flex-end', fontSize: 12, color: 'white', marginLeft: '45%'}}>
+                <Text style={{fontSize: 12, color: 'white', position: 'absolute', bottom: '0%'}}>
                     2min remaining
                 </Text>
             </View>
-            <View style={{flex: 8 , width: '100%',}}>
+            <View style={{flex: 9 , width: '100%', paddingBottom: '5%'}}>
                 <FlatList 
                 contentContainerStyle={{alignItems: 'center'}} 
                 numColumns={2} 
@@ -89,10 +85,16 @@ function PostsFeed ({navigation}) {
 					return (
                         <View>
                             <Pressable onPress={() => {setOpenPost(true)}}>
-                                <View style={styles.post}>
-                                    <Text style={{alignSelf: 'flex-end'}}>
-                                        {item.caption}
-                                    </Text>       
+                                <View style={styles.postContainer}>
+                                    <View style={styles.fullPost}>
+                                        <View style={styles.postPhoto}>
+
+                                        </View>
+                                        <Text style={{fontSize: 12, marginHorizontal: '2%'}}>
+                                            {item.caption}
+                                        </Text>     
+                                    </View>
+                                      
                                 </View>
 						    </Pressable>
                             <PostModal openPost={openPost} setOpenPost={setOpenPost}/>
@@ -117,3 +119,31 @@ function PostsFeed ({navigation}) {
 }
 
 export default PostsFeed;
+
+/*
+                    <Pressable style={styles.postsFeedHeaderBackButton} onPress={() => {setMessageDisplay(true); navigation.navigate('Map'); setNotifDisplay(true) }}>
+                        <MIIcon name='arrow-forward-ios' size={32} color='white'/>
+                    </Pressable>
+                    
+                    <View style={{flex: 1, alignItems: 'center'}}>
+                        <Text style={styles.socialTextYellow}>
+                            SOCIALYSE
+                        </Text>
+                        <GradientText style={styles.socialTextGradient}>
+                            SOCIALYSE
+                        </GradientText>
+                    </View>
+
+                    
+
+                    <View style={styles.notificationContainerPostsFeed}>
+                        <Pressable style={styles.notificationButton} onPress={() => navigation.navigate('notifications')}>
+                            <IIcon name='notifications-outline' size={32} color='white' />
+                        </Pressable>
+                        <View style={styles.notificationCountContainer}>
+                            <Text style={{ fontSize: 10, color: 'black' }}>
+                                6
+                            </Text>
+                        </View>
+                    </View>
+*/
