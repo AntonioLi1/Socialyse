@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getDatabase, ref, child, get } from "firebase/database";
+import { getDatabase, ref, child, push, update, get } from "firebase/database";
 import { getAuth } from "firebase/auth";
 import { getStorage } from "firebase/storage";
 
@@ -37,6 +37,23 @@ get(child(dbRef, 'channels/test3/posts')).then((snapshot)=> {
   }), {
     onlyOnce: true
   };
-  
 
-  
+// Function to create a new user with basic information
+function create_user(email, name, username) {
+  const db = getDatabase();
+
+  const user_info = {
+    "email": email,
+    "name": name, 
+    "username": username
+  }
+
+  // Get a key for a new user.
+  const new_user_key = push(child(ref(db), 'users')).key;
+
+  // Write the new post's data simultaneously in the posts list and the user's post list.
+  const updates = {};
+  updates['/users/' + new_user_key] = user_info;
+
+  return update(ref(db), updates);
+}
