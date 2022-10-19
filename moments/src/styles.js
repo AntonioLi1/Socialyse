@@ -172,6 +172,15 @@ const styles = StyleSheet.create({
 		shadowRadius: 6.27,
 		elevation: 10,
 	},
+	notificationCountContainerMap: {
+		backgroundColor: '#FAFF00',
+		width: '35%',
+		height: '35%', 
+		borderRadius: 100,
+		justifyContent: 'center',
+		alignItems: 'center',
+		position: 'absolute',
+	},
 	notificationCountContainer: {
 		backgroundColor: '#FAFF00',
 		width: '35%',
@@ -421,19 +430,22 @@ const styles = StyleSheet.create({
 	commentCount: {
 		marginLeft: screenWidth * 0.01 
 	},
+	notifFullScreen: {
+		height: screenHeight,
+		width: screenWidth,
+		backgroundColor: '#6398FF'
+	},
 	notifHeader: {
 		flexDirection: 'row',
 		alignItems: 'center',
 		height: screenHeight* 0.08,
+		
+		justifyContent: 'center'
 	},
 	notifInnerHeaderContainer: {
-		backgroundColor: '#E5E5E5',
-		marginLeft: '2%',
-		marginRight: '2%',
-		marginTop: '3%',
+		backgroundColor: 'white',
 		height: '70%',
 		width: '95%',
-		zIndex: -1,
 		flexDirection: 'row',
 		justifyContent: 'center',
 		alignItems: 'center', 
@@ -444,14 +456,8 @@ const styles = StyleSheet.create({
 		right: '220%'
 	},
 	notificationsList: {
-		marginTop: screenHeight * 0.015
-	},
-	notif0: {
-		borderTopColor: '#C8C8C8',
-		borderTopWidth: 1,
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-		alignItems: 'center',
+		marginTop: screenHeight * 0.015,
+		
 	},
 	notifMessage: {
 		marginLeft: '10%', 
@@ -459,11 +465,12 @@ const styles = StyleSheet.create({
 		marginBottom: '2%',
 		fontSize: 16,
 		width: '50%',
-		color: 'black',
+		color: 'white',
 	},
 	notifTime: {
 		marginRight: '10%', 
-		fontSize: 16
+		fontSize: 16,
+		color: 'white'
 	},
 	notifProfile: {
 		width: screenWidth * 0.13,

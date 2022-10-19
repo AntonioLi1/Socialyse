@@ -24,7 +24,7 @@ function OwnPosts({ownPost, setOwnPost}) {
                 contentContainerStyle={{width: '100%'}}
                 horizontal
                 data={data} 
-                
+
                 renderItem={({item, index}) => {
                     return(
                         <View style={{backgroundColor: 'blue', width: '100%'}}>

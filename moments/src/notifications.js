@@ -15,24 +15,6 @@ const notifs = [
 		notifFrom: 'brandon'
 	},
 	{
-		notifMessage: 'commented “Haha was thinking the same thing” ',
-		notifType: 0,
-		sentAgo: '2m',
-		notifFrom: 'jacko'
-	},
-	{
-		notifMessage: 'liked your post',
-		notifType: 0,
-		sentAgo: '3m',
-		notifFrom: 'miranda'
-	},
-	{
-		notifMessage: 'commented “I wonder when the main act will come on”',
-		notifType: 0,
-		sentAgo: '4w',
-		notifFrom: 'jimmeh'
-	},
-	{
 		notifMessage: 'friended you back',
 		notifType: 1,
 		sentAgo: '2d',
@@ -44,13 +26,13 @@ function NotificationDisplay({navigation}) {
 	const {messageDisplay, setMessageDisplay, notifDisplay, setNotifDisplay} = useContext(GettingStartedContext);
 
 	return (
-		<View style={{height: '100%', width: '100%'}}>   
+		<View style={styles.notifFullScreen}>   
 			<View style={styles.notifHeader}>
 				<View style={styles.notifInnerHeaderContainer}>
 					<Pressable style={styles.notifBackButton} onPress={() => {setMessageDisplay(true); navigation.goBack(); setNotifDisplay(true) }}>
-						<MIIcon name='arrow-forward-ios' size={28} color='black'/>
+						<MIIcon name='arrow-forward-ios' size={28} color='#6398FF'/>
 					</Pressable>
-					<Text style={{color: 'black', fontSize: 20}}>
+					<Text style={{color: '#6398FF', fontSize: 20}}>
 						Notifications
 					</Text>
 				</View>
@@ -60,32 +42,18 @@ function NotificationDisplay({navigation}) {
 			<View style={styles.notificationsList}>
 				<ScrollView>
 					{notifs.map((notif) =>
-						{if (notif.notifType === 1) {
-							return (
-								<View style={styles.notif1}>
-									<Text style={styles.notifMessage}> 
-										<Text style={{fontWeight: 'bold'}}>{notif.notifFrom} </Text>
-										{notif.notifMessage}
-									</Text>
-								<View style={styles.notifProfile}/>
-								<Text style={styles.notifTime}>
-								{notif.sentAgo}
-								</Text> 
-								</View>)
-							
-						} else {
-							return (
-								<View style={styles.notif0}>
-									<Text style={styles.notifMessage}> 
-										<Text style={{fontWeight: 'bold'}}>{notif.notifFrom} </Text>
-										{notif.notifMessage}
-									</Text>
-									<Text style={styles.notifTime}>
-										{notif.sentAgo}
-									</Text>
-								</View>
-							)
-						}
+						{
+						return (
+							<View style={styles.notif1}>
+								<Text style={styles.notifMessage}> 
+									<Text style={{fontWeight: 'bold'}}>{notif.notifFrom} </Text>
+									{notif.notifMessage}
+								</Text>
+							<View style={styles.notifProfile}/>
+							<Text style={styles.notifTime}>
+							{notif.sentAgo}
+							</Text> 
+							</View>)							
 					})}
 				</ScrollView>
 			</View>	

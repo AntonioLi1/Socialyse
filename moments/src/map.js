@@ -70,7 +70,7 @@ function MapDisplay({ navigation }) {
 					<Pressable style={styles.notificationButton} onPress={() => navigation.navigate('notifications')}>
 						<IIcon name='notifications-outline' size={32} color='white' />
 					</Pressable>
-					<View style={styles.notificationCountContainer}>
+					<View style={styles.notificationCountContainerMap}>
 						<Text style={{ fontSize: 10, color: 'black' }}>
 							5
 						</Text>
