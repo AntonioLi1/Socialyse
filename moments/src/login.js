@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Pressable, TextInput } from 'react-native';
+import { View, Text, Pressable, TextInput, SafeAreaView } from 'react-native';
 import styles from './styles';
 import ActiveNowModal from './captionModal';
 import IIcon from 'react-native-vector-icons/Ionicons'
@@ -9,10 +9,66 @@ import ADIcon from 'react-native-vector-icons/AntDesign'
 import LinearGradient from 'react-native-linear-gradient';
 import MaskedView from '@react-native-community/masked-view';
 
-function Login() {
-    <View>
+
+function Login({navigation}) {
+
+    const [username, setUsername] = useState(false);
+    const [password, setPassword] = useState(false);
+    const [login, setlogin] = useState(true);
+
+    useEffect(() => {
+		if (username === true && password === true) {
+            setlogin(false);
+        }
+	}, [username, password])
+
+    return (
+        <SafeAreaView style={styles.signUpScreen}>
+            <View style={styles.signUpScreenSocialyse}>
+                <Text style={styles.signUpSocialTextYellow}>
+                    SOCIALYSE
+                </Text>
+                <Text style={styles.signUpSocialTextGradient}>
+                    SOCIALYSE
+                </Text>
+            </View>
+            <View style={styles.signUpInputContainer}>
+                <TextInput
+                style={styles.inputs}
+                placeholder='Username'
+                onChangeText={()=>{setUsername(true)}}
+                />
+                <TextInput
+                style={styles.inputs}
+                placeholder='Password'
+                onChangeText={()=>{setPassword(true)}}
+                />
+            </View>
+            <Text style={{alignSelf: 'flex-end', marginRight: '10%', color: 'black', fontSize: 12}}>
+                Forgot Password?
+            </Text>
+            
+            <Pressable style={[{ backgroundColor:  'white'}, styles.signUpButton]} 
+            onPress={() => {navigation.navigate('Map')}}
+            disabled={login}>
+                <Text style={{fontSize: 16, fontWeight: '700', color: 'black'}}>
+                    Log In
+                </Text>
+            </Pressable>
+            <View style={{marginTop: '5%'}}>
+                <Text style={{color: 'black', textAlign: 'center'}}>
+                    Dont have an account? {'\n'}
+                    <Pressable onPress={() => {navigation.goBack()}}>
+                        <Text style={{fontWeight: '700', color: 'black'}}> 
+                            Sign Up.
+                        </Text>
+                    </Pressable>
+                        
+                </Text>
+            </View>
+        </SafeAreaView>
+    )
         
-    </View>
 }
 
 export default Login;

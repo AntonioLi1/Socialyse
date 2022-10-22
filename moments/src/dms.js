@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { View, Pressable, Text, ScrollView } from 'react-native';
+import { View, Pressable, Text, ScrollView, SafeAreaView } from 'react-native';
 import IIcon from 'react-native-vector-icons/Ionicons';
 import MIIcon from 'react-native-vector-icons/MaterialIcons';
 import styles from './styles';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 
 
 const dms = [
@@ -62,16 +63,16 @@ const dms = [
 
 function DmDisplay({navigation}) {
 	return (
-		<View style={styles.DMScreen}>
+		<SafeAreaView style={styles.DMScreen}>
 			<View style={styles.DMHeader}>
 				<Pressable style={styles.profileButtonDM} onPress={() => navigation.navigate('profile')} >
-					<IIcon name='person' size={36} color='black'/>
+					<IIcon name='person' size={scale(33)} color='black'/>
 				</Pressable>	
 
-				<MCIcon name='message-text-outline' size={40} color='white'/>
+				<MCIcon name='message-text-outline' size={scale(37)} color='white'/>
 				
 				<Pressable style={styles.dmBackButton} onPress={() => navigation.goBack()}>
-					<MIIcon name='arrow-forward-ios' size={32} color='white'/>
+					<MIIcon name='arrow-forward-ios' size={scale(30)} color='white'/>
 				</Pressable>
 			</View>
 
@@ -84,7 +85,10 @@ function DmDisplay({navigation}) {
 					{dms.map((dm)=>
 						<Pressable key={dm.id} onPress={() => {navigation.navigate('Dm')}}>
 							<View style={styles.newConnectionProfile}>
-								<View style={styles.newConnectionProfilePic}/>
+								<Pressable onPress={() => {navigation.navigate('OtherProfile')}}>
+									<View style={styles.newConnectionProfilePic}/>
+								</Pressable>
+									
 																
 								<Text style={styles.newConnectionUsername}>
 									{dm.username}
@@ -105,9 +109,12 @@ function DmDisplay({navigation}) {
 					{dms.map((dm) => 
 						<Pressable onPress={() => {navigation.navigate('Dm')}}>
 							<View style={styles.dm}>
-								<View style={styles.messagesProfilePic}>
+								<Pressable onPress={() => {navigation.navigate('OtherProfile')}}>
+									<View style={styles.messagesProfilePic}/>
+								</Pressable>
 									
-								</View>
+									
+								
 								<View style={styles.usernameAndLastMessageContainer}>
 									<Text style={styles.username}>
 										{dm.username}
@@ -124,7 +131,7 @@ function DmDisplay({navigation}) {
 				</ScrollView>	
 			</View>
 			
-		</View>
+		</SafeAreaView>
 	)
 }
 

@@ -9,6 +9,7 @@ import {GettingStartedContext} from '../App';
 import LinearGradient from 'react-native-linear-gradient';
 import MaskedView from '@react-native-community/masked-view';
 import PostModal from './postModal';
+import { ScrollView } from 'react-native-gesture-handler';
 
 
 const data = [{caption: 'john', key: 1}, {caption: 'non', key: 2}, {caption: 'egf', key: 3}, {caption: 'egf', key: 4}, {caption: 'egf', key: 5} ]
@@ -22,12 +23,11 @@ function OwnPosts({ownPost, setOwnPost}) {
             <View style={styles.ownPostModal}>
                 <FlatList
                 contentContainerStyle={{width: '100%'}}
-                horizontal
+                horizontal={true}
                 data={data} 
-
                 renderItem={({item, index}) => {
                     return(
-                        <View style={{backgroundColor: 'blue', width: '100%'}}>
+                        <View style={{backgroundColor: 'grey', width: '100%'}}>
                             <IIcon name="ios-close-outline" size={32} color='white'
                             onPress={() => {setOwnPost(false)}}
                             />
@@ -38,12 +38,8 @@ function OwnPosts({ownPost, setOwnPost}) {
                         </View>
                     );
                 }}
-                
-                >
-                    
+                >  
                 </FlatList>
-                    
-
             </View>
         </Modal>
     );
@@ -70,4 +66,23 @@ export default OwnPosts;
                             </View>
                         <View style={styles.postModalBottomBorder}/>   
                     </View>
+
+                    
+
+                
+
+                
+                <ScrollView >
+                    {data.map((datas) => {
+                        <View style={{backgroundColor: 'grey', width: '100%'}}>
+                            <IIcon name="ios-close-outline" size={32} color='white'
+                            onPress={() => {setOwnPost(false)}}
+                            />
+                            <Text>
+                                {datas.caption}
+                            </Text>
+
+                        </View>
+                    })}
+                </ScrollView>
 */

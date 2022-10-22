@@ -1,9 +1,12 @@
 import { StyleSheet, Dimensions } from 'react-native';
+import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
+import { ScaledSheet } from 'react-native-size-matters';
 
-const screenWidth = Dimensions.get("screen").width
-const screenHeight = Dimensions.get("screen").height
 
-const styles = StyleSheet.create({
+const screenWidth = Dimensions.get("window").width
+const screenHeight = Dimensions.get("window").height
+
+const styles = ScaledSheet.create({
 	fullScreen: {
 		height: screenHeight,
 		width: screenWidth,
@@ -17,12 +20,14 @@ const styles = StyleSheet.create({
 	},
 	messageIconContainer: {
 		position: 'absolute',
-		marginTop: screenHeight * 0.83,
+		marginTop: screenHeight * 0.88,
 		marginLeft: screenWidth * 0.05
 	},
 	messageButton: {
-		width: screenWidth * 0.13,
-		height: screenHeight * 0.06,
+		width: '50@s',
+		height: '50@s',
+		//width: '60@s',
+		//height: '60@s',
 		justifyContent: 'center',
 		alignItems: 'center',
 		borderRadius: 100,
@@ -54,8 +59,8 @@ const styles = StyleSheet.create({
 		width: screenWidth
 	}, 
 	profileButtonDM: {
-		width: screenWidth * 0.13,
-		height: screenHeight * 0.06,
+		width: '45@s',
+		height: '45@s',
 		marginLeft: '5%',
 		justifyContent: 'center',
 		alignItems: 'center',
@@ -85,7 +90,7 @@ const styles = StyleSheet.create({
 		marginLeft: '3%', 
 		fontStyle: 'italic', 
 		fontWeight: '700',
-		fontSize: 16
+		fontSize: RFValue(16)
 	},
 	newConnectionProfile: {
 		marginTop: screenHeight * 0.01,
@@ -98,23 +103,25 @@ const styles = StyleSheet.create({
 		alignItems: 'center'
 	},
 	newConnectionProfilePic: {
-		width: screenWidth * 0.175,
-		height: screenHeight * 0.08,
+		width: '60@s',
+		height: '60@s',
 		borderRadius: 100,
 		backgroundColor: '#F2F2F2',
 		marginTop: screenHeight * 0.015
 	},
 	newConnectionUsername: {
-		color: 'white'
+		color: 'white',
+		fontSize: RFValue(12)
 	},
 	messagesText: {
 		color: 'white', 
 		marginTop: screenHeight * 0.01, 
 		paddingBottom: screenHeight * 0.005,
-		marginRight: screenWidth * 0.7,
+		alignSelf: 'flex-start',
+		marginLeft: '5.5%',
 		fontStyle: 'italic', 
 		fontWeight: '700',
-		fontSize: 16,
+		fontSize: RFValue(16)
 	},
 	allDmsContainer: {
 		flex: 1, 
@@ -131,8 +138,8 @@ const styles = StyleSheet.create({
 	},
 	messagesProfilePic: {
 		marginLeft: screenHeight * 0.005,
-		width: screenWidth * 0.175,
-		height: screenHeight * 0.08,
+		width: '60@s',
+		height: '60@s',
 		borderRadius: 100,
 		backgroundColor: '#F2F2F2',
 	},
@@ -141,12 +148,12 @@ const styles = StyleSheet.create({
 	},
 	username: {
 		fontWeight: '600',
-		fontSize: 14,
+		fontSize: RFValue(12),
 		color: 'white',
 		fontStyle: 'italic'
 	},
 	lastMessage: {
-		fontSize: 11,
+		fontSize: RFValue(9.5),
 		color: 'white',
 		
 	},
@@ -190,6 +197,10 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		position: 'absolute',
 	},
+	notifCountText: {
+		fontSize: RFValue(9), 
+		color: 'black'
+	},
 	mapPinContaner: {
 		position: 'absolute',
 		bottom: '5%',
@@ -215,10 +226,10 @@ const styles = StyleSheet.create({
 		marginRight: '5%'
 	},
 	locationModal: {
-		backgroundColor: 'black',
-		height: screenHeight * 0.15,
+		backgroundColor: '#96B9FE',
+		
 		width: screenWidth * 0.96,
-		marginLeft: screenWidth * 0.02,
+		alignSelf: 'center',
 		marginTop: screenHeight * 0.63,
 		borderRadius: 20,
 		shadowColor: "#000",
@@ -244,7 +255,7 @@ const styles = StyleSheet.create({
 		
 	},
 	locationModalClose: {
-		color: 'white',
+		color: 'black',
 		alignSelf: 'flex-start'
 	},
 	checkInButton: {
@@ -264,15 +275,27 @@ const styles = StyleSheet.create({
 		shadowRadius: 6.27,
 		elevation: 10,
 		
+		
 	},
 	checkInText: {
 		color: 'white',
+		fontSize: RFValue(12)
+	},
+	checkedInText: {
+		color: 'black',
+		fontSize: RFValue(12)
 	},
 	locationNameModal: {
-		color: 'white',
-		fontSize: 20,
+		color: 'black',
+		fontSize: RFValue(17.5),
 		fontWeight: '500',
 	}, 
+	locationModalActive: {
+		color: 'black', 
+		marginBottom: '3%', 
+		fontWeight: '600',
+		fontSize: RFValue(12)
+	},
 	notificationContainerMB: {
 		alignItems: 'flex-end',
 		marginRight: '2%'
@@ -433,7 +456,7 @@ const styles = StyleSheet.create({
 	notifFullScreen: {
 		height: screenHeight,
 		width: screenWidth,
-		backgroundColor: '#6398FF'
+		backgroundColor: '#96B9FE'
 	},
 	notifHeader: {
 		flexDirection: 'row',
@@ -463,18 +486,18 @@ const styles = StyleSheet.create({
 		marginLeft: '10%', 
 		marginTop: '2%',
 		marginBottom: '2%',
-		fontSize: 16,
+		fontSize: RFValue(13.5),
 		width: '50%',
 		color: 'white',
 	},
 	notifTime: {
 		marginRight: '10%', 
-		fontSize: 16,
+		fontSize: RFValue(11),
 		color: 'white'
 	},
 	notifProfile: {
-		width: screenWidth * 0.13,
-		height: screenHeight * 0.06,
+		width: '45@s',
+		height: '45@s',
 		borderRadius: 100,
 		backgroundColor: 'grey',
 		flexDirection: 'row',
@@ -513,7 +536,7 @@ const styles = StyleSheet.create({
 	captionDone: {
 		
 		marginRight: '3%',
-		fontSize: 18,
+		fontSize: RFValue(16),
 		fontWeight: '600',
 		color: 'black'
 	},
@@ -522,7 +545,8 @@ const styles = StyleSheet.create({
 		bottom: 0,
 		alignSelf: 'flex-end',
 		marginRight: '5%',
-		marginBottom: '2%'
+		marginBottom: '2%',
+		fontSize: RFValue(12)
 	},
 	profileScreen: {
 		height: screenHeight,
@@ -531,19 +555,24 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		backgroundColor: 'black'
 	},
-	profilePageHeader: {
-		height: screenHeight * 0.08,
+	profilePageFooter: {
+		flex: 1,
 		width: screenWidth,
-		flexDirection: 'row',
-		justifyContent: 'center',
+		flexDirection: 'column',
 		
-		flexWrap: 'wrap',
-		backgroundColor: 'pink'
+		justifyContent: 'space-between'
 	},
 	profileBackButton: {
-		alignSelf: 'flex-end',
-		marginTop: screenHeight * 0.05,
-		marginRight: screenWidth * 0.05
+		transform: [{rotateY: '180deg'}],
+		position: 'absolute',
+		left: '5%',
+		bottom: screenHeight * 0.05
+		//marginTop: screenHeight * 0.05,
+		//marginRight: screenWidth * 0.05
+	},
+	logOutText: {
+		color: 'red', 
+		fontSize: RFValue(12)
 	},
 	profilePageProfile: {
 		height: screenHeight * 0.55,
@@ -558,11 +587,18 @@ const styles = StyleSheet.create({
 		marginLeft: '80%',
 		marginBottom: '5%'
 	},
-
+	profilePageName: {
+		marginLeft: '5%',
+		marginTop: '2%',
+		fontSize: RFValue(26),
+		color: 'white',
+		fontWeight: 'bold',
+		fontStyle: 'italic'
+	},
 	profilePageUsername: {
 		marginLeft: '5%',
 		marginTop: '2%',
-		fontSize: 30,
+		fontSize: RFValue(17),
 		color: 'white',
 		fontWeight: 'bold',
 		fontStyle: 'italic'
@@ -571,13 +607,19 @@ const styles = StyleSheet.create({
 		marginTop: '2%',
 		marginRight: screenWidth * 0.05
 	},
-	profilePageUsernameAndSettingsContainer: {
+	socialyseCounter: {
+		fontSize: RFValue(17.5), 
+		color: '#BAD0FB', 
+		fontWeight: '700', 
+		fontStyle: 'italic'
+	},
+	profilePageUsernameAndNameContainer: {
 		marginTop: screenHeight * 0.03,
 		width: screenWidth,
-		flexDirection: 'row',
-		justifyContent: 'space-between',
+		flexDirection: 'column',
 		borderTopColor: '#545454',
-		borderTopWidth: 1 
+		borderTopWidth: 1,
+		
 	},
 	activeNowProfilePlaceHolder: {
 		height: screenHeight * 0.25,
@@ -653,49 +695,75 @@ const styles = StyleSheet.create({
 	MBBackground: {
 		flex: 1,
 		width: screenWidth,
-		backgroundColor: '#6398FF',
+		backgroundColor: '#96B9FE',
 		alignItems: 'center',
 	},
 	takeAPhotoBackButton: {
 		transform: [{rotateY: '180deg'}],
 		position: 'absolute',
 		alignSelf: 'flex-start',
-		marginTop: screenHeight * 0.8,
+		marginTop: screenHeight * 0.85,
 		marginLeft: screenWidth * 0.07
 		 
 	},
 	takeAPhotoText: {
 		fontWeight: '900',
-		fontSize: 30,
+		fontSize: RFValue(28),
 		color: 'white',
 		fontStyle: 'italic',
-		marginTop: screenHeight * 0.02 
+		marginTop: screenHeight * 0.05, 
+		textAlign: 'center'
 	},
-	socialTextYellow: {
-		fontSize: 30,
+	socialTextWhite20: {
+		fontSize: 20,
 		fontStyle: 'italic',
-		color: '#FAFF00',
+		color: 'white',
 		fontWeight: '900',
 		zIndex: 1,
 		position: 'absolute'
 	},
-	socialTextGradient: {
+	socialTextPurple20: {
+		fontSize: 20,
+		fontStyle: 'italic',
+		fontWeight: '900',
+		marginRight: 5,
+		color: '#AD00FF'
+	},
+	socialTextWhite30: {
+		fontSize: RFValue(28),
+		fontStyle: 'italic',
+		color: 'white',
+		fontWeight: '900',
+	},
+	timeRemaining: {
+		fontSize: RFValue(10), 
+		color: 'white', 
+		position: 'absolute', 
+		bottom: '0%'
+	},
+	postCaption: {
+		fontSize: RFValue(10.5), 
+		marginHorizontal: '2%'
+	},
+	postModalCaption: {
+		color: 'white', 
+		alignSelf: 'flex-start', 
+		fontSize: RFValue(12.5), 
+		marginLeft: '5%', 
+		flexWrap: 'wrap'
+	},
+	socialTextPurple30: {
 		fontSize: 30,
 		fontStyle: 'italic',
 		fontWeight: '900',
 		marginRight: 5,
-		
+		color: '#AD00FF'
 	},
-	yseTextWhite: {
-		fontSize: 30,
-		fontStyle: 'italic',
-		fontWeight: '900',
-		color: 'white',
-	},
+	
 	happySocialysingLoadingScreen: {
 		height: screenHeight * 0.99,
 		width: screenWidth,
-		backgroundColor: '#6398FF',
+		backgroundColor: '#96B9FE',
 		
 		justifyContent: 'center',
 		alignItems: 'center'
@@ -710,7 +778,7 @@ const styles = StyleSheet.create({
 		
 	},
 	yourPostTextBlack: {
-		fontSize: 30,
+		fontSize: RFValue(28),
 		textAlign: 'center',
 		fontStyle: 'italic',
 		color: 'black',
@@ -718,47 +786,69 @@ const styles = StyleSheet.create({
 		marginRight: 4
 	},
 	yourPostTextWhite: {
-		fontSize: 30,
+		fontSize: RFValue(28),
 		textAlign: 'center',
 		fontStyle: 'italic',
 		color: 'white',
 		fontWeight: '700',
-		position: 'absolute',
-		zIndex: 1,
 	},
 	cameraContaner: {
-		marginTop: screenHeight * 0.02,
+		marginTop: screenHeight * 0.05,
 		overflow: 'hidden',
 		borderRadius: 15
 	},
 	camera: {
+		height: screenHeight * 0.55, 
+		width: screenWidth * 0.9, 
+	},
+	cameraContainerMakePost: {
+		marginTop: screenHeight * 0.02,
+		overflow: 'hidden',
+		borderRadius: 15
+	},
+	cameraMakePost: {
 		height: screenHeight * 0.5, 
 		width: screenWidth * 0.9, 
 	},
 	reverseCameraButton: {
 		position: 'absolute',
 		alignSelf: 'flex-end',
-		marginTop: '97%',
-		marginRight: '3%'
+		bottom: '3%',
+		right: '3%'
+	},
+	reverseCameraButtonForDP: {
+		position: 'absolute',
+		alignSelf: 'flex-end',
+		bottom: '3%',
+		right: '3%'
 	},
 	takePhotoButton: {
 		backgroundColor: 'black',
-		width: screenWidth * 0.175,
-		height: screenHeight * 0.08,
+		width: '60@s',
+		height: '60@s',
 		borderRadius: 100,
 		flexDirection: 'row',
 		justifyContent: 'center',
 		alignItems: 'center',
-		marginTop: screenHeight * 0.03,
+		marginTop: screenHeight * 0.05,
 		borderColor: 'white',
 		borderWidth: 2.5
 	},
 	justTakenPhotoContainer: {
 		overflow:'hidden',
 		borderRadius: 15,
-		marginTop: screenHeight * 0.02,
+		marginTop: screenHeight * 0.05,
 	},
 	justTakenPhoto: {
+		height: screenHeight * 0.55, 
+		width: screenWidth * 0.9, 
+	},
+	justTakenPhotoContainerMakePost: {
+		overflow:'hidden',
+		borderRadius: 15,
+		marginTop: screenHeight * 0.02,
+	},
+	justTakenPhotoMakePost: {
 		height: screenHeight * 0.5, 
 		width: screenWidth * 0.9, 
 	},
@@ -769,15 +859,15 @@ const styles = StyleSheet.create({
 	},
 	addACaptionPlaceHolder: {
 		fontStyle: 'italic',
-		fontSize: 20,
+		fontSize: RFValue(18),
 		paddingTop: 0,
 		paddingBottom: 0,
 		color: 'white'
 	},
 	sendPhotoButton: {
 		backgroundColor: 'black',
-		width: screenWidth * 0.175,
-		height: screenHeight * 0.08,
+		width: '60@s',
+		height: '60@s',
 		borderRadius: 100,
 		flexDirection: 'row',
 		justifyContent: 'center',
@@ -794,7 +884,7 @@ const styles = StyleSheet.create({
 		backgroundColor: 'white',
 		borderRadius: 20,
 		alignSelf: 'center',
-		marginTop: screenHeight * 0.13,
+		marginTop: screenHeight * 0.15,
 		
 	},
 	captionModalPlaceholder: {
@@ -869,16 +959,16 @@ const styles = StyleSheet.create({
 		
 	},
 	messagesHeader: {
-		flex: 1,
+		height: screenHeight * 0.07,
 		width: screenWidth,
 		backgroundColor: 'black',
 		justifyContent: 'center',
 		borderBottomColor: 'white',
-		borderBottomWidth: 1
+		borderBottomWidth: 1,
 	},
 	messagesHeaderUsername: {
 		color: 'white',
-		fontSize: 20,
+		fontSize: RFValue(17.5),
 		fontWeight: '900',
 		marginLeft: '2%'
 	},
@@ -894,12 +984,21 @@ const styles = StyleSheet.create({
 		alignItems: 'center'
 	},
 	messagesBody: {
-		flex: 12,
+		flex: 1,
 		width: screenWidth,
-		backgroundColor: 'black'
+		backgroundColor: 'black',
+		paddingTop: screenHeight * 0.02,
+		paddingBottom: screenHeight * 0.01
 	},
 	messagesFooter: {
-		flex: 1
+		height: screenHeight * 0.07,
+		backgroundColor: 'black',
+		width: screenWidth,
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'space-evenly',
+		borderTopColor: '#B0B0B0',
+		borderTopWidth: 0.5
 	},
 	postContainer: {
 		height: screenHeight * 0.3,
@@ -926,7 +1025,7 @@ const styles = StyleSheet.create({
 	postModal: {
 		height: screenHeight * 0.55,
 		width: screenWidth * 0.9,
-		backgroundColor: 'black',
+		
 		alignSelf: 'center',
 		marginTop: screenHeight * 0.15,
 		justifyContent: 'space-between',
@@ -943,7 +1042,7 @@ const styles = StyleSheet.create({
 	signUpScreen: {
 		height: screenHeight,
 		width: screenWidth,
-		backgroundColor: '#6398FF',
+		backgroundColor: '#96B9FE',
 		alignItems: 'center'
 	},
 	signUpScreenSocialyse: {
@@ -967,7 +1066,7 @@ const styles = StyleSheet.create({
 	signUpSocialTextYellow: {
 		fontSize: 50,
 		fontStyle: 'italic',
-		color: '#FAFF00',
+		color: 'white',
 		fontWeight: '900',
 		zIndex: 1,
 		position: 'absolute'
@@ -977,6 +1076,21 @@ const styles = StyleSheet.create({
 		fontStyle: 'italic',
 		fontWeight: '900',
 		marginRight: 8,
+		color: '#AD00FF'
+	},
+	signUpLogInSocialTextYellow: {
+		fontSize: 14,
+		fontStyle: 'italic',
+		color: '#FAFF00',
+		fontWeight: '900',
+		zIndex: 1,
+		position: 'absolute'
+	},
+	signUpLogInSocialTextGradient: {
+		fontSize: 14,
+		fontStyle: 'italic',
+		fontWeight: '900',
+		marginRight: 3
 	},
 	signUpInfo: {
 		textAlign: 'center',
@@ -1043,11 +1157,12 @@ const styles = StyleSheet.create({
 	settingsLogout: {
 		backgroundColor: '#464646',
 		height: screenHeight * 0.05,
-		width: screenWidth * 0.85,
+		width: screenWidth * 0.3,
 		borderRadius: 10,
-		marginTop: screenHeight * 0.1,
 		justifyContent: 'center',
-		alignItems: 'center'
+		alignItems: 'center',
+		position: 'absolute',
+		bottom: screenHeight * 0.04
 	},
 	settingsProfile: {
 		backgroundColor: '#464646',
@@ -1056,6 +1171,150 @@ const styles = StyleSheet.create({
 		borderRadius: 10,
 		marginTop: screenHeight * 0.03
 	},
+	messageInput: {
+		borderWidth: 1,
+		borderColor: '#CACACA',
+		width: screenWidth * 0.8,
+		height: '70%',
+		backgroundColor: '#FFFFFF',
+		borderRadius: 100,
+		padding: 10
+	},
+	messageLeftContainer: {
+		backgroundColor: '#BAD0FB', 
+		alignSelf: 'flex-start', 
+		borderRadius: 100, 
+		paddingHorizontal: '3%', 
+		paddingVertical: '0.3%', 
+		marginLeft: '1%', 
+		marginTop: '1%',
+		maxWidth: '80%'
+	},
+	messageRightContainer: {
+		backgroundColor: '#BAD0FB', 
+		alignSelf: 'flex-end', 
+		borderRadius: 100, 
+		paddingHorizontal: '4%', 
+		paddingVertical: '0.5%', 
+		marginRight: '1%', 
+		marginTop: '1%',
+		maxWidth: '80%'
+	},
+	messageText: {
+		fontSize: RFValue(12),
+		color: 'black'
+	},
+	messageTime: {
+		fontSize: RFValue(10), 
+		alignSelf: 'flex-end'
+	},
+	otherProfileBackButton: {
+		transform: [{rotateY: '180deg'}],
+		alignSelf: 'flex-start',
+		marginLeft: '5%',
+		marginTop: '25%'
+	},
+	dpEditModalFullScreen: {
+		height: screenHeight,
+		width: screenWidth * 0.9,
+		backgroundColor: 'rgba(0, 0, 0, 0.5)',
+		alignSelf: 'center',
+		
+		borderTopRightRadius: 20,
+		borderTopLeftRadius: 20,
+	},
+	postModalFullScreen: {
+		height: screenHeight,
+		width: screenWidth,
+		backgroundColor: 'rgba(0, 0, 0, 0.5)',
+		alignSelf: 'center',
+	},
+	dpEditModal: {
+		height: screenHeight * 0.3,
+		width: screenWidth * 0.9,
+		backgroundColor: 'black',
+		alignSelf: 'center',
+		marginTop: screenHeight * 0.67,
+		borderTopRightRadius: 20,
+		borderTopLeftRadius: 20,
+	},
+	removePhoto: {
+		alignItems: 'center',
+		borderTopRightRadius: 20,
+		backgroundColor: '#464646',
+		borderTopLeftRadius: 20,
+		height: '50@s',
+		width: '100%',
+		justifyContent: 'center',
+		borderBottomColor: 'grey',
+		borderBottomWidth: 1
+	},
+	takePhotoForDP: {
+		alignItems: 'center',
+		backgroundColor: '#464646',
+		height: '50@s',
+		justifyContent: 'center',
+		borderBottomColor: 'grey',
+		borderBottomWidth: 1
+	},
+	chooseFromLibrary: {
+		alignItems: 'center',
+		backgroundColor: '#464646',
+		height: '50@s',
+		justifyContent: 'center',
+		borderBottomLeftRadius: 20,
+		borderBottomRightRadius: 20
+	},
+	cancelDPModal: {
+		alignItems: 'center',
+		backgroundColor: '#464646',
+		marginTop: '5%',
+		justifyContent: 'center',
+		height: '50@s',
+		width: '100%',
+		borderRadius: 20,
+		
+	},
+	editDPText: {
+		color: 'white', 
+		fontSize: RFValue(14)
+	},
+	takePhotoforDPBackground: {
+		flex: 1,
+		width: screenWidth,
+		backgroundColor: 'black',
+		alignItems: 'center',
+	},
+	chooseFromCameraRollHeader: {
+		
+		flex: 1,
+		width: screenWidth,
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center'
+	},
+	CFCRPhoto: {
+		flex: 9,
+		backgroundColor: 'green'
+	},
+	CFCRMorePhotos: {
+		flex: 6,
+		backgroundColor: 'red'
+	},
+	CFCRBackButton: {
+		transform: [{rotateY: '180deg'}],
+		marginLeft: '3%'
+	},
+	notificationText: {
+		color: 'black', 
+		fontSize: RFValue(17.5)
+	},
+	done: {
+		color: 'black', 
+		fontWeight: '700', 
+		fontSize: RFValue(14)
+	}
+	
 
 
 	

@@ -1,74 +1,65 @@
-import React, { useEffect, useState } from 'react';
-import { View,  Text, Pressable,  } from 'react-native';
+import React, { useEffect, useState, useContext } from 'react';
+import { View,  Text, Pressable, SafeAreaView  } from 'react-native';
 import styles from './styles';
+import DPModal from './DPModal';
 import IIcon from 'react-native-vector-icons/Ionicons'
 import MIIcon from 'react-native-vector-icons/MaterialIcons';
 import FIcon from 'react-native-vector-icons/Feather';
+import { GettingStartedContext } from '../App'
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 import LinearGradient from 'react-native-linear-gradient';
 import MaskedView from '@react-native-community/masked-view';
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 
-const GradientText = (props) => {
-	return (
-	  <MaskedView maskElement={<Text {...props} />}>
-		<LinearGradient
-		  colors={["#AD00FF", "#00FFA3"]}
-		  start={{ x: 0, y: 0.35 }}
-		  end={{ x: 0, y: 0.7 }}
-		>
-		  <Text {...props} style={[props.style, { opacity: 0.3 }]} />
-		</LinearGradient>
-	  </MaskedView>
-	);
-  };
 
 function OwnProfile ({navigation}) {
 
+	const [DPModalDisplay, setDPModalDisplay] = useState(false);
+	const { editProfileModal, setEditProfileModal } = useContext(GettingStartedContext);
+
 	return (
-	<View style={styles.profileScreen}>
+	<SafeAreaView style={styles.profileScreen}>
 		<View style={styles.profilePageProfile}>
 			<Pressable onPress={() => {navigation.navigate('SignUp')}}>
 				<Text>
 					go to signup
 				</Text>
 			</Pressable>
-			<Pressable style={styles.profilePicEdit}>
-				<FIcon name="edit" size={32} color='white'/>
+			<Pressable style={styles.profilePicEdit} onPress={() => {setEditProfileModal(true)}}>
+				<FIcon name="edit" size={scale(32)} color='white'/>
 			</Pressable>
 		</View>   
 		
-		<View style={styles.profilePageUsernameAndSettingsContainer}>
+		<View style={styles.profilePageUsernameAndNameContainer}>
+			<Text style={styles.profilePageName}>
+				Dababy
+			</Text>
 			<Text style={styles.profilePageUsername}>
 				dababy_leshgo
 			</Text>
-
-			<Pressable style={styles.profilePageSettings} onPress={() => {navigation.navigate('Settings')}}>
-				<IIcon name="ios-settings-outline" size={35} color="white"/>
-			</Pressable>
 		</View>
 
-		<View style={styles.profilePageHeader}>
-			<Text style={{color: 'white', flexDirection: 'row', fontSize: 20, }}>
-				You've {'\u00A0'}							
-				<View style={{alignItems: 'center'}}>
-					<Text style={styles.socialTextYellow}>
-						SOCIALYSED
+		<View style={styles.profilePageFooter}>
+			<View style={{flexDirection: 'row', marginTop: '10%', justifyContent: 'center'}}>
+				<Text style={styles.socialyseCounter}>
+					SOCIALYSED: 10 
+				</Text>
+				<IIcon style={{marginLeft: '1%'}} name="md-people" color='white' size={25}/>
+			</View>
+			<View style={{flexDirection: 'row', alignSelf: 'flex-end', justifyContent: 'center', width: '100%', marginBottom: '3%' }}>
+				<Pressable style={styles.profileBackButton} onPress={() => {navigation.navigate('Dms'); setEditProfileModal(false)}}>
+					<MIIcon name='arrow-forward-ios' size={scale(30)} color='white'/>
+				</Pressable>
+				<View style={styles.settingsLogout}>
+					<Text style={styles.logOutText}>
+						Log Out
 					</Text>
-					<GradientText style={styles.socialTextGradient}>
-						SOCIALYSED
-					</GradientText>
-				</View>				
-				{'\u00A0'} with {'\n'}
-			</Text>
-				
-			
+				</View>	
+			</View>
 		</View>
-		
-		<Pressable style={styles.profileBackButton} onPress={() => navigation.navigate('Dms')}>
-					<MIIcon name='arrow-forward-ios' size={32} color='white'/>
-		</Pressable>
-		
-	</View>
+
+		<DPModal/>
+	</SafeAreaView>
 
 	)	
 }

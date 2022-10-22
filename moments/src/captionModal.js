@@ -6,6 +6,7 @@ import MIIcon from 'react-native-vector-icons/MaterialIcons';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ADIcon from 'react-native-vector-icons/AntDesign'
 import { TextInput } from 'react-native-gesture-handler';
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 
 
 function CaptionModal({captionModal, setCaptionModal, setCaption, setAddedCaption}) {
@@ -15,7 +16,7 @@ function CaptionModal({captionModal, setCaptionModal, setCaption, setAddedCaptio
         <Modal visible={captionModal} transparent={true} >
             <View style={styles.captionModal}>
                 <View style={styles.captionModalHeader}>
-                    <IIcon style={{marginLeft: '2%', marginTop: '2%' }} name="ios-close-outline" size={35} color='black'
+                    <IIcon style={{marginLeft: '2%', marginTop: '2%' }} name="ios-close-outline" size={scale(32)} color='black'
                     onPress={() => {setCaptionModal(false);}}/>
                     <Pressable onPress={() => {setCaptionModal(false); setCaption(input); setAddedCaption(true)}}>
                         <Text style={styles.captionDone}>

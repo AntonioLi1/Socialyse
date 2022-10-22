@@ -1,11 +1,12 @@
 import React, {useContext}from 'react';
-import { View, Text, Pressable, ScrollView } from 'react-native';
+import { View, Text, Pressable, ScrollView, SafeAreaView } from 'react-native';
 //import IIcon from 'react-native-vector-icons/Ionicons'
 import MIIcon from 'react-native-vector-icons/MaterialIcons';
 //import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 //import ADIcon from 'react-native-vector-icons/AntDesign'
 import styles from './styles';
 import {GettingStartedContext} from '../App'
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 
 const notifs = [
 	{
@@ -26,13 +27,13 @@ function NotificationDisplay({navigation}) {
 	const {messageDisplay, setMessageDisplay, notifDisplay, setNotifDisplay} = useContext(GettingStartedContext);
 
 	return (
-		<View style={styles.notifFullScreen}>   
+		<SafeAreaView style={styles.notifFullScreen}>   
 			<View style={styles.notifHeader}>
 				<View style={styles.notifInnerHeaderContainer}>
 					<Pressable style={styles.notifBackButton} onPress={() => {setMessageDisplay(true); navigation.goBack(); setNotifDisplay(true) }}>
-						<MIIcon name='arrow-forward-ios' size={28} color='#6398FF'/>
+						<MIIcon name='arrow-forward-ios' size={scale(26)} color='black'/>
 					</Pressable>
-					<Text style={{color: '#6398FF', fontSize: 20}}>
+					<Text style={styles.notificationText}>
 						Notifications
 					</Text>
 				</View>
@@ -49,15 +50,15 @@ function NotificationDisplay({navigation}) {
 									<Text style={{fontWeight: 'bold'}}>{notif.notifFrom} </Text>
 									{notif.notifMessage}
 								</Text>
-							<View style={styles.notifProfile}/>
-							<Text style={styles.notifTime}>
-							{notif.sentAgo}
-							</Text> 
+								<View style={styles.notifProfile}/>
+								<Text style={styles.notifTime}>
+								{notif.sentAgo}
+								</Text> 
 							</View>)							
 					})}
 				</ScrollView>
 			</View>	
-		</View>
+		</SafeAreaView>
 	)
 }
 

@@ -12,7 +12,7 @@ function Settings ({navigation}) {
     return (
         <View style={styles.settingsScreen}>
             <View style={styles.settingsHeader}>
-                <Text style={{color: 'white', fontWeight: '700', fontSize: 16}}>
+                <Text style={{color: 'white', fontWeight: '700', fontSize: 20}}>
                     Settings
                 </Text>
                 <Pressable style={styles.settingsBackButton} onPress={() => navigation.navigate('profile')}>

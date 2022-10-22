@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Pressable, TextInput } from 'react-native';
+import { View, Text, Pressable, TextInput, SafeAreaView } from 'react-native';
 import styles from './styles';
 import ActiveNowModal from './captionModal';
 import IIcon from 'react-native-vector-icons/Ionicons'
@@ -9,7 +9,7 @@ import ADIcon from 'react-native-vector-icons/AntDesign'
 import LinearGradient from 'react-native-linear-gradient';
 import MaskedView from '@react-native-community/masked-view';
 
-const GradientText = (props) => {
+/*const GradientText = (props) => {
 	return (
 	  <MaskedView maskElement={<Text {...props} />}>
 		<LinearGradient
@@ -21,7 +21,7 @@ const GradientText = (props) => {
 		</LinearGradient>
 	  </MaskedView>
 	);
-};
+};*/
 
 
 function SignUp ({navigation}) {
@@ -39,14 +39,14 @@ function SignUp ({navigation}) {
 	}, [email, name, username, password])
     
     return (
-        <View style={styles.signUpScreen}>
+        <SafeAreaView style={styles.signUpScreen}>
             <View style={styles.signUpScreenSocialyse}>
                 <Text style={styles.signUpSocialTextYellow}>
                     SOCIALYSE
                 </Text>
-                <GradientText style={styles.signUpSocialTextGradient}>
+                <Text style={styles.signUpSocialTextGradient}>
                     SOCIALYSE
-                </GradientText>
+                </Text>
             </View>
             <View style={styles.signUpInfoContainer}>
                 <Text style={styles.signUpInfo}>
@@ -89,7 +89,9 @@ function SignUp ({navigation}) {
             </View>
             
             
-            <Pressable style={[{ backgroundColor: signUpBlur ? '#DCDCDC' : 'white'}, styles.signUpButton]} onPress={() => {navigation.navigate('Map')}}>
+            <Pressable style={[{ backgroundColor: signUpBlur ? '#DCDCDC' : 'white'}, styles.signUpButton]} 
+            disabled={signUpBlur}
+            onPress={() => {navigation.navigate('UploadDP')}}>
                 <Text style={{fontSize: 16, fontWeight: '700', color: signUpBlur ? '#999999' : 'black'}}>
                     Sign Up
                 </Text>
@@ -97,7 +99,7 @@ function SignUp ({navigation}) {
            
             
             
-        </View>
+        </SafeAreaView>
     )
 }
 
