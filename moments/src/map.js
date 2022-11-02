@@ -64,7 +64,7 @@ function MapDisplay({ navigation }) {
 					longitudeDelta: 0.007,
 				}}
 				showsUserLocation={true}>
-				<Marker coordinate={{ latitude: 37.4221, longitude: -122.0841 }}
+				<Marker coordinate={{ latitude: latitude, longitude: longitude }}
 					onPress={() => { setModalDisplay(true); setMessageDisplay(false); setNotifDisplay(false); }} />
 			</MapView>
 
