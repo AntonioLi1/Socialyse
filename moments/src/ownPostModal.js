@@ -21,25 +21,27 @@ function OwnPosts({ownPost, setOwnPost}) {
     return (
         <Modal visible={ownPost} transparent={true}>
             <View style={styles.ownPostModal}>
-                <FlatList
-                contentContainerStyle={{width: '100%'}}
-                horizontal={true}
-                data={data} 
-                renderItem={({item, index}) => {
-                    return(
-                        <View style={{backgroundColor: 'grey', width: '100%'}}>
-                            <IIcon name="ios-close-outline" size={32} color='white'
-                            onPress={() => {setOwnPost(false)}}
-                            />
-                            <Text>
-                                {item.caption}
-                            </Text>
+                <View style={styles.ownPostModalPost}>
+                    <FlatList
+                    
+                    horizontal={true}
+                    data={data} 
+                    renderItem={({item, index}) => {
+                        return(
+                            <View style={{backgroundColor: 'grey', width: 100, height: 200}}>
+                                <IIcon name="ios-close-outline" size={32} color='white'
+                                onPress={() => {setOwnPost(false)}}
+                                />
+                                <Text>
+                                    {item.caption}
+                                </Text>
 
-                        </View>
-                    );
-                }}
-                >  
-                </FlatList>
+                            </View>
+                        );
+                    }}
+                    >  
+                    </FlatList>
+                </View>
             </View>
         </Modal>
     );
@@ -85,4 +87,24 @@ export default OwnPosts;
                         </View>
                     })}
                 </ScrollView>
+
+                <FlatList
+                contentContainerStyle={{width: '100%'}}
+                horizontal={true}
+                data={data} 
+                renderItem={({item, index}) => {
+                    return(
+                        <View style={{backgroundColor: 'grey', width: '100%'}}>
+                            <IIcon name="ios-close-outline" size={32} color='white'
+                            onPress={() => {setOwnPost(false)}}
+                            />
+                            <Text>
+                                {item.caption}
+                            </Text>
+
+                        </View>
+                    );
+                }}
+                >  
+                </FlatList>
 */

@@ -30,13 +30,20 @@ function OwnProfile ({navigation}) {
 			</Pressable>
 		</View>   
 		
-		<View style={styles.profilePageUsernameAndNameContainer}>
-			<Text style={styles.profilePageName}>
-				Dababy
-			</Text>
-			<Text style={styles.profilePageUsername}>
-				dababy_leshgo
-			</Text>
+		<View style={styles.profilePageUsernameNameSettingsContainer}>
+			<View style={styles.usernameAndNameContainer}>
+				<Text style={styles.profilePageName}>
+					Dababy
+				</Text>
+				<Text style={styles.profilePageUsername}>
+					dababy_leshgo
+				</Text>
+			</View>
+			<Pressable onPress={() => {navigation.navigate('Settings')}}>
+				<IIcon style={styles.settingsIcon} name='ios-settings-outline' color='white' size={scale(32)}/>
+			</Pressable>
+			
+				
 		</View>
 
 		<View style={styles.profilePageFooter}>
@@ -50,11 +57,7 @@ function OwnProfile ({navigation}) {
 				<Pressable style={styles.profileBackButton} onPress={() => {navigation.navigate('Dms'); setEditProfileModal(false)}}>
 					<MIIcon name='arrow-forward-ios' size={scale(30)} color='white'/>
 				</Pressable>
-				<View style={styles.settingsLogout}>
-					<Text style={styles.logOutText}>
-						Log Out
-					</Text>
-				</View>	
+				
 			</View>
 		</View>
 

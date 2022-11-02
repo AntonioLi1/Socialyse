@@ -65,7 +65,7 @@ function SignUp ({navigation}) {
                 OR
             </Text>
 
-            <View style={styles.signUpInputContainer}>
+            <View style={styles.signUpInputContainerSignUp}>
                 <TextInput
                 style={styles.inputs}
                 placeholder='Phone number'

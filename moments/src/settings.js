@@ -19,31 +19,26 @@ function Settings ({navigation}) {
                         <MIIcon name='arrow-forward-ios' size={32} color='white'/>
                 </Pressable>
             </View>
+            <Pressable onPress={() => {navigation.navigate('ChangePassword')}}>
+                <View style={styles.settingsProfile}>
+                    <Text style={styles.settingsText}>
+                    Change Password
+                    </Text>
+                </View>
+            </Pressable>
+            
             <View style={styles.settingsProfile}>
-                <Text>
-                    Send Feedback!
+                <Text style={styles.settingsText}>
+                    Delete Account
                 </Text>
             </View>
-            <View style={styles.settingsProfile}>
-                <Text>
-                    Contact Us!
-                </Text>
-            </View>
-            <View style={styles.settingsProfile}>
-                <Text>
-                    
-                </Text>
-            </View>
-            <View style={styles.settingsProfile}>
-                <Text>
-                    
-                </Text>
-            </View>
+            
             <View style={styles.settingsLogout}>
-                <Text style={{color: 'red', fontSize: 14 }}>
+                <Text style={styles.logOutText}>
                     Log Out
                 </Text>
-            </View>
+			</View>	
+            
             
         </View>
     )

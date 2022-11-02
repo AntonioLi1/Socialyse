@@ -136,13 +136,12 @@ function TakePhotoForDP ({navigation}) {
                     </View> 
                     <View style={{marginTop: '20%', alignItems: 'center'}}>
                         <Pressable onPress={() => {navigation.navigate('profile'); setEditProfileModal(false)}}>
-                            <View style={{backgroundColor: '#CFCFCF', paddingVertical: '1%', paddingHorizontal: '3%', borderRadius: 20}}>
+                            <View style={{backgroundColor: '#CFCFCF', paddingVertical: '3%', paddingHorizontal: '10%', borderRadius: 20}}>
                                 <Text style={styles.done}>
                                     Done
                                 </Text>
                             </View>          
-                        </Pressable>
-                                            
+                        </Pressable>              
                     </View>
                 </View>
                 

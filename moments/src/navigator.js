@@ -12,6 +12,9 @@ import Login from './login';
 import ViewOtherProfile from './otherProfile';
 import TakePhotoForDP from './takePhotoForDP';
 import ChooseFromCameraRoll from './chooseFromCameraRoll';
+import ForgotPassword from './forgotPassword';
+import Settings from './settings';
+import ChangePassword from './changePassword';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 
@@ -25,6 +28,8 @@ function Navigator() {
 				<Stack.Screen options={{headerShown: false}} name="OtherProfile" component={ViewOtherProfile}></Stack.Screen>
 				<Stack.Screen options={{headerShown: false}} name="Dm" component={Dm}></Stack.Screen>
 				<Stack.Screen options={{headerShown: false}} name="profile" component={OwnProfile}></Stack.Screen>
+				<Stack.Screen options={{headerShown: false}} name="Settings" component={Settings}></Stack.Screen>
+				<Stack.Screen options={{headerShown: false}} name="ChangePassword" component={ChangePassword}></Stack.Screen>
 				<Stack.Screen options={{headerShown: false}} name="notifications" component={NotificationDisplay}></Stack.Screen>
 				<Stack.Screen options={{headerShown: false}} name="MakeAPost" component={MakeAPost}></Stack.Screen>
 				<Stack.Screen options={{headerShown: false}} name="SocialyseLoading" component={HappySocialysing}></Stack.Screen>
@@ -33,6 +38,7 @@ function Navigator() {
 				<Stack.Screen options={{headerShown: false}} name="TakePhotoForDP" component={TakePhotoForDP}></Stack.Screen>
 				<Stack.Screen options={{headerShown: false}} name="ChooseFromCameraRoll" component={ChooseFromCameraRoll}></Stack.Screen>
 				<Stack.Screen options={{headerShown: false}} name="Login" component={Login}></Stack.Screen>
+				<Stack.Screen options={{headerShown: false}} name="ForgotPassword" component={ForgotPassword}></Stack.Screen>
 			</Stack.Navigator>
 		</NavigationContainer>
 	);

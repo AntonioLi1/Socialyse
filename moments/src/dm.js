@@ -7,6 +7,7 @@ import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FAIcon from 'react-native-vector-icons/FontAwesome';
 import { GettingStartedContext } from '../App'
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
+import { useDrawerStatus } from '@react-navigation/drawer';
 
 
 const data = [
@@ -105,7 +106,8 @@ const data = [
 function Dm ({navigation}) {
 
     const { messageDisplay, setMessageDisplay, notifDisplay, setNotifDisplay } = useContext(GettingStartedContext);
-    
+
+    console.log(data);
     return (
         <SafeAreaView style={styles.messagesScreen}>
             <View style={styles.messagesHeader}>
@@ -119,16 +121,16 @@ function Dm ({navigation}) {
 
             <View style={styles.messagesBody}>
                 <FlatList
-                data={data.reverse()}
+                data={data}
                 inverted={true}
-                
+                keyExtractor={item => item.key}
                 renderItem={({item, index}) => {
                     if (item.sentBy === 0) {
                         if (index > 0) {
                             if (data[index - 1].sentBy === 0) {
                                 return (
 
-                                    <View style={styles.messageLeftContainer}>
+                                    <View key={item.key} style={styles.messageLeftContainer}>
                                         <Text style={styles.messageText}>
                                             {item.message}
                                         </Text>
@@ -139,7 +141,7 @@ function Dm ({navigation}) {
                                 )
                             } else {
                                 return (
-                                    <View style={styles.messageLeftContainer}>
+                                    <View key={item.key} style={styles.messageLeftContainer}>
                                         <Text style={styles.messageText}>
                                             {item.message}
                                         </Text>
@@ -151,7 +153,7 @@ function Dm ({navigation}) {
                             }
                         } else if (index === 0) {
                             return (
-                                <View style={styles.messageLeftContainer}>
+                                <View key={item.key} style={styles.messageLeftContainer}>
                                     <Text style={styles.messageText}>
                                         {item.message}
                                     </Text>
@@ -164,7 +166,7 @@ function Dm ({navigation}) {
 
                     } else {
                         return (
-                            <View style={styles.messageRightContainer}>
+                            <View key={item.key} style={styles.messageRightContainer}>
                                 <Text style={styles.messageText}>
                                     {item.message}
                                 </Text>

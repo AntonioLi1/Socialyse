@@ -6,8 +6,7 @@ import IIcon from 'react-native-vector-icons/Ionicons'
 import MIIcon from 'react-native-vector-icons/MaterialIcons';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ADIcon from 'react-native-vector-icons/AntDesign'
-import LinearGradient from 'react-native-linear-gradient';
-import MaskedView from '@react-native-community/masked-view';
+
 
 
 function Login({navigation}) {
@@ -28,9 +27,6 @@ function Login({navigation}) {
                 <Text style={styles.signUpSocialTextYellow}>
                     SOCIALYSE
                 </Text>
-                <Text style={styles.signUpSocialTextGradient}>
-                    SOCIALYSE
-                </Text>
             </View>
             <View style={styles.signUpInputContainer}>
                 <TextInput
@@ -44,10 +40,14 @@ function Login({navigation}) {
                 onChangeText={()=>{setPassword(true)}}
                 />
             </View>
-            <Text style={{alignSelf: 'flex-end', marginRight: '10%', color: 'black', fontSize: 12}}>
-                Forgot Password?
-            </Text>
-            
+            <View style={styles.forgotPasswordContainer}>
+                <Pressable onPress={() => {navigation.navigate('ForgotPassword')}}>
+                    <Text style={{alignSelf: 'flex-end', color: 'black', fontSize: 12}}>
+                        Forgot Password?
+                    </Text>
+                </Pressable>
+            </View>
+
             <Pressable style={[{ backgroundColor:  'white'}, styles.signUpButton]} 
             onPress={() => {navigation.navigate('Map')}}
             disabled={login}>

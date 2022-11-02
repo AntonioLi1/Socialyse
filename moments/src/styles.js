@@ -164,8 +164,8 @@ const styles = ScaledSheet.create({
 		marginTop: screenHeight * 0.04
 	},
 	notificationButton: {
-		width: screenWidth * 0.13,
-		height: screenHeight * 0.06,
+		width: '50@s',
+		height: '50@s',
 		justifyContent: 'center',
 		alignItems: 'center',
 		borderRadius: 100,
@@ -180,7 +180,7 @@ const styles = ScaledSheet.create({
 		elevation: 10,
 	},
 	notificationCountContainerMap: {
-		backgroundColor: '#FAFF00',
+		backgroundColor: '#96B9FE',
 		width: '35%',
 		height: '35%', 
 		borderRadius: 100,
@@ -199,7 +199,7 @@ const styles = ScaledSheet.create({
 	},
 	notifCountText: {
 		fontSize: RFValue(9), 
-		color: 'black'
+		color: 'white'
 	},
 	mapPinContaner: {
 		position: 'absolute',
@@ -572,7 +572,8 @@ const styles = ScaledSheet.create({
 	},
 	logOutText: {
 		color: 'red', 
-		fontSize: RFValue(12)
+		fontSize: RFValue(12),
+		fontWeight: '600'
 	},
 	profilePageProfile: {
 		height: screenHeight * 0.55,
@@ -588,16 +589,14 @@ const styles = ScaledSheet.create({
 		marginBottom: '5%'
 	},
 	profilePageName: {
-		marginLeft: '5%',
-		marginTop: '2%',
+		
 		fontSize: RFValue(26),
 		color: 'white',
 		fontWeight: 'bold',
 		fontStyle: 'italic'
 	},
 	profilePageUsername: {
-		marginLeft: '5%',
-		marginTop: '2%',
+		
 		fontSize: RFValue(17),
 		color: 'white',
 		fontWeight: 'bold',
@@ -613,13 +612,20 @@ const styles = ScaledSheet.create({
 		fontWeight: '700', 
 		fontStyle: 'italic'
 	},
-	profilePageUsernameAndNameContainer: {
+	profilePageUsernameNameSettingsContainer: {
 		marginTop: screenHeight * 0.03,
 		width: screenWidth,
-		flexDirection: 'column',
+		flexDirection: 'row',
 		borderTopColor: '#545454',
 		borderTopWidth: 1,
-		
+		alignItems: 'center',
+		justifyContent: 'space-between',
+	},
+	usernameAndNameContainer: {
+		marginLeft: screenWidth * 0.05
+	},
+	settingsIcon: {
+		marginRight: screenWidth * 0.05
 	},
 	activeNowProfilePlaceHolder: {
 		height: screenHeight * 0.25,
@@ -924,8 +930,8 @@ const styles = ScaledSheet.create({
 
 	},
 	messageButtonPostsFeed: {
-		width: screenWidth * 0.13,
-		height: screenHeight * 0.06,
+		width: '45@s',
+		height: '45@s',
 		justifyContent: 'center',
 		alignItems: 'center',
 		borderRadius: 100,
@@ -941,8 +947,8 @@ const styles = ScaledSheet.create({
 		marginLeft: '5%'
 	},
 	ownPostsButton: {
-		width: screenWidth * 0.13,
-		height: screenHeight * 0.06,
+		width: '45@s',
+		height: '45@s',
 		justifyContent: 'center',
 		alignItems: 'center',
 		borderRadius: 100,
@@ -1048,9 +1054,15 @@ const styles = ScaledSheet.create({
 	signUpScreenSocialyse: {
 		
 		alignItems: 'center',
-		marginTop: screenHeight * 0.15
+		marginTop: screenHeight * 0.15,
+		
 	},
 	signUpInputContainer: {
+		width: screenWidth,
+		marginTop: screenHeight * 0.1,
+		alignItems: 'center',
+	}, 
+	signUpInputContainerSignUp: {
 		width: screenWidth,
 		marginTop: screenHeight * 0.01,
 		alignItems: 'center',
@@ -1062,6 +1074,10 @@ const styles = ScaledSheet.create({
 		width: screenWidth * 0.8,
 		backgroundColor: '#FFFFFF',
 		borderRadius: 5
+	},
+	forgotPasswordContainer: {
+
+		width: screenWidth * 0.8,
 	},
 	signUpSocialTextYellow: {
 		fontSize: 50,
@@ -1130,12 +1146,22 @@ const styles = ScaledSheet.create({
 
 	},
 	ownPostModal: {
-		height: screenHeight * 0.55,
-		width: screenWidth * 0.9,
+		//height: screenHeight * 0.55,
+		//width: screenWidth,
 		backgroundColor: 'black',
 		alignSelf: 'center',
-		marginTop: screenHeight * 0.15,
-		justifyContent: 'space-between',
+		//marginTop: screenHeight * 0.15,
+		alignItems: 'center',
+		flex: 1,
+		justifyContent: 'center',
+		
+	},
+	ownPostModalPost: {
+		
+		height: '100%',
+		width: screenWidth * 0.9,
+		//alignItems: 'center',
+
 	},
 	settingsScreen: {
 		flex: 1,
@@ -1146,13 +1172,13 @@ const styles = ScaledSheet.create({
 	settingsHeader: {
 		height: screenHeight * 0.08,
 		width: screenWidth,
-		
 		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'center'
 	},
 	settingsBackButton: {
-		left: '180%'
+		position: 'absolute',
+		right: '6%'
 	},
 	settingsLogout: {
 		backgroundColor: '#464646',
@@ -1169,7 +1195,9 @@ const styles = ScaledSheet.create({
 		height: screenHeight * 0.12,
 		width: screenWidth * 0.85,
 		borderRadius: 10,
-		marginTop: screenHeight * 0.03
+		marginTop: screenHeight * 0.03,
+		justifyContent: 'center',
+		alignItems: 'center'
 	},
 	messageInput: {
 		borderWidth: 1,
@@ -1307,13 +1335,46 @@ const styles = ScaledSheet.create({
 	},
 	notificationText: {
 		color: 'black', 
-		fontSize: RFValue(17.5)
+		fontSize: RFValue(17.5),
+		fontWeight: '500'
 	},
 	done: {
 		color: 'black', 
 		fontWeight: '700', 
 		fontSize: RFValue(14)
-	}
+	},
+	settingsText: {
+		color: 'white',
+		fontWeight: '600'
+	},
+	changePasswordBackButton: {
+		transform: [{rotateY: '180deg'}],
+		marginLeft: '5%'
+	},
+	changePasswordHeader: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center',
+		width: screenWidth,
+		
+		height: screenHeight * 0.08,
+		borderBottomColor: 'grey',
+		borderBottomWidth: 0.8
+	},
+	changePasswordInputContainer: {
+		width: screenWidth,
+		alignItems: 'center',
+		marginTop: screenHeight * 0.02
+	},
+	changePasswordText: {
+		color: 'white',
+		fontSize: RFValue(16)
+	},
+	changePasswordDoneText: {
+		marginRight: '5%',
+		
+		fontSize: RFValue(14)
+	},
 	
 
 
