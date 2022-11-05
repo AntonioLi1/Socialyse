@@ -4,7 +4,7 @@ import Geolocation from 'react-native-geolocation-service';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import styles from './styles'
-import LocationModal from './locationModal';
+import { LocationModalOne, LocationModalMultiple } from './locationModal';
 import { GettingStartedContext } from '../App'
 
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -38,6 +38,7 @@ function MapDisplay({ navigation }) {
 	const [longitude, setLongitude] = useState(0)
 	const [latitude, setLatitude] = useState(0)
 	const [modalDisplay, setModalDisplay] = useState(false);
+    const [multipleModalDisplay, setMultipleModalDisplay] = useState(false);
 
 	const { messageDisplay, setMessageDisplay, notifDisplay, setNotifDisplay } = useContext(GettingStartedContext);
 
@@ -50,7 +51,7 @@ function MapDisplay({ navigation }) {
 	useEffect(() => {
 		GetmyLocation();
 	}, [])
-
+    //console.log(modalDisplay)
 	return (
 		<View style={styles.fullScreen}>
 			<MapView
@@ -65,13 +66,22 @@ function MapDisplay({ navigation }) {
 				}}
 				showsUserLocation={true}>
 				<Marker coordinate={{ latitude: latitude, longitude: longitude }}
-					onPress={() => { setModalDisplay(true); setMessageDisplay(false); setNotifDisplay(false); }} />
+					onPress={() => { 
+                        if (pin.length > 1) {                           
+                            setMultipleModalDisplay(true); setMessageDisplay(false); setNotifDisplay(false);
+                        } else {
+                            setModalDisplay(true); setMessageDisplay(false); setNotifDisplay(false);
+                        }
+                        // setModalDisplay(true); setMessageDisplay(false); setNotifDisplay(false);
+                        }} />
 			</MapView>
 
 
-			<LocationModal modalDisplay={modalDisplay} setModalDisplay={setModalDisplay} setMessageDisplay={setMessageDisplay} setNotifDisplay={setNotifDisplay} />
-
-			{messageDisplay ?
+			<LocationModalOne modalDisplay={modalDisplay} setModalDisplay={setModalDisplay} setMessageDisplay={setMessageDisplay} setNotifDisplay={setNotifDisplay} />
+            
+            <LocationModalMultiple multipleModalDisplay={multipleModalDisplay} setMultipleModalDisplay={setMultipleModalDisplay} setMessageDisplay={setMessageDisplay} setNotifDisplay={setNotifDisplay}/>
+			
+            {messageDisplay ?
 				<View style={styles.messageIconContainer}>
 					<TouchableOpacity style={styles.messageButton} onPress={() => navigation.navigate('Dms')}>
 						<IIcon style={styles.messageIcon} name='ios-chatbubbles-outline' size={scale(31)} />

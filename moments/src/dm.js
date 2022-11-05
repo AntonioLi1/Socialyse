@@ -107,7 +107,7 @@ function Dm ({navigation}) {
 
     const { messageDisplay, setMessageDisplay, notifDisplay, setNotifDisplay } = useContext(GettingStartedContext);
 
-    console.log(data);
+    
     return (
         <SafeAreaView style={styles.messagesScreen}>
             <View style={styles.messagesHeader}>

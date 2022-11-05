@@ -1,46 +1,97 @@
 import React, { useEffect, useState } from 'react';
-import { View,  Text, Pressable,  } from 'react-native';
+import { View,  Text, Pressable, SafeAreaView } from 'react-native';
 import styles from './styles';
 import IIcon from 'react-native-vector-icons/Ionicons'
 import MIIcon from 'react-native-vector-icons/MaterialIcons';
 import FIcon from 'react-native-vector-icons/Feather';
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
-import LinearGradient from 'react-native-linear-gradient';
-import MaskedView from '@react-native-community/masked-view';
+import { scale, ScaledSheet } from 'react-native-size-matters';
+import { RFValue } from 'react-native-responsive-fontsize';
+
 
 function Settings ({navigation}) {
     return (
-        <View style={styles.settingsScreen}>
+        <SafeAreaView style={styles.settingsScreen}>
             <View style={styles.settingsHeader}>
+                <Pressable style={styles.settingsBackButton} onPress={() => navigation.navigate('profile')}>
+                    <MIIcon name='arrow-back-ios' size={32} color='white'/>
+                </Pressable>
                 <Text style={{color: 'white', fontWeight: '700', fontSize: 20}}>
                     Settings
                 </Text>
-                <Pressable style={styles.settingsBackButton} onPress={() => navigation.navigate('profile')}>
-                        <MIIcon name='arrow-forward-ios' size={32} color='white'/>
+                
+            </View>
+            <View style={styles.settingsBody}>
+                <Pressable onPress={() => {navigation.navigate('ChangeNameAndUsername')}}>
+                    <View style={styles.settingsProfile}>
+                        <View style={{flexDirection: 'row', }}>
+                            <View style={styles.initialPlaceholder}>    
+                                <Text style={{color: 'white', fontSize: RFValue(16)}}>
+                                    A
+                                </Text>
+                            </View>
+                            <Text style={[styles.settingsText, {marginLeft: '5%'}]}>
+                            Antonio {'\n'}
+                            myusername
+                            </Text>
+                        </View>
+                            
+                        <Pressable onPress={() => navigation.navigate('profile')}>
+                            <MIIcon name='arrow-forward-ios' size={25} color='white'/>
+                        </Pressable>
+                    </View>
+                </Pressable>
+
+                <Pressable onPress={() => {navigation.navigate('ChangePassword')}}>
+                    <View style={styles.settingsProfile}>
+                        <Text style={styles.settingsText}>
+                        Change Password
+                        </Text>
+                        <Pressable onPress={() => navigation.navigate('profile')}>
+                            <MIIcon name='arrow-forward-ios' size={25} color='white'/>
+                        </Pressable>
+                    </View>
+                </Pressable>
+                
+                <Pressable onPress={() => {navigation.navigate('SignUp')}}>
+                    <View style={styles.settingsProfile}>
+                        <Text style={styles.settingsText}>
+                            Send Us Feedback!
+                        </Text>
+                        <Pressable onPress={() => navigation.navigate('profile')}>
+                            <MIIcon name='arrow-forward-ios' size={25} color='white'/>
+                        </Pressable>
+                    </View>
+                </Pressable>
+
+                <Pressable onPress={() => {navigation.navigate('SignUp')}}>
+                    <View style={styles.settingsProfile}>
+                        <Text style={styles.settingsText}>
+                            Delete Account
+                        </Text>
+                        <Pressable onPress={() => navigation.navigate('profile')}>
+                            <MIIcon name='arrow-forward-ios' size={25} color='white'/>
+                        </Pressable>
+                    </View>
+                </Pressable>
+                    
+            
+            </View>
+            
+            <View style={{flex: 1}}>
+                <Pressable onPress={() => {navigation.navigate('Login')}}>
+                    <View style={styles.settingsLogout}>
+                        <Text style={styles.logOutText}>
+                            Log Out
+                        </Text>
+                    </View>	
                 </Pressable>
             </View>
-            <Pressable onPress={() => {navigation.navigate('ChangePassword')}}>
-                <View style={styles.settingsProfile}>
-                    <Text style={styles.settingsText}>
-                    Change Password
-                    </Text>
-                </View>
-            </Pressable>
+               
+                
+                
             
-            <View style={styles.settingsProfile}>
-                <Text style={styles.settingsText}>
-                    Delete Account
-                </Text>
-            </View>
-            
-            <View style={styles.settingsLogout}>
-                <Text style={styles.logOutText}>
-                    Log Out
-                </Text>
-			</View>	
-            
-            
-        </View>
+        </SafeAreaView>
     )
 }
 

@@ -12,18 +12,19 @@ function PostModal ({openPost, setOpenPost}) {
     return (
         <Modal visible={openPost} transparent={true}>
             <View style={styles.postModalFullScreen}>
-                <View style={styles.postModal}>
-                    <View style={{backgroundColor: 'blue', flex: 10}}>
-                        <IIcon style={{marginLeft: '2%', marginTop: '2%' }} name="ios-close-outline" size={scale(29)} color='white'
-                        onPress={() => {setOpenPost(false)}}
-                        />
-                    </View>
-                    <View style={{justifyContent: 'space-evenly', flex: 1}}>
+                <View style={styles.ownPostModal}>
+                    <View style={styles.somewthing}>
+                        <View style={styles.postModalPostPlaceholder}>
+                            <IIcon style={{marginLeft: '2%', marginTop: '2%' }} name="ios-close-outline" size={scale(29)} color='white'
+                            onPress={() => {setOpenPost(false)}}
+                            />
+                        </View>
+                        
                         <Text style={styles.postModalCaption}>
-                            hello world
+                            hello worlddw
                         </Text>
-                        <View style={styles.postModalBottomBorder}/>
                     </View>
+                    
                 </View>
             </View>
                 

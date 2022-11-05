@@ -1,5 +1,5 @@
-import React, { useState, useContext, useEffect, useRef } from 'react';
-import { View, Text, Pressable, ScrollView, Image, ImageBackground, SafeAreaView } from 'react-native';
+import React, { useState, useContext, useEffect, useRef, useCallback } from 'react';
+import { View, Text, Pressable, ScrollView, Image, ImageBackground, SafeAreaView, Linking } from 'react-native';
 import styles from './styles';
 import CaptionModal from './captionModal';
 import { useNavigation } from '@react-navigation/native';
@@ -54,24 +54,28 @@ function MakeAPost({}) {
 
 	useEffect(() => {
 		Camera.getCameraPermissionStatus().then(setCameraPermission);
-		Camera.getMicrophonePermissionStatus().then(setMicrophonePermission);
+		// Camera.getMicrophonePermissionStatus().then(setMicrophonePermission);
 		getCameraPermission();
 	}, []);
 
-	const getCameraPermission = async () => {
-		try {
-			const newCameraPermission = await Camera.requestCameraPermission()
-			const newMicrophonePermission = await Camera.requestMicrophonePermission()
+	// const getCameraPermission = async () => {
+	// 	try {
+	// 		const newCameraPermission = await Camera.requestCameraPermission()
+	// 		const newMicrophonePermission = await Camera.requestMicrophonePermission()
 			
-		} catch (error) {
-			console.log(error)
-		}
-	}
+	// 	} catch (error) {
+	// 		console.log(error)
+	// 	}
+	// }
+	const getCameraPermission = useCallback(async () => {
+		const permission = await Camera.requestCameraPermission()
+		if (permission === 'denied') await Linking.openSettings()
+	}, []) 
 	
-	if (cameraPermission == null || microphonePermission == null) {
-		// still loading
-		return null;
-	}
+	// if (cameraPermission == null || microphonePermission == null) {
+	// 	// still loading
+	// 	return null;
+	// }
 	
 	return (
 		<SafeAreaView style={styles.MBBackground}>
@@ -116,7 +120,7 @@ function MakeAPost({}) {
 						<View style={styles.cameraContainerMakePost}>
 							<Camera
 							video={false}
-							isActive
+							isActive={true}
 							device={deviceBack}
 							style={styles.cameraMakePost}
 							ref={cameraref}

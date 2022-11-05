@@ -10,9 +10,9 @@ import LinearGradient from 'react-native-linear-gradient';
 import MaskedView from '@react-native-community/masked-view';
 import PostModal from './postModal';
 import { ScrollView } from 'react-native-gesture-handler';
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 
-
-const data = [{caption: 'john', key: 1}, {caption: 'non', key: 2}, {caption: 'egf', key: 3}, {caption: 'egf', key: 4}, {caption: 'egf', key: 5} ]
+const data = [{caption: 'hello', key: 1}, {caption: 'non', key: 2}, {caption: 'egf', key: 3}, {caption: 'egf', key: 4}, {caption: 'egf', key: 5} ]
 
 
 
@@ -20,30 +20,45 @@ function OwnPosts({ownPost, setOwnPost}) {
     
     return (
         <Modal visible={ownPost} transparent={true}>
-            <View style={styles.ownPostModal}>
-                <View style={styles.ownPostModalPost}>
+            <View style={styles.postModalFullScreen2}>
+                <View style={styles.ownPostModal}>                  
                     <FlatList
-                    
-                    horizontal={true}
-                    data={data} 
-                    renderItem={({item, index}) => {
-                        return(
-                            <View style={{backgroundColor: 'grey', width: 100, height: 200}}>
-                                <IIcon name="ios-close-outline" size={32} color='white'
-                                onPress={() => {setOwnPost(false)}}
-                                />
-                                <Text>
-                                    {item.caption}
-                                </Text>
-
-                            </View>
-                        );
-                    }}
-                    >  
+                        horizontal={true}
+                        data={data}
+                        
+                        renderItem={({item, index}) => {
+                            return(
+                                <View style={styles.somewthing}>
+                                    <View style={styles.ownPostModalPlaceHolder}>
+                                        <IIcon style={{marginLeft: '2%', marginTop: '2%' }} name="ios-close-outline" size={32} color='white'
+                                        onPress={() => {setOwnPost(false)}}
+                                        />
+                                    </View>
+                                    
+                                    <Text style={styles.postModalCaption}>
+                                        {item.caption}
+                                    </Text>
+                                </View>
+                                    
+                            );
+                        }}
+                        >  
                     </FlatList>
+                    {/* <View>
+                        <View style={styles.ownPostModalPlaceHolder}>
+                            <IIcon style={{marginLeft: '2%', marginTop: '2%' }} name="ios-close-outline" size={scale(32)} color='white'
+                            onPress={() => {setOwnPost(false)}}
+                            />
+                        </View>
+                        
+                        <Text style={styles.postModalCaption}>
+                            hello world
+                        </Text>
+                    </View> */}
                 </View>
             </View>
-        </Modal>
+                
+        </Modal> 
     );
     
 }

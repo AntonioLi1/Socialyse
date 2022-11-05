@@ -1,6 +1,6 @@
 import { StyleSheet, Dimensions } from 'react-native';
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
-import { ScaledSheet } from 'react-native-size-matters';
+import { scale, ScaledSheet } from 'react-native-size-matters';
 
 
 const screenWidth = Dimensions.get("window").width
@@ -227,11 +227,10 @@ const styles = ScaledSheet.create({
 	},
 	locationModal: {
 		backgroundColor: '#96B9FE',
-		
 		width: screenWidth * 0.96,
 		alignSelf: 'center',
-		marginTop: screenHeight * 0.63,
-		borderRadius: 20,
+		marginTop: screenHeight * 0.75,
+		borderRadius: 10,
 		shadowColor: "#000",
 		shadowOffset: {
 			width: 0,
@@ -242,21 +241,22 @@ const styles = ScaledSheet.create({
 		elevation: 10,
 		alignItems:'center',
 		flexDirection: 'row',
-		justifyContent: 'space-evenly'
+		justifyContent: 'space-evenly',
+		height: '15%'
 	},
-	locationImagePlaceholder: {
+	locationImagePlaceholderSingle: {
 		backgroundColor: 'grey',
 		width: '35%',
 		height: '80%',
 		borderRadius: 10,
-		
 	},
 	locationNameActiveAndJoinButtonContainer: {
-		
+		height: '80%',
 	},
 	locationModalClose: {
 		color: 'black',
-		alignSelf: 'flex-start'
+		alignSelf: 'flex-start',
+		
 	},
 	checkInButton: {
 		height: '25%',
@@ -274,8 +274,6 @@ const styles = ScaledSheet.create({
 		shadowOpacity: 0.34,
 		shadowRadius: 6.27,
 		elevation: 10,
-		
-		
 	},
 	checkInText: {
 		color: 'white',
@@ -289,6 +287,7 @@ const styles = ScaledSheet.create({
 		color: 'black',
 		fontSize: RFValue(17.5),
 		fontWeight: '500',
+		alignSelf: 'flex-start'
 	}, 
 	locationModalActive: {
 		color: 'black', 
@@ -755,8 +754,9 @@ const styles = ScaledSheet.create({
 		color: 'white', 
 		alignSelf: 'flex-start', 
 		fontSize: RFValue(12.5), 
-		marginLeft: '5%', 
-		flexWrap: 'wrap'
+		marginLeft: '5%',
+		flexWrap: 'wrap',
+		marginTop: '3%'
 	},
 	socialTextPurple30: {
 		fontSize: 30,
@@ -1146,14 +1146,14 @@ const styles = ScaledSheet.create({
 
 	},
 	ownPostModal: {
-		//height: screenHeight * 0.55,
-		//width: screenWidth,
-		backgroundColor: 'black',
+		width: '320@s',
+		backgroundColor: 'transparent',
 		alignSelf: 'center',
-		//marginTop: screenHeight * 0.15,
+		marginTop: '105@s',
+		marginBottom: '190@s',
+		height: '450@s',
 		alignItems: 'center',
-		flex: 1,
-		justifyContent: 'center',
+		// justifyContent: 'center',
 		
 	},
 	ownPostModalPost: {
@@ -1170,15 +1170,20 @@ const styles = ScaledSheet.create({
 		alignItems: 'center',
 	},
 	settingsHeader: {
-		height: screenHeight * 0.08,
+		flex: 1,
 		width: screenWidth,
 		flexDirection: 'row',
 		alignItems: 'center',
-		justifyContent: 'center'
+		justifyContent: 'center',
+		//backgroundColor: 'aqua'
+	},
+	settingsBody: {
+		//backgroundColor: 'red',
+		flex: 10
 	},
 	settingsBackButton: {
 		position: 'absolute',
-		right: '6%'
+		left: '6%'
 	},
 	settingsLogout: {
 		backgroundColor: '#464646',
@@ -1187,17 +1192,18 @@ const styles = ScaledSheet.create({
 		borderRadius: 10,
 		justifyContent: 'center',
 		alignItems: 'center',
-		position: 'absolute',
-		bottom: screenHeight * 0.04
+		alignSelf: 'flex-end',
 	},
 	settingsProfile: {
 		backgroundColor: '#464646',
-		height: screenHeight * 0.12,
+		height: screenHeight * 0.08,
 		width: screenWidth * 0.85,
 		borderRadius: 10,
 		marginTop: screenHeight * 0.03,
-		justifyContent: 'center',
-		alignItems: 'center'
+		justifyContent: 'space-between',
+		alignItems: 'center',
+		flexDirection: 'row',
+		paddingHorizontal: '5%'
 	},
 	messageInput: {
 		borderWidth: 1,
@@ -1254,7 +1260,15 @@ const styles = ScaledSheet.create({
 	postModalFullScreen: {
 		height: screenHeight,
 		width: screenWidth,
-		backgroundColor: 'rgba(0, 0, 0, 0.5)',
+		backgroundColor: 'rgba(0, 0, 0, 0.25)',
+		//backgroundColor: 'pink',
+		alignSelf: 'center',
+	},
+	postModalFullScreen2: {
+		height: screenHeight,
+		width: screenWidth,
+		backgroundColor: 'rgba(0, 0, 0, 0.8)',
+		//backgroundColor: 'pink',
 		alignSelf: 'center',
 	},
 	dpEditModal: {
@@ -1345,7 +1359,8 @@ const styles = ScaledSheet.create({
 	},
 	settingsText: {
 		color: 'white',
-		fontWeight: '600'
+		fontWeight: '600',
+		fontSize: RFValue(12)
 	},
 	changePasswordBackButton: {
 		transform: [{rotateY: '180deg'}],
@@ -1374,6 +1389,132 @@ const styles = ScaledSheet.create({
 		marginRight: '5%',
 		
 		fontSize: RFValue(14)
+	},
+	ownPostModalPlaceHolder: {
+		height: '90%',
+		width: '320@s',
+		backgroundColor: 'aqua'
+	},
+	postModalPostPlaceholder: {
+		height: '90%',
+		width: '320@s',
+		backgroundColor: 'aqua'
+	},
+	somewthing: {
+		backgroundColor: 'transparent', 
+		width: '320@s',
+		height: '400@s'
+	},
+	multipleLocationModal: {
+		backgroundColor: '#96B9FE',
+		width: screenWidth * 0.96,
+		alignSelf: 'center',
+		marginTop: screenHeight * 0.5,
+		borderRadius: 20,
+		shadowColor: "#000",
+		shadowOffset: {
+			width: 0,
+			height: 5,
+		},
+		shadowOpacity: 0.34,
+		shadowRadius: 6.27,
+		elevation: 10,
+		flex: 1,
+		flexDirection: 'column',
+	},
+	multiLocationModalHeader: {
+		//backgroundColor: 'pink', 
+		flex: 1.5, 
+		flexDirection: 'row', 
+		alignItems: 'center', 
+		justifyContent: 'space-evenly', 
+		borderTopRightRadius: 10, 
+		borderTopLeftRadius: 10
+	},
+
+	locationImagePlaceholderMulti: {
+		backgroundColor: 'grey',
+		width: '35%',
+		height: '80%',
+		borderRadius: 10,
+	},
+	multiCheckInText: {
+		
+		fontSize: RFValue(12)
+	},
+	multiCheckInButton: {
+		height: '50%',
+		width: '30%', 
+		alignSelf: 'flex-end',
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center',
+		borderRadius: 20,
+		shadowColor: "#000",
+		shadowOffset: {
+			width: 0,
+			height: 5,
+		},
+		shadowOpacity: 0.34,
+		shadowRadius: 6.27,
+		elevation: 10,
+		marginRight: '3%'
+	},
+	multiLocationModalChannelContainer: {
+		flexDirection: 'row', 
+		justifyContent: 'space-between',
+		// borderBottomColor: 'black', 
+		// borderBottomWidth: 1, 
+		paddingHorizontal: '3%', 
+		paddingVertical: '1%'
+	},
+	initialPlaceholder: {
+		height: '35@s',
+		width: '35@s',
+		backgroundColor: 'brown',
+		borderRadius: 100,
+		alignItems: 'center',
+		justifyContent: 'center'
+	},
+	ChangeNameAndUsernameHeader: {
+		flexDirection: 'row', 
+		justifyContent: 'space-between',
+		//backgroundColor: 'blue', 
+		width: '100%',
+		flex: 1,
+		alignItems: 'center',
+		paddingHorizontal: '5%'
+	},
+	ChangeNameAndUsernameBody: {
+		flex: 19,
+		width: screenWidth
+	},
+	ChangeNameAndUsernameDPContainer: {
+		backgroundColor: 'red', 
+		width: '100%', 
+		flex: 1, 
+		justifyContent: 'center', 
+		alignItems:'center',
+		borderBottomColor: 'yellow',
+		borderBottomWidth: 1
+	},
+	ChangeNameAndUsernameDP: {
+		height: '100@s',
+		width: '100@s',
+		backgroundColor: 'pink',
+		borderRadius: 100
+	},
+	ChangeNameAndUsernameBodyInput: {
+		backgroundColor: 'green', 
+		width: '100%', 
+		flex: 3
+	},
+	inputsEditProfile: {
+		//width: screenWidth * 0.8,
+		backgroundColor: 'black',
+		borderBottomColor: 'red',
+		borderBottomWidth: 1,
+		flex: 1
 	},
 	
 
