@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View,  Text, Pressable, SafeAreaView  } from 'react-native';
+import { View,  Text, Pressable, SafeAreaView, SnapshotViewIOSComponent, SliderComponent  } from 'react-native';
 import styles from './styles';
 import DPModal from './DPModal';
 import IIcon from 'react-native-vector-icons/Ionicons'
@@ -7,15 +7,48 @@ import MIIcon from 'react-native-vector-icons/MaterialIcons';
 import FIcon from 'react-native-vector-icons/Feather';
 import { GettingStartedContext } from '../App'
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
-import LinearGradient from 'react-native-linear-gradient';
-import MaskedView from '@react-native-community/masked-view';
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
+import database from '@react-native-firebase/database';
+import { CommonActions } from '@react-navigation/native';
+import { createIconSetFromFontello } from 'react-native-vector-icons';
 
+function GetUsername () {
+
+	return new Promise((resolve)=>{
+        database().ref('/users/prathik1').on('value',snapshot=>{
+			//console.log('data is:' + snapshot.val())
+            resolve(snapshot.val())
+        })
+    })
+	
+	// let data = new Promise((resolve)=>{
+    //     database().ref('/users/prathik1').on('value',snapshot=>{
+	// 		//console.log('data is:' + snapshot.val())
+    //         resolve(snapshot.val())
+    //     })
+    // })
+	// console.log(data)
+
+	// return data 
+
+
+}
 
 function OwnProfile ({navigation}) {
 
 	const [DPModalDisplay, setDPModalDisplay] = useState(false);
-	const { editProfileModal, setEditProfileModal } = useContext(GettingStartedContext);
+	const { editProfileModal, setEditProfileModal, testing, setTesting } = useContext(GettingStartedContext);
+	const [username, setUsername] = useState('')
+
+	const getData = async () => {
+		const data = await GetUsername()
+		setUsername(data)
+	} 
+	useEffect(() => {
+		getData()
+	}, [])
+
+	console.log(username)
 
 	return (
 	<SafeAreaView style={styles.profileScreen}>
@@ -33,10 +66,11 @@ function OwnProfile ({navigation}) {
 		<View style={styles.profilePageUsernameNameSettingsContainer}>
 			<View style={styles.usernameAndNameContainer}>
 				<Text style={styles.profilePageName}>
-					Dababy
+					{username.name}
+					
 				</Text>
 				<Text style={styles.profilePageUsername}>
-					dababy_leshgo
+					{username.username}
 				</Text>
 			</View>
 			<Pressable onPress={() => {navigation.navigate('Settings')}}>
@@ -70,7 +104,14 @@ function OwnProfile ({navigation}) {
 export default OwnProfile;
 
 /* 
-
+	// useEffect(() => {
+	// 	database()
+	// 	.ref('/channels/test3')
+	// 	.once('value')
+	// 	.then(snapshot => {
+	// 		console.log('User data: ', snapshot.val());
+	// 	});
+	// 	}, [])
 
 
 
@@ -120,4 +161,53 @@ const config = {
 		</View>
 	</GestureRecognizer>
 	)	
+
+	function GetUsername(){
+	return new Promise((resolve)=>{
+		database().ref('/users/prathikl').on('value',snapshot=>{
+		resolve(snapshot.val())
+		})
+	})
+}
 */
+
+/*
+function GetUsername () {
+	// reading data from firebase
+	
+	database()
+	.ref('/users/prathik1')
+	.on('value', snapshot => {
+		// return retrieved data
+		return snapshot.val()
+	});
+}
+
+return new Promise((resolve)=>{
+        database().ref('/users/prathik1').on('value',snapshot=>{
+			console.log('data is:' + snapshot.val())
+            resolve(snapshot.val())
+        })
+    })	  
+
+
+
+*/
+
+// function GetUsername2 () {
+	
+// 	database()
+// 	.ref('/users/prathik1')
+// 	.once('value', snapshot => {
+// 		//console.log(snapshot)
+// 		if (snapshot.exists()) {
+// 			//console.log('here')
+// 			//console.log(snapshot.val())
+// 			return snapshot.val()
+// 		}
+// 	})
+
+
+// }
+
+

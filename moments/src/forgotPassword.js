@@ -21,12 +21,12 @@ function ForgotPassword () {
                 <TextInput
                 style={styles.inputs}
                 placeholder='Username'
-                onChangeText={()=>{setUsername(true)}}
+                onChangeText={()=>{}}
                 />
                 <TextInput
                 style={styles.inputs}
                 placeholder='Password'
-                onChangeText={()=>{setPassword(true)}}
+                onChangeText={()=>{}}
                 />
             </View>
         </SafeAreaView>

@@ -11,52 +11,52 @@ const dms = [
 	{
 		username: 'fwqei',
 		lastMessage: 'weih',
-		id: '1'
+		key: 1
 	},
 	{
 		username: 'wef',
 		lastMessage: 'refbh',
-		id: '2'
+		key: 2
 	},
 	{
 		username: 'qwd',
 		lastMessage: 'fytnj',
-		id: '3'
+		key: 3
 	},
 	{
 		username: 'e5rh',
 		lastMessage: 'ersbg',
-		id: '4'
+		key: 4
 	},
 	{
 		username: 'tyuk',
 		lastMessage: 'we',
-		id: '5'
+		key: 5
 	},
 	{
 		username: 'wfq',
 		lastMessage: 'wqwe',
-		id: '6'
+		key: 6
 	},
 	{
 		username: 'tyweuk',
 		lastMessage: 'wewerg',
-		id: '7'
+		key: 7
 	},
 	{
 		username: 'tyweuk',
 		lastMessage: 'wewerg',
-		id: '8'
+		key: 8
 	},
 	{
 		username: 'tyweuk',
 		lastMessage: 'wewerg',
-		id: '9'
+		key: 9
 	},
 	{
 		username: 'tyweuk',
 		lastMessage: 'wewerg',
-		id: '10'
+		key: 10
 	},
 	
 ]

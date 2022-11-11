@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Modal, Text, Pressable } from 'react-native';
 import styles from './styles';
 import IIcon from 'react-native-vector-icons/Ionicons';
@@ -7,10 +7,46 @@ import EIcon from 'react-native-vector-icons/Entypo';
 import { useNavigation } from '@react-navigation/native';
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 import { FlatList } from 'react-native-gesture-handler';
+import { template } from '@babel/core';
 
+// have a property that checks if use is checked in when openng the location modal again
 const pinData = [
-	'law lib', 'bsoc', 'roundhouse', 'class 21', 'ewfoihwef', 'dfwef', 'wef', 'qwd', 'erthg'
-
+	{
+		name: 'Law Lib',
+		selected: false
+	},
+	{
+		name: 'BSOC',
+		selected: false
+	},
+	{
+		name: 'Main',
+		selected: false
+	},
+	{
+		name: 'Roundhouse',
+		selected: false
+	},
+	{
+		name: 'Room32932',
+		selected: false
+	},
+	{
+		name: 'igre',
+		selected: false
+	},
+	{
+		name: 'sum',
+		selected: false
+	},
+	{
+		name: 'ting',
+		selected: false
+	},
+	{
+		name: 'wong',
+		selected: false
+	},
 ]
 
 export function LocationModalOne({modalDisplay, setModalDisplay, setMessageDisplay, setNotifDisplay}) {
@@ -20,6 +56,7 @@ export function LocationModalOne({modalDisplay, setModalDisplay, setMessageDispl
 	const [multipleChannels, setMultipleChannels] = useState(false);
 	const navigation = useNavigation();
 	
+
 	
 	return (
 		<Modal visible={modalDisplay} transparent={true}>
@@ -59,7 +96,20 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 	const [channelStatus, setChannelStatus] = useState(true);
 	const [channelSelected, setChannelSelected] = useState(false);
 	const navigation = useNavigation();
+	const [joinEnable, setJoinEnable] = useState(true)
 
+	useEffect(() => {
+		let counter = 0
+		while (counter < pinData.length) {
+			if (pinData[counter].selected === true) {
+				setChannelSelected(true)
+				setJoinEnable(false)
+			}
+			counter++
+		}
+	}, [channelSelected])
+
+	console.log(joinEnable)
 	return (
 		<Modal visible={multipleModalDisplay} transparent={true}>
 			<View style={styles.multipleLocationModal}>
@@ -89,10 +139,19 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 					{
 						//console.log(item.selected, item.channel)
 						return (
-							<Pressable onPress={() => {setChannelSelected(!channelSelected)}}>
-								<View style={[styles.multiLocationModalChannelContainer]}>
+							<Pressable onPress={() => {setChannelSelected(!channelSelected); item.selected = !item.selected; 
+								{
+								let counter = 0
+								while (counter < pinData.length) {
+									if (counter !== index) {
+										pinData[counter].selected = false
+									}
+									counter++
+								}
+							}}}>
+								<View style={[{backgroundColor: item.selected ? '#729BEB':'#96B9FE'}, styles.multiLocationModalChannelContainer]}>
 									<Text style={{color: 'white', fontWeight: '600'}}>
-										{item}
+										{item.name}
 									</Text>
 									<Pressable>
 										<MIIcon name='arrow-forward-ios' size={scale(20)} color='white'/>
@@ -106,9 +165,10 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 					</FlatList>
 				</View>
 				<View style={{flex: 1, justifyContent: 'center'}}>
-					<Pressable style={[{ backgroundColor: isPressed ? 'white' : 'black' }, styles.multiCheckInButton ]} 
+					<Pressable disabled={joinEnable} style={[{ backgroundColor: isPressed ? 'white' : 'black' }, styles.multiCheckInButton ]} 
 					onPress={() => {setIsPressed(!isPressed); setChannelStatus(!channelStatus); navigation.navigate('MakeAPost'); setMultipleModalDisplay(false)}}>
 					{channelStatus ? 
+					
 					<Text style={[{color: channelSelected ? 'white' : '#727272'},styles.multiCheckInText]}>Join</Text> 
 					: <Text style={styles.checkedInText}>Leave</Text>}					
 					</Pressable> 

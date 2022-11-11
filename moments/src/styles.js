@@ -189,7 +189,7 @@ const styles = ScaledSheet.create({
 		position: 'absolute',
 	},
 	notificationCountContainer: {
-		backgroundColor: '#FAFF00',
+		backgroundColor: '#96B9FE',
 		width: '35%',
 		height: '25%', 
 		borderRadius: 100,
@@ -1466,7 +1466,8 @@ const styles = ScaledSheet.create({
 		// borderBottomColor: 'black', 
 		// borderBottomWidth: 1, 
 		paddingHorizontal: '3%', 
-		paddingVertical: '1%'
+		paddingVertical: '1%',
+		alignItems: 'center'
 	},
 	initialPlaceholder: {
 		height: '35@s',
@@ -1490,13 +1491,13 @@ const styles = ScaledSheet.create({
 		width: screenWidth
 	},
 	ChangeNameAndUsernameDPContainer: {
-		backgroundColor: 'red', 
+		//backgroundColor: 'red', 
 		width: '100%', 
 		flex: 1, 
 		justifyContent: 'center', 
 		alignItems:'center',
-		borderBottomColor: 'yellow',
-		borderBottomWidth: 1
+		borderBottomColor: '#666666',
+		borderBottomWidth: 0.7
 	},
 	ChangeNameAndUsernameDP: {
 		height: '100@s',
@@ -1505,16 +1506,17 @@ const styles = ScaledSheet.create({
 		borderRadius: 100
 	},
 	ChangeNameAndUsernameBodyInput: {
-		backgroundColor: 'green', 
+		//backgroundColor: 'green', 
 		width: '100%', 
-		flex: 3
+		flex: 3,
+		
 	},
 	inputsEditProfile: {
-		//width: screenWidth * 0.8,
-		backgroundColor: 'black',
-		borderBottomColor: 'red',
-		borderBottomWidth: 1,
-		flex: 1
+		flex: 1,
+		color: 'white',
+		borderBottomColor: '#666666',
+		borderBottomWidth: 0.7,
+		fontWeight: '500'
 	},
 	
 
