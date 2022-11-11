@@ -12,14 +12,20 @@ import database from '@react-native-firebase/database';
 import { CommonActions } from '@react-navigation/native';
 import { createIconSetFromFontello } from 'react-native-vector-icons';
 
-function GetUsername () {
+ async function GetUsername () {
 
-	return new Promise((resolve)=>{
+	const p =  new Promise((resolve)=>{
         database().ref('/users/prathik1').on('value',snapshot=>{
-			//console.log('data is:' + snapshot.val())
+			console.log('data is:' + snapshot.val())
             resolve(snapshot.val())
         })
-    })
+    });
+	const data = await p.then();
+	
+	console.log('data****',data);
+	const dwd = data.name
+	return data;
+
 	
 	// let data = new Promise((resolve)=>{
     //     database().ref('/users/prathik1').on('value',snapshot=>{
@@ -42,6 +48,7 @@ function OwnProfile ({navigation}) {
 
 	const getData = async () => {
 		const data = await GetUsername()
+		// console.log('data',data)
 		setUsername(data)
 	} 
 	useEffect(() => {

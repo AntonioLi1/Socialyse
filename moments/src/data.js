@@ -2,7 +2,7 @@ import { initializeApp } from 'firebase/app';
 import { getDatabase, ref, child, push, update, get, query, limitToLast, orderByChild, equalTo } from "firebase/database";
 import { getAuth } from "firebase/auth";
 import { getStorage } from "firebase/storage";
-
+import database from '@react-native-firebase/database';
 
 const firebaseConfig = {
   'apiKey': "AIzaSyDe5Xjh6H4BDbzDUOhtDie1uq1Sh2hWStA",

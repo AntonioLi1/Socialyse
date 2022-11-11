@@ -1397,12 +1397,12 @@ const styles = ScaledSheet.create({
 	},
 	postModalPostPlaceholder: {
 		height: '90%',
-		width: '320@s',
+		width: screenWidth,
 		backgroundColor: 'aqua'
 	},
 	somewthing: {
 		backgroundColor: 'transparent', 
-		width: '320@s',
+		width: screenWidth,
 		height: '400@s'
 	},
 	multipleLocationModal: {

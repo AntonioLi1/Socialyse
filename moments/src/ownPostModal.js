@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View, Image, Text, Pressable, FlatList, Modal } from 'react-native';
+import { View, Image, Text, Pressable, FlatList, Modal, Dimensions } from 'react-native';
 import styles from './styles';
 import IIcon from 'react-native-vector-icons/Ionicons';
 import MIIcon from 'react-native-vector-icons/MaterialIcons';
@@ -17,7 +17,7 @@ const data = [{caption: 'hello', key: 1}, {caption: 'non', key: 2}, {caption: 'e
 
 
 function OwnPosts({ownPost, setOwnPost}) {
-    
+    const width = Dimensions.get('window').width
     return (
         <Modal visible={ownPost} transparent={true}>
             <View style={styles.postModalFullScreen2}>
@@ -25,13 +25,15 @@ function OwnPosts({ownPost, setOwnPost}) {
                     <FlatList
                         horizontal={true}
                         data={data}
-                        
+                        decelerationRate="fast"
+                        snapToInterval={width}
+                        //snapToAlignment="start"
                         renderItem={({item, index}) => {
                             return(
                                 <View style={styles.somewthing}>
                                     <View style={styles.ownPostModalPlaceHolder}>
                                         <IIcon style={{marginLeft: '2%', marginTop: '2%' }} name="ios-close-outline" size={32} color='white'
-                                        onPress={() => {setOwnPost(false)}}
+                                        onPress={() => {setOwnPost(false)}} 
                                         />
                                     </View>
                                     
