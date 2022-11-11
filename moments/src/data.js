@@ -21,22 +21,20 @@ export const auth = getAuth(app);
 export const storage = getStorage(app);
 
 // registering a user
-const dbRef = ref(getDatabase());
-get(child(dbRef, 'channels/test3/posts')).then((snapshot)=> {
-    if (snapshot.exists()) {
-      console.log(snapshot.orderByChild("caption").equalTo("banton"));
-    } else {
-      console.log("No data available");
-    }
-  }).catch((error) => {
-    console.error(error);
-  }), {
-    onlyOnce: true
-  };
+// const dbRef = ref(getDatabase());
+// get(child(dbRef, 'channels/test3/posts')).then((snapshot)=> {
+//     if (snapshot.exists()) {
+//       console.log(snapshot.orderByChild("caption").equalTo("banton"));
+//     } else {
+//       console.log("No data available");
+//     }
+//   }).catch((error) => {
+//     console.error(error);
+//   }), {
+//     onlyOnce: true
+//   };
 
 
-
-// logging in a user
 
 // Function to create a new user with basic information
 function create_user(email, name, username) {
@@ -58,7 +56,7 @@ function create_user(email, name, username) {
   return update(ref(db), updates);
 }
 
-//
+// 
 function create_posts(caption, image, time, username, channel_name) {
   const db = getDatabase();
 
@@ -90,15 +88,13 @@ function update_user_info(user_id, email, name, username) {
   });
 }
 
-// Add channel_id later?
-// function list_posts(channel_name) {
-//   const db = getDatabase();
+// Order the list of posts by time
+function list_posts(channel_name) {
+  const db = getDatabase();
 
-//   const posts_by_time = query(ref(db, "channels/" + channel_name + "/posts/"), orderByKey("time"));
+  const posts_by_time = query(ref(db, "channels/" + channel_name + "/posts/"), orderByChild("/time"));
 
-
-//   console.log(posts_by_time);
-
-// }
+  console.log(posts_by_time);
+}
 
 // list_posts("test3")
