@@ -9,21 +9,20 @@ import { GettingStartedContext } from '../App'
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 import database from '@react-native-firebase/database';
-import { CommonActions } from '@react-navigation/native';
-import { createIconSetFromFontello } from 'react-native-vector-icons';
 
- async function GetUsername () {
+
+async function GetUsername () {
 
 	const p =  new Promise((resolve)=>{
         database().ref('/users/prathik1').on('value',snapshot=>{
-			console.log('data is:' + snapshot.val())
+			//console.log('data is:' + snapshot.val())
             resolve(snapshot.val())
         })
     });
 	const data = await p.then();
 	
 	console.log('data****',data);
-	const dwd = data.name
+	
 	return data;
 
 	
@@ -44,18 +43,18 @@ function OwnProfile ({navigation}) {
 
 	const [DPModalDisplay, setDPModalDisplay] = useState(false);
 	const { editProfileModal, setEditProfileModal, testing, setTesting } = useContext(GettingStartedContext);
-	const [username, setUsername] = useState('')
+	const [userDetails, setUserDetails] = useState('')
 
 	const getData = async () => {
 		const data = await GetUsername()
 		// console.log('data',data)
-		setUsername(data)
+		setUserDetails(data)
 	} 
 	useEffect(() => {
 		getData()
 	}, [])
 
-	console.log(username)
+	console.log(userDetails)
 
 	return (
 	<SafeAreaView style={styles.profileScreen}>
@@ -73,11 +72,11 @@ function OwnProfile ({navigation}) {
 		<View style={styles.profilePageUsernameNameSettingsContainer}>
 			<View style={styles.usernameAndNameContainer}>
 				<Text style={styles.profilePageName}>
-					{username.name}
+					{userDetails.name}
 					
 				</Text>
 				<Text style={styles.profilePageUsername}>
-					{username.username}
+					{userDetails.username}
 				</Text>
 			</View>
 			<Pressable onPress={() => {navigation.navigate('Settings')}}>

@@ -6,8 +6,7 @@ import IIcon from 'react-native-vector-icons/Ionicons'
 import MIIcon from 'react-native-vector-icons/MaterialIcons';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ADIcon from 'react-native-vector-icons/AntDesign'
-import LinearGradient from 'react-native-linear-gradient';
-import MaskedView from '@react-native-community/masked-view';
+import database from '@react-native-firebase/database';
 
 /*const GradientText = (props) => {
 	return (
@@ -23,6 +22,21 @@ import MaskedView from '@react-native-community/masked-view';
 	);
 };*/
 
+function TestPost (name) {
+
+    const newReference = database().ref('/users').push();
+
+    console.log(name)
+
+    console.log('Auto generated key: ', newReference.key);
+
+    newReference
+    .set({
+        "name": name, 
+    })
+    .then (() => console.log('updated'))
+}
+
 
 function SignUp ({navigation}) {
 
@@ -32,8 +46,13 @@ function SignUp ({navigation}) {
     const [username, setUsername] = useState(false);
     const [password, setPassword] = useState(false);
 
+    const [emailInputCheck, setEmailInputCheck] = useState(false);
+    const [nameInputCheck, setNameInputCheck] = useState(false);
+    const [usernameInputCheck, setUsernameInputCheck] = useState(false);
+    const [passwordInputCheck, setPasswordInputCheck] = useState(false);
+
     useEffect(() => {
-		if (email === true && name === true && username === true && password === true) {
+		if (emailInputCheck === true && nameInputCheck === true && usernameInputCheck === true && passwordInputCheck === true) {
             setSignUpBlur(false);
         }
 	}, [email, name, username, password])
@@ -42,9 +61,6 @@ function SignUp ({navigation}) {
         <SafeAreaView style={styles.signUpScreen}>
             <View style={styles.signUpScreenSocialyse}>
                 <Text style={styles.signUpSocialTextYellow}>
-                    SOCIALYSE
-                </Text>
-                <Text style={styles.signUpSocialTextGradient}>
                     SOCIALYSE
                 </Text>
             </View>
@@ -69,29 +85,30 @@ function SignUp ({navigation}) {
                 <TextInput
                 style={styles.inputs}
                 placeholder='Phone number'
-                onChangeText={()=>{setEmail(true)}}
+                onChangeText={(Text)=>{setEmailInputCheck(true); setEmail(Text)}}
                 />
                 <TextInput
                 style={styles.inputs}
                 placeholder='Name'
-                onChangeText={()=>{setName(true)}}
+                onChangeText={(Text)=>{setNameInputCheck(true); setName(Text)}}
                 />
                 <TextInput
                 style={styles.inputs}
                 placeholder='Username'
-                onChangeText={()=>{setUsername(true)}}
+                onChangeText={(Text)=>{setUsernameInputCheck(true); setUsername(Text)}}
                 />
                 <TextInput
                 style={styles.inputs}
                 placeholder='Password'
-                onChangeText={()=>{setPassword(true)}}
+                onChangeText={(Text)=>{setPasswordInputCheck(true); setPassword(Text)}}
                 />
             </View>
             
             
             <Pressable style={[{ backgroundColor: signUpBlur ? '#DCDCDC' : 'white'}, styles.signUpButton]} 
             disabled={signUpBlur}
-            onPress={() => {navigation.navigate('UploadDP')}}>
+            onPress={() => {navigation.navigate('Map'); TestPost(name)}}
+            >
                 <Text style={{fontSize: 16, fontWeight: '700', color: signUpBlur ? '#999999' : 'black'}}>
                     Sign Up
                 </Text>
@@ -104,3 +121,5 @@ function SignUp ({navigation}) {
 }
 
 export default SignUp;
+
+//navigation.navigate('Map');

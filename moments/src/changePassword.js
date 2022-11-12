@@ -7,20 +7,33 @@ import MIIcon from 'react-native-vector-icons/MaterialIcons';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ADIcon from 'react-native-vector-icons/AntDesign'
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
+import database from '@react-native-firebase/database';
+
+function ChangePasswordBackend (hash, newPassword) {
+
+    database()
+    .ref(`users/${hash}`)
+    .update({
+        password: newPassword,
+    })
+    .then(() => console.log('Data updated.'));
+}
 
 function ChangePassword({navigation}) {
+
     const [currentPassword, setCurrentPassword] = useState(false);
     const [newPassword, setNewPassword] = useState(false);
     const [confirmNewPassword, setConfirmNewPassword] = useState(false);
+    const [actualNewPassword, setActualNewPassword] = useState('')
     const [colouredDone, setColouredDone] = useState(false);
+    // checks if new password is confirmed. true = 'done' button is disabled
+    const [confirmPasswordCheck, setConfirmPasswordCheck] = useState(true);
 
     useEffect(() => {
 		if (currentPassword === true && newPassword === true && confirmNewPassword === true) {
             setColouredDone(true);
         }
 	}, [currentPassword, newPassword, confirmNewPassword])
-
-    
 
     return (
         <SafeAreaView style={styles.signUpScreen}>
@@ -31,7 +44,9 @@ function ChangePassword({navigation}) {
                 <Text style={styles.changePasswordText}>
                     Change Password
                 </Text>
-                <Pressable onPress={() => {navigation.navigate('profile')}}>
+                <Pressable 
+                disabled={confirmPasswordCheck}
+                onPress={() => {navigation.navigate('profile'); ChangePasswordBackend('-NGdf8tGoycJVbcW4Nt7', actualNewPassword);}}>
                     <Text style={[styles.changePasswordDoneText, {color: colouredDone ? 'white' : '#CFCFCF'}]}>
                         Done
                     </Text>
@@ -53,7 +68,7 @@ function ChangePassword({navigation}) {
                 <TextInput
                 style={styles.inputs}
                 placeholder='Confirm New Password'
-                onChangeText={()=>{setConfirmNewPassword(true)}}
+                onChangeText={(Text)=>{setConfirmNewPassword(true); setActualNewPassword(Text)}}
                 />
             </View>
             

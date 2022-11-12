@@ -1114,7 +1114,7 @@ const styles = ScaledSheet.create({
 		fontWeight: '600'
 	},
 	signUpInfoContainer: {
-		marginTop: screenHeight * 0.02
+		marginTop: screenHeight * 0.1
 	},
 	signUpButton: {
 		width: screenWidth * 0.8,
