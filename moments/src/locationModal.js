@@ -109,7 +109,7 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 		}
 	}, [channelSelected])
 
-	console.log(joinEnable)
+	//console.log(joinEnable)
 	return (
 		<Modal visible={multipleModalDisplay} transparent={true}>
 			<View style={styles.multipleLocationModal}>

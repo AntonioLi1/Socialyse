@@ -1518,6 +1518,44 @@ const styles = ScaledSheet.create({
 		borderBottomWidth: 0.7,
 		fontWeight: '500'
 	},
+	verifyPhoneNumHeader: {
+		height: screenHeight * 0.07,
+		backgroundColor: 'black',
+		width: screenWidth,
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'center'
+	},
+	verifyPhoneNumBody: {
+		flex: 1,
+		width: screenWidth,
+		backgroundColor: 'grey'
+	},
+	verifyPhoneNumBodyTextContainer: {
+		backgroundColor: 'green',
+		height: screenHeight * 0.15,
+		justifyContent: 'center',
+
+	},
+	verifyPhoneNumBodyText: {
+		color: 'white', 
+		textAlign: 'center', 
+		lineHeight: '20@s',
+		fontSize: RFValue(14)
+	},
+	verifyPhoneNumFooter: {
+		height: screenHeight * 0.1,
+		width: screenWidth,
+		backgroundColor: 'red'
+	},
+	verifyPhoneNumBackButton: {
+		position: 'absolute',
+		left: '5%',
+	},
+	verificationText: {
+		color: 'white',
+		fontSize: RFValue(18)
+	}
 	
 
 

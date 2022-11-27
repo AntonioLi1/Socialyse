@@ -7,6 +7,9 @@ import FIcon from 'react-native-vector-icons/Feather';
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 import { scale, ScaledSheet } from 'react-native-size-matters';
 import { RFValue } from 'react-native-responsive-fontsize';
+import auth from '@react-native-firebase/auth';
+
+
 
 
 function Settings ({navigation}) {
@@ -64,7 +67,7 @@ function Settings ({navigation}) {
                     </View>
                 </Pressable>
 
-                <Pressable onPress={() => {navigation.navigate('SignUp')}}>
+                <Pressable onPress={() => {navigation.navigate('SignUp'); SignOut();}}>
                     <View style={styles.settingsProfile}>
                         <Text style={styles.settingsText}>
                             Delete Account
@@ -79,7 +82,10 @@ function Settings ({navigation}) {
             </View>
             
             <View style={{flex: 1}}>
-                <Pressable onPress={() => {navigation.navigate('Login')}}>
+                <Pressable onPress={() => { 
+                auth()
+                .signOut()
+                .then(() => console.log('User signed out!'));}}>
                     <View style={styles.settingsLogout}>
                         <Text style={styles.logOutText}>
                             Log Out

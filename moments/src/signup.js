@@ -8,36 +8,6 @@ import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ADIcon from 'react-native-vector-icons/AntDesign'
 import database from '@react-native-firebase/database';
 
-/*const GradientText = (props) => {
-	return (
-	  <MaskedView maskElement={<Text {...props} />}>
-		<LinearGradient
-		  colors={["#AD00FF", "#00FFA3"]}
-		  start={{ x: 0, y: 0.35 }}
-		  end={{ x: 0, y: 0.7 }}
-		>
-		  <Text {...props} style={[props.style, { opacity: 0.3 }]} />
-		</LinearGradient>
-	  </MaskedView>
-	);
-};*/
-
-function TestPost (name) {
-
-    const newReference = database().ref('/users').push();
-
-    console.log(name)
-
-    console.log('Auto generated key: ', newReference.key);
-
-    newReference
-    .set({
-        "name": name, 
-    })
-    .then (() => console.log('updated'))
-}
-
-
 function SignUp ({navigation}) {
 
     const [signUpBlur, setSignUpBlur] = useState(true);
@@ -57,6 +27,7 @@ function SignUp ({navigation}) {
         }
 	}, [email, name, username, password])
     
+
     return (
         <SafeAreaView style={styles.signUpScreen}>
             <View style={styles.signUpScreenSocialyse}>
@@ -107,7 +78,7 @@ function SignUp ({navigation}) {
             
             <Pressable style={[{ backgroundColor: signUpBlur ? '#DCDCDC' : 'white'}, styles.signUpButton]} 
             disabled={signUpBlur}
-            onPress={() => {navigation.navigate('Map'); TestPost(name)}}
+            onPress={() => {navigation.navigate('Map'); }}
             >
                 <Text style={{fontSize: 16, fontWeight: '700', color: signUpBlur ? '#999999' : 'black'}}>
                     Sign Up
@@ -123,3 +94,32 @@ function SignUp ({navigation}) {
 export default SignUp;
 
 //navigation.navigate('Map');
+
+/*const GradientText = (props) => {
+    return (
+      <MaskedView maskElement={<Text {...props} />}>
+        <LinearGradient
+          colors={["#AD00FF", "#00FFA3"]}
+          start={{ x: 0, y: 0.35 }}
+          end={{ x: 0, y: 0.7 }}
+        >
+          <Text {...props} style={[props.style, { opacity: 0.3 }]} />
+        </LinearGradient>
+      </MaskedView>
+    );
+};*/
+
+// function TestPost (name) {
+
+//     const newReference = database().ref('/users').push();
+
+//     console.log(name)
+
+//     console.log('Auto generated key: ', newReference.key);
+
+//     newReference
+//     .set({
+//         "name": name, 
+//     })
+//     .then (() => console.log('updated'))
+// }

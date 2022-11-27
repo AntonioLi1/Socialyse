@@ -16,10 +16,12 @@ import ForgotPassword from './forgotPassword';
 import Settings from './settings';
 import ChangePassword from './changePassword';
 import ChangeNameAndUsername from './changeNameAndUsername';
+import VerifyPhoneNumber from './verifyPhoneNumber';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 
-function Navigator() {
+
+function LoggedInNavigator() {
 	const Stack = createStackNavigator();
 	return (
 		<NavigationContainer>
@@ -36,15 +38,30 @@ function Navigator() {
 				<Stack.Screen options={{headerShown: false}} name="MakeAPost" component={MakeAPost}></Stack.Screen>
 				<Stack.Screen options={{headerShown: false}} name="SocialyseLoading" component={HappySocialysing}></Stack.Screen>
 				<Stack.Screen options={{headerShown: false}} name="PostsFeed" component={PostsFeed}></Stack.Screen>
-				<Stack.Screen options={{headerShown: false}} name="SignUp" component={SignUp}></Stack.Screen>
+				{/* <Stack.Screen options={{headerShown: false}} name="SignUp" component={SignUp}></Stack.Screen> */}
 				<Stack.Screen options={{headerShown: false}} name="TakePhotoForDP" component={TakePhotoForDP}></Stack.Screen>
 				<Stack.Screen options={{headerShown: false}} name="ChooseFromCameraRoll" component={ChooseFromCameraRoll}></Stack.Screen>
-				<Stack.Screen options={{headerShown: false}} name="Login" component={Login}></Stack.Screen>
-				<Stack.Screen options={{headerShown: false}} name="ForgotPassword" component={ForgotPassword}></Stack.Screen>
+				{/* <Stack.Screen options={{headerShown: false}} name="Login" component={Login}></Stack.Screen>
+				<Stack.Screen options={{headerShown: false}} name="ForgotPassword" component={ForgotPassword}></Stack.Screen> */}
 			</Stack.Navigator>
 		</NavigationContainer>
 	);
 }
 
-export default Navigator;
+function LoggedOutNavigator() {
+	const Stack = createStackNavigator();
+
+	return (
+		<NavigationContainer>
+			<Stack.Navigator>
+				<Stack.Screen options={{headerShown: false}} name="SignUp" component={SignUp}></Stack.Screen>
+				<Stack.Screen options={{headerShown: false}} name="Login" component={Login}></Stack.Screen>
+				<Stack.Screen options={{headerShown: false}} name="VerifyPhoneNumber" component={VerifyPhoneNumber}></Stack.Screen>
+				<Stack.Screen options={{headerShown: false}} name="ForgotPassword" component={ForgotPassword}></Stack.Screen>
+			</Stack.Navigator>
+		</NavigationContainer>	
+	)	
+}
+
+export {LoggedOutNavigator, LoggedInNavigator}
 
