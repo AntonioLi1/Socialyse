@@ -14,7 +14,7 @@ import database from '@react-native-firebase/database';
 async function GetUsername () {
 
 	const p =  new Promise((resolve)=>{
-        database().ref('/users/prathik1').on('value',snapshot=>{
+        database().ref('/users/-NE0w02LZXrMYjEZ7TQG').on('value',snapshot=>{
 			//console.log('data is:' + snapshot.val())
             resolve(snapshot.val())
         })

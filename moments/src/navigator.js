@@ -7,7 +7,8 @@ import MakeAPost from './makeAPost';
 import PostsFeed from './postsFeed';
 import HappySocialysing from './happySocialysing';
 import Dm from './dm';
-import SignUp from './signup';
+import LoginAndSignup from './loginAndSignup';
+import SignUp from './signUp';
 import Login from './login';
 import ViewOtherProfile from './otherProfile';
 import TakePhotoForDP from './takePhotoForDP';
@@ -54,6 +55,7 @@ function LoggedOutNavigator() {
 	return (
 		<NavigationContainer>
 			<Stack.Navigator>
+				<Stack.Screen options={{headerShown: false}} name="loginAndSignup" component={LoginAndSignup}></Stack.Screen>
 				<Stack.Screen options={{headerShown: false}} name="SignUp" component={SignUp}></Stack.Screen>
 				<Stack.Screen options={{headerShown: false}} name="Login" component={Login}></Stack.Screen>
 				<Stack.Screen options={{headerShown: false}} name="VerifyPhoneNumber" component={VerifyPhoneNumber}></Stack.Screen>

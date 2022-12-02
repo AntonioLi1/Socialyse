@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { View, Text, Pressable, TextInput, SafeAreaView, Button } from 'react-native';
 import styles from './styles';
 import auth from '@react-native-firebase/auth';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import MIIcon from 'react-native-vector-icons/MaterialIcons';
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
+import {OTP} from 'react-native-otp-form';
+import OTPInputView from '@twotalltotems/react-native-otp-input';
+
 
 function Login({navigation}) {
 
@@ -73,7 +76,7 @@ function Login({navigation}) {
                 <View style={{marginTop: '5%'}}>
                     <Text style={{color: 'black', textAlign: 'center'}}>
                         Dont have an account? {'\n'}
-                        <Pressable onPress={() => {navigation.goBack()}}>
+                        <Pressable onPress={() => {navigation.navigate('SignUp')}}>
                             <Text style={{fontWeight: '700', color: 'black'}}> 
                                 Sign Up.
                             </Text>
@@ -87,10 +90,10 @@ function Login({navigation}) {
 
     // verify code
     return (
-        <SafeAreaView style={styles.MBBackground}>
+        <SafeAreaView style={styles.verificationBackground}>
             <View style={styles.verifyPhoneNumHeader}>
-                <Pressable style={styles.verifyPhoneNumBackButton} onPress={() => {navigation.navigate('Login')}}>
-                    <MIIcon name='arrow-back-ios' size={scale(24)} color='white'/>
+                <Pressable style={styles.verifyPhoneNumBackButton} onPress={() => {navigation.goBack()}}>
+                    <MIIcon name='arrow-back-ios' size={scale(24)} color='black'/>
                 </Pressable>
                 <Text style={styles.verificationText}>
                     Verification
@@ -105,16 +108,23 @@ function Login({navigation}) {
                         0435081321
                     </Text>
                 </View>
-                {/* <TextInput
-                ref={inputRef}
-                keyboardType="number-pad"
-                textContentType="oneTimeCode"
-                maxLength={6}
-                >
 
-                </TextInput> */}
-                <TextInput onChangeText={text => setCode(text)} />
-                <Button title="Confirm Code" onPress={() => confirmCode()} />
+                <OTPInputView
+                style={styles.OTPContainer}
+                pinCount={6}
+                codeInputFieldStyle={styles.OTPIndividualInput}
+                codeInputHighlightStyle={{backgroundColor: 'white'}}
+                onCodeChanged = {(text) => {setCode(text)}}
+                autoFocusOnLoad={true}
+                />    
+                
+                <Pressable onPress={() => confirmCode()} style={styles.confirmCodeButton}>
+                    <Text style={styles.confirmCodeText}>
+                        Confirm code
+                    </Text>
+                </Pressable>
+
+
             </View>
         </SafeAreaView>
     )     

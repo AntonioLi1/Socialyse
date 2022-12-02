@@ -1046,7 +1046,7 @@ const styles = ScaledSheet.create({
 		borderRadius: 15
 	},
 	signUpScreen: {
-		height: screenHeight,
+		flex: 1,
 		width: screenWidth,
 		backgroundColor: '#96B9FE',
 		alignItems: 'center'
@@ -1064,7 +1064,7 @@ const styles = ScaledSheet.create({
 	}, 
 	signUpInputContainerSignUp: {
 		width: screenWidth,
-		marginTop: screenHeight * 0.01,
+		marginTop: screenHeight * 0.1,
 		alignItems: 'center',
 	}, 
 	inputs: {
@@ -1119,11 +1119,12 @@ const styles = ScaledSheet.create({
 	signUpButton: {
 		width: screenWidth * 0.8,
 		height: screenHeight * 0.05,
-		marginTop: screenHeight * 0.03,
+		marginTop: screenHeight * 0.01,
 		borderRadius: 10,
 		flexDirection: 'row',
 		justifyContent: 'center',
-		alignItems: 'center'
+		alignItems: 'center',
+		backgroundColor: 'white'
 	},
 	loginButton: {
 		
@@ -1164,7 +1165,7 @@ const styles = ScaledSheet.create({
 
 	},
 	settingsScreen: {
-		flex: 1,
+		height: screenHeight,
 		width: screenWidth,
 		backgroundColor: 'black',
 		alignItems: 'center',
@@ -1520,28 +1521,31 @@ const styles = ScaledSheet.create({
 	},
 	verifyPhoneNumHeader: {
 		height: screenHeight * 0.07,
-		backgroundColor: 'black',
+		//backgroundColor: 'black',
 		width: screenWidth,
 		flexDirection: 'row',
 		alignItems: 'center',
-		justifyContent: 'center'
+		justifyContent: 'center',
+		backgroundColor: 'white'
 	},
 	verifyPhoneNumBody: {
 		flex: 1,
 		width: screenWidth,
-		backgroundColor: 'grey'
+		alignItems: 'center',
+		backgroundColor: 'white'
 	},
 	verifyPhoneNumBodyTextContainer: {
-		backgroundColor: 'green',
-		height: screenHeight * 0.15,
-		justifyContent: 'center',
+		//backgroundColor: 'grey',
+		height: screenHeight * 0.10,
+		justifyContent: 'flex-end',
 
 	},
 	verifyPhoneNumBodyText: {
-		color: 'white', 
+		color: 'black', 
 		textAlign: 'center', 
 		lineHeight: '20@s',
-		fontSize: RFValue(14)
+		fontSize: RFValue(14),
+		fontWeight: '500'
 	},
 	verifyPhoneNumFooter: {
 		height: screenHeight * 0.1,
@@ -1553,9 +1557,41 @@ const styles = ScaledSheet.create({
 		left: '5%',
 	},
 	verificationText: {
-		color: 'white',
-		fontSize: RFValue(18)
-	}
+		color: 'black',
+		fontSize: RFValue(20),
+		fontWeight: '700'
+	},
+  	OTPIndividualInput: {
+  		height: '40@s',
+  		width: '40@s',
+  		backgroundColor: '#DBDBDB',
+  		borderRadius: 100,
+  		color: 'black',
+  		fontSize: RFValue(16)
+  	},
+  	OTPContainer: {
+  		width: '80%', 
+  		height: screenHeight * 0.2,
+  		//backgroundColor: 'green'
+  	},
+  	confirmCodeButton: {
+  		backgroundColor: '#96B9FE', 
+  		width: screenWidth * 0.3,
+  		alignItems: 'center',
+  		padding: '3%',
+  		borderRadius: 30
+  	},
+  	verificationBackground: {
+  		backgroundColor: 'white',
+  		flex: 1,
+		width: screenWidth,
+		alignItems: 'center',
+  	},
+  	confirmCodeText: {
+  		fontSize: RFValue(12),
+  		color: 'black',
+  		fontWeight: '500'
+  	}
 	
 
 
