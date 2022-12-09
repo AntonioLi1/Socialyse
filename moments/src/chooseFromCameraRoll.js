@@ -6,7 +6,9 @@ import MIIcon from 'react-native-vector-icons/MaterialIcons';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ADIcon from 'react-native-vector-icons/AntDesign'
 import FIcon from 'react-native-vector-icons/Fontisto';
-import { GettingStartedContext } from '../App'
+import { GettingStartedContext } from '../App';
+//import ImagePicker from 'react-native-image-crop-picker';
+
 
 function ChooseFromCameraRoll ({navigation}) {
 
