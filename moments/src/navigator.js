@@ -18,6 +18,7 @@ import Settings from './settings';
 import ChangePassword from './changePassword';
 import ChangeNameAndUsername from './changeNameAndUsername';
 import VerifyPhoneNumber from './verifyPhoneNumber';
+import SendFeedbackModal from './sendFeedbackModal';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 
@@ -33,6 +34,7 @@ function LoggedInNavigator() {
 				<Stack.Screen options={{headerShown: false}} name="Dm" component={Dm}></Stack.Screen>
 				<Stack.Screen options={{headerShown: false}} name="profile" component={OwnProfile}></Stack.Screen>
 				<Stack.Screen options={{headerShown: false}} name="Settings" component={Settings}></Stack.Screen>
+				<Stack.Screen options={{headerShown: false}} name="SendFeedbackModal" component={SendFeedbackModal}></Stack.Screen>
 				<Stack.Screen options={{headerShown: false}} name="ChangeNameAndUsername" component={ChangeNameAndUsername}></Stack.Screen>
 				<Stack.Screen options={{headerShown: false}} name="ChangePassword" component={ChangePassword}></Stack.Screen>
 				<Stack.Screen options={{headerShown: false}} name="notifications" component={NotificationDisplay}></Stack.Screen>

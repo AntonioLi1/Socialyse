@@ -8,11 +8,12 @@ import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 import { scale, ScaledSheet } from 'react-native-size-matters';
 import { RFValue } from 'react-native-responsive-fontsize';
 import auth from '@react-native-firebase/auth';
-
-
-
+import SendFeedbackModal from './sendFeedbackModal';
 
 function Settings ({navigation}) {
+
+    const [sendFeedbackModal, setSendFeedbackModal] = useState(false);
+
     return (
         <SafeAreaView style={styles.settingsScreen}>
             <View style={styles.settingsHeader}>
@@ -56,10 +57,10 @@ function Settings ({navigation}) {
                     </View>
                 </Pressable>
                 
-                <Pressable onPress={() => {navigation.navigate('SignUp')}}>
+                <Pressable onPress={() => setSendFeedbackModal(true)}>
                     <View style={styles.settingsProfile}>
                         <Text style={styles.settingsText}>
-                            Send Us Feedback!
+                            New pin suggestion!
                         </Text>
                         <Pressable onPress={() => navigation.navigate('profile')}>
                             <MIIcon name='arrow-forward-ios' size={25} color='white'/>
@@ -67,7 +68,9 @@ function Settings ({navigation}) {
                     </View>
                 </Pressable>
 
-                <Pressable onPress={() => {navigation.navigate('SignUp'); SignOut();}}>
+                
+
+                <Pressable onPress={() => {}}>
                     <View style={styles.settingsProfile}>
                         <Text style={styles.settingsText}>
                             Delete Account
@@ -93,6 +96,8 @@ function Settings ({navigation}) {
                     </View>	
                 </Pressable>
             </View>
+
+            <SendFeedbackModal sendFeedbackModal={sendFeedbackModal} setSendFeedbackModal={setSendFeedbackModal}/>
                
                 
                 

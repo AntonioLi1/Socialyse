@@ -47,30 +47,34 @@ function ChangePassword({navigation}) {
                 <Pressable 
                 disabled={confirmPasswordCheck}
                 onPress={() => {navigation.navigate('profile'); ChangePasswordBackend('-NGdf8tGoycJVbcW4Nt7', actualNewPassword);}}>
-                    <Text style={[styles.changePasswordDoneText, {color: colouredDone ? 'white' : '#CFCFCF'}]}>
+                    <Text style={[styles.changePasswordDoneText, {color: colouredDone ? 'white' : '#706E6E'}]}>
                         Done
                     </Text>
                 </Pressable>
                 
 			</View>
 
-            <View style={styles.changePasswordInputContainer}>
-                <TextInput
-                style={styles.inputs}
-                placeholder='Current Password'
-                onChangeText={()=>{setCurrentPassword(true)}}
-                />
-                <TextInput
-                style={styles.inputs}
-                placeholder='New Password'
-                onChangeText={()=>{setNewPassword(true)}}
-                />
-                <TextInput
-                style={styles.inputs}
-                placeholder='Confirm New Password'
-                onChangeText={(Text)=>{setConfirmNewPassword(true); setActualNewPassword(Text)}}
-                />
+
+            <View style={{flex: 11,}}>
+                <View style={styles.changePasswordInputContainer}>
+                    <TextInput
+                    style={styles.inputs}
+                    placeholder='Current Password'
+                    onChangeText={()=>{setCurrentPassword(true)}}
+                    />
+                    <TextInput
+                    style={styles.inputs}
+                    placeholder='New Password'
+                    onChangeText={()=>{setNewPassword(true)}}
+                    />
+                    <TextInput
+                    style={styles.inputs}
+                    placeholder='Confirm New Password'
+                    onChangeText={(Text)=>{setConfirmNewPassword(true); setActualNewPassword(Text)}}
+                    />
+                </View>
             </View>
+                
             
         </SafeAreaView>
     )

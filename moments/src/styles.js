@@ -222,6 +222,27 @@ const styles = ScaledSheet.create({
 		shadowRadius: 6.27,
 		elevation: 10,
 	},
+	createPinButton: {
+		width: '50@s',
+		height: '50@s',
+		justifyContent: 'center',
+		alignItems: 'center',
+		borderRadius: 100,
+		backgroundColor: 'black',
+		shadowColor: "#000",
+		shadowOffset: {
+			width: 0,
+			height: 5,
+		},
+		shadowOpacity: 0.34,
+		shadowRadius: 6.27,
+		elevation: 10,
+		position: 'absolute',
+		marginTop: screenHeight * 0.88,
+		marginLeft: screenWidth * 0.82,
+		
+	},
+
 	dmBackButton: {
 		marginRight: '5%'
 	},
@@ -848,6 +869,8 @@ const styles = ScaledSheet.create({
 	justTakenPhoto: {
 		height: screenHeight * 0.55, 
 		width: screenWidth * 0.9, 
+		borderRadius: 30,
+		overflow: 'hidden'
 	},
 	justTakenPhotoContainerMakePost: {
 		overflow:'hidden',
@@ -1330,23 +1353,36 @@ const styles = ScaledSheet.create({
 	},
 	chooseFromCameraRollHeader: {
 		
-		flex: 1,
+		height: screenHeight * 0.08, 
 		width: screenWidth,
 		flexDirection: 'row',
 		justifyContent: 'space-between',
-		alignItems: 'center'
+		alignItems: 'center',
+		// backgroundColor: 'green'
 	},
 	CFCRPhoto: {
-		flex: 9,
-		backgroundColor: 'green'
-	},
-	CFCRMorePhotos: {
-		flex: 6,
-		backgroundColor: 'red'
+		height: screenHeight * 0.55, 
+		width: screenWidth * 0.9, 
+		//marginTop: screenHeight * 0.05,
+		//backgroundColor: 'green'
+		
 	},
 	CFCRBackButton: {
 		transform: [{rotateY: '180deg'}],
 		marginLeft: '3%'
+	},
+	openCameraRollButton: {
+		backgroundColor: '#96B9FE',
+		height: screenHeight * 0.04,
+		width: screenWidth * 0.35,
+		justifyContent: 'center',
+		alignItems: 'center',
+		borderRadius: 30,
+		marginTop: screenHeight * 0.1
+	},
+	openCameraRollText: {
+		fontSize: RFValue(12),
+		color: 'white'
 	},
 	notificationText: {
 		color: 'black', 
@@ -1372,19 +1408,22 @@ const styles = ScaledSheet.create({
 		justifyContent: 'space-between',
 		alignItems: 'center',
 		width: screenWidth,
-		
-		height: screenHeight * 0.08,
+		//backgroundColor: 'green',
+		//height: screenHeight * 0.08,
+		flex: 1,
 		borderBottomColor: 'grey',
 		borderBottomWidth: 0.8
 	},
 	changePasswordInputContainer: {
 		width: screenWidth,
 		alignItems: 'center',
-		marginTop: screenHeight * 0.02
+		marginTop: screenHeight * 0.02,
+		//flex: 11,
 	},
 	changePasswordText: {
 		color: 'white',
-		fontSize: RFValue(16)
+		fontSize: RFValue(16),
+		fontWeight: '900'
 	},
 	changePasswordDoneText: {
 		marginRight: '5%',
@@ -1485,10 +1524,12 @@ const styles = ScaledSheet.create({
 		width: '100%',
 		flex: 1,
 		alignItems: 'center',
-		paddingHorizontal: '5%'
+		//paddingHorizontal: '5%',
+		borderBottomColor: 'grey',
+		borderBottomWidth: 0.8
 	},
 	ChangeNameAndUsernameBody: {
-		flex: 19,
+		flex: 11,
 		width: screenWidth
 	},
 	ChangeNameAndUsernameDPContainer: {
@@ -1591,7 +1632,43 @@ const styles = ScaledSheet.create({
   		fontSize: RFValue(12),
   		color: 'black',
   		fontWeight: '500'
-  	}
+  	},
+  	signUpScreen: {
+		flex: 1,
+		width: screenWidth,
+		backgroundColor: '#96B9FE',
+		alignItems: 'center'
+	},
+	sendFeedbackModalFullScreen: {
+		backgroundColor: 'rgba(0, 0, 0, 0.8)',
+	},
+	sendFeedbackModal: {
+		height: screenHeight * 0.35,
+		width: screenWidth * 0.96,
+		backgroundColor: 'white',
+		borderRadius: 20,
+		alignSelf: 'center',
+		marginTop: screenHeight * 0.15,
+	},
+	forgotPasswordSubmit: {
+		height: screenHeight * 0.05,
+		width: screenWidth * 0.2,
+		backgroundColor: 'white',
+		alignItems: 'center',
+		justifyContent: 'center',
+		borderRadius: 15,
+		marginTop: screenHeight * 0.1
+	},
+	forgotPasswordSubmitText: {
+		fontSize: RFValue(12),
+		fontWeight: '700',
+		color: 'black'
+	},
+	forgotPasswordBackToLogin: {
+		marginTop: screenHeight * 0.1,
+		color: 'black',
+		fontWeight: '700'
+	}
 	
 
 
@@ -1603,5 +1680,5 @@ const styles = ScaledSheet.create({
 
 
 })
-
+//backgroundColor: 'rgba(0, 0, 0, 0.25)',
 export default styles;

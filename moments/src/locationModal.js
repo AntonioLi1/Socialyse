@@ -53,10 +53,9 @@ export function LocationModalOne({modalDisplay, setModalDisplay, setMessageDispl
 
 	const [isPressed, setIsPressed] = useState(false);
 	const [channelStatus, setChannelStatus] = useState(true);
-	const [multipleChannels, setMultipleChannels] = useState(false);
 	const navigation = useNavigation();
 	
-
+	
 	
 	return (
 		<Modal visible={modalDisplay} transparent={true}>
@@ -73,7 +72,7 @@ export function LocationModalOne({modalDisplay, setModalDisplay, setMessageDispl
 					</Text>
 
 					<Pressable style={[{ backgroundColor: isPressed ? 'white' : 'black' }, styles.checkInButton ]} 
-					onPress={() => {setIsPressed(!isPressed); setChannelStatus(!channelStatus); navigation.navigate('MakeAPost'); setModalDisplay(false)}}>
+					onPress={() => {setIsPressed(!isPressed); setChannelStatus(!channelStatus); {channelStatus ? navigation.navigate('MakeAPost') : setModalDisplay(false)} setModalDisplay(false)}}>
 						{channelStatus ? 
 						<Text style={styles.checkInText}>Join</Text> 
 						: <Text style={styles.checkedInText}>Leave</Text>}					
@@ -81,7 +80,7 @@ export function LocationModalOne({modalDisplay, setModalDisplay, setMessageDispl
 				</View>
 				
 				<IIcon style={styles.locationModalClose} name='close-outline' size={scale(30)}
-				onPress={() => {setModalDisplay(false); setMessageDisplay(true); setNotifDisplay(true)}}/> 
+				onPress={() => {setModalDisplay(false); setMessageDisplay(true); setNotifDisplay(true);}}/> 
 			</View>	
 				
 				
@@ -104,12 +103,15 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 			if (pinData[counter].selected === true) {
 				setChannelSelected(true)
 				setJoinEnable(false)
-			}
+				return
+			} 
 			counter++
 		}
+		setJoinEnable(true)
 	}, [channelSelected])
 
-	//console.log(joinEnable)
+	//console.log("channelstatus", channelStatus)
+
 	return (
 		<Modal visible={multipleModalDisplay} transparent={true}>
 			<View style={styles.multipleLocationModal}>
@@ -129,7 +131,7 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 					</View>
 					
 					<IIcon style={styles.locationModalClose} name='close-outline' size={scale(30)}
-					onPress={() => {setMultipleModalDisplay(false); setMessageDisplay(true); setNotifDisplay(true)}}/>
+					onPress={() => {setMultipleModalDisplay(false); setMessageDisplay(true); setNotifDisplay(true);}}/>
 				</View>
 				<View style={{flex: 5}}>
 					<FlatList
@@ -166,7 +168,7 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 				</View>
 				<View style={{flex: 1, justifyContent: 'center'}}>
 					<Pressable disabled={joinEnable} style={[{ backgroundColor: isPressed ? 'white' : 'black' }, styles.multiCheckInButton ]} 
-					onPress={() => {setIsPressed(!isPressed); setChannelStatus(!channelStatus); navigation.navigate('MakeAPost'); setMultipleModalDisplay(false)}}>
+					onPress={() => {setIsPressed(!isPressed); setChannelStatus(!channelStatus); {channelStatus ? navigation.navigate('MakeAPost') : setMultipleModalDisplay(false)} setMultipleModalDisplay(false)}}>
 					{channelStatus ? 
 					
 					<Text style={[{color: channelSelected ? 'white' : '#727272'},styles.multiCheckInText]}>Join</Text> 

@@ -8,7 +8,7 @@ import FAIcon from 'react-native-vector-icons/FontAwesome';
 import { GettingStartedContext } from '../App'
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 
-function ForgotPassword () {
+function ForgotPassword ({navigation}) {
     return (
         <SafeAreaView style={styles.signUpScreen}>
             <View style={styles.signUpScreenSocialyse}>
@@ -20,15 +20,28 @@ function ForgotPassword () {
             <View style={styles.signUpInputContainer}>
                 <TextInput
                 style={styles.inputs}
-                placeholder='Username'
+                placeholder='Phone Number'
                 onChangeText={()=>{}}
                 />
                 <TextInput
                 style={styles.inputs}
-                placeholder='Password'
+                placeholder='Username'
                 onChangeText={()=>{}}
                 />
             </View>
+
+            <Pressable style={styles.forgotPasswordSubmit}>
+                <Text style={styles.forgotPasswordSubmitText}>
+                    Retrieve
+                </Text>
+            </Pressable>
+
+            <Pressable onPress={() => {navigation.navigate('Login')}}>
+                <Text style={styles.forgotPasswordBackToLogin}>
+                    Back to login.
+                </Text>
+            </Pressable>
+                
         </SafeAreaView>
     )
 };

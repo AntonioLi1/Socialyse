@@ -32,14 +32,7 @@ function CaptionModal({captionModal, setCaptionModal, setCaption, setAddedCaptio
 
                 <Text style={styles.inputRemaining}>
                     {inputCount}/150
-                </Text>
-                    
-                
-
-                    
-
-                
-                
+                </Text>  
             </View>
 
         </Modal>

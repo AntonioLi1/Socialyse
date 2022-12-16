@@ -85,7 +85,7 @@ function DmDisplay({navigation}) {
 					{dms.map((dm)=>
 						<Pressable key={dm.id} onPress={() => {navigation.navigate('Dm')}}>
 							<View style={styles.newConnectionProfile}>
-								<Pressable onPress={() => {navigation.navigate('OtherProfile')}}>
+								<Pressable onPress={() => {navigation.navigate('Dm')}}>
 									<View style={styles.newConnectionProfilePic}/>
 								</Pressable>
 									

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View, Pressable, Text } from 'react-native';
+import { View, Pressable, Text, SafeAreaView } from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -53,7 +53,7 @@ function MapDisplay({ navigation }) {
 	}, [])
     //console.log(modalDisplay)
 	return (
-		<View style={styles.fullScreen}>
+		<SafeAreaView style={styles.fullScreen}>
 			<MapView
 				provider={PROVIDER_GOOGLE}
 				style={styles.map}
@@ -68,9 +68,9 @@ function MapDisplay({ navigation }) {
 				<Marker coordinate={{ latitude: latitude, longitude: longitude }}
 					onPress={() => { 
                         if (pin.length > 1) {                           
-                            setMultipleModalDisplay(true); setMessageDisplay(false); setNotifDisplay(false);
+                            setMultipleModalDisplay(true); setMessageDisplay(false); setNotifDisplay(false); 
                         } else {
-                            setModalDisplay(true); setMessageDisplay(false); setNotifDisplay(false);
+                            setModalDisplay(true); setMessageDisplay(false); setNotifDisplay(false); 
                         }
                         // setModalDisplay(true); setMessageDisplay(false); setNotifDisplay(false);
                         }} />
@@ -79,7 +79,7 @@ function MapDisplay({ navigation }) {
 
 			<LocationModalOne modalDisplay={modalDisplay} setModalDisplay={setModalDisplay} setMessageDisplay={setMessageDisplay} setNotifDisplay={setNotifDisplay} />
             
-            <LocationModalMultiple multipleModalDisplay={multipleModalDisplay} setMultipleModalDisplay={setMultipleModalDisplay} setMessageDisplay={setMessageDisplay} setNotifDisplay={setNotifDisplay}/>
+            <LocationModalMultiple multipleModalDisplay={multipleModalDisplay} setMultipleModalDisplay={setMultipleModalDisplay} setMessageDisplay={setMessageDisplay} setNotifDisplay={setNotifDisplay} />
 			
             {messageDisplay ?
 				<View style={styles.messageIconContainer}>
@@ -100,9 +100,10 @@ function MapDisplay({ navigation }) {
 					</View>
 				</View>
 				: null}
+			
 
 
-		</View>
+		</SafeAreaView>
 	);
 };
 

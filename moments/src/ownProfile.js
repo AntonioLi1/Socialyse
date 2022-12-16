@@ -21,7 +21,7 @@ async function GetUsername () {
     });
 	const data = await p.then();
 	
-	console.log('data****',data);
+	//console.log('data****',data);
 	
 	return data;
 
@@ -54,7 +54,7 @@ function OwnProfile ({navigation}) {
 		getData()
 	}, [])
 
-	console.log(userDetails)
+	//console.log(userDetails)
 
 	return (
 	<SafeAreaView style={styles.profileScreen}>

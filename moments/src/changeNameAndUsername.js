@@ -23,19 +23,19 @@ function ChangeNameAndUsername ({navigation}) {
     return (
         <SafeAreaView style={styles.settingsScreen}>
             <View style={styles.ChangeNameAndUsernameHeader}>
-                <Pressable onPress={() => {navigation.goBack()}}>
-                    <Text style={{color: 'white', fontSize: RFValue(14), fontWeight: '400'}}>
-                        Cancel
-                    </Text>
-                </Pressable>
-                    
 
+                <Pressable style={styles.changePasswordBackButton} onPress={() => navigation.goBack()}>
+					<MIIcon name='arrow-forward-ios' size={scale(30)} color='white'/>
+				</Pressable>
+                    
                 <Text style={{color: 'white', fontSize: RFValue(16), fontWeight: '900'}}>
                     Edit profile
                 </Text>
 
-                <Pressable disabled={!doneEnabled}>
-                    <Text style={{color: doneEnabled ? 'white' : '#706E6E', fontSize: RFValue(14), fontWeight: '800'}}>
+                <Pressable 
+                disabled={!doneEnabled}
+                onPress={() => {navigation.navigate('profile'); ChangePasswordBackend('-NGdf8tGoycJVbcW4Nt7', actualNewPassword);}}>
+                    <Text style={[styles.changePasswordDoneText, {color: doneEnabled ? 'white' : '#706E6E'}]}>
                         Done
                     </Text>
                 </Pressable>

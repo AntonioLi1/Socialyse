@@ -1,7 +1,8 @@
 import { StyleSheet, Text, View, SafeAreaView, Pressable, ScrollView, TextInput } from 'react-native'
 import React, {useContext, useState, useEffect}from 'react';
 import {GettingStartedContext} from '../App'
-
+//import database from '@react-native-firebase/database';
+import firestore from '@react-native-firebase/firestore';
 // STYLES
 import styles from './styles';
 
@@ -12,92 +13,133 @@ import supabase from "../supabase";
 import MIIcon from 'react-native-vector-icons/MaterialIcons';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ADIcon from 'react-native-vector-icons/AntDesign'
-import { ContinousBaseGesture } from 'react-native-gesture-handler/lib/typescript/handlers/gestures/gesture';
 
 
-const NotificationDisplay = () => {
-	const {messageDisplay, setMessageDisplay, notifDisplay, setNotifDisplay} = useContext(GettingStartedContext);
+
+
+
+
+
+const NotificationDisplay = ({navigation}) => {
+	const {messageDisplay, setMessageDisplay, notifDisplay, setNotifDisplay, user, setUser} = useContext(GettingStartedContext);
 
 	const [notifData, setnotifData] = useState(null)
 	const [loading, setLoading] = useState(false)
 	const [input, setInput] = useState('')
+
+	console.log(user.uid)
 	
-	const fetchData = async () => {
 
-		setLoading(true);
+	async function getNotifs() {
+		let returnArray = [];
+		await firestore().collection('Users').get()
+		.then((querySnapshot) => {
+			querySnapshot.forEach(snapshot => {
+				let data = snapshot.data()
+				returnArray.push(data)
+				//console.log("here",data)
+			})
+		})
+		//console.log('returned array',returnArray[0].FriendCount)
+		return returnArray;
+	}
 
-		let {error, data} = await supabase
-		.from('testChannel')
-		.select()
-		
-		setLoading(false);
+	// firestore db
 
-		if(error) 
-		{
-			console.log('gg', error.message)
-			return false
-		}
-		
-		if(data) {
+	const users = async () => {
+		let retArray = [];
+		await firestore().collection('Users').get()
+		.then((querySnapshot) => {
+			querySnapshot.forEach(snapshot => {
+				let data = snapshot.data()
+				retArray.push(data)
+				//console.log("here",data)
+			})
+		})
+		console.log('returned array',retArray[0].FriendCount)
+		return retArray;
+
+	}
+	//console.log(users)
+	//users();
+
+
+
+	const users2 = async () => {
+		await firestore()
+		.collection('Users')
+		.doc('pveyvs6ViHYfp1uskHks')
+		.collection('Friends')
+		.doc('UidOfOtherPerson')
+		.get()
+		.then(docSnapshot => {
+			console.log(docSnapshot)
+			console.log('exists: ', docSnapshot.exists);
+			if(docSnapshot.exists) {
+				console.log('data', docSnapshot.data())
+			}
+
+			// querySnapshot.forEach(queryDocumentSnapshot => {
+			// 	console.log(queryDocumentSnapshot.get())
+			// })
 			
-			return data
-		}
+		})
+
+	}
+	//console.log(users)
+	//users2();
+
+	const users3 = async () => {
+		await firestore()
+		.collection('Users')
+		.doc('pveyvs6ViHYfp1uskHks')
+		.collection('Friends')
+		.get()
+		.then((querySnapshot) => {
+			querySnapshot.forEach(snapshot => {
+				let data = snapshot.data()
+				console.log("here",data)
+			})
+		})
+
+	}
+	//console.log(users)
+	//users3();
+	
+
+
+
+	// Write data with random ID
+	const writeData = async() => {
+		await firestore()
+		.collection('PinRequests')
+		.add({
+		  Name: 'testing',
+		  Location: 'testingLocation',
+		})
+		.then(() => {
+		  console.log('User added!');
+		});
 	}
 
-	useEffect(() => {
+	//writeData()
 
-		// INITIALIZE
-		
-		init ()
-		
-		console.log(notifData)
-	}, [])
-
-
-	const init = async () =>
-	{
-		
-		const result = await fetchData()
-		//setLoading(true);
-		setnotifData(result)
-		console.log("result", result)
+	// Write data with specified ID
+	const writeData2 = async() => {
+		await firestore()
+		.collection('PinRequests')
+		.doc('TestingID')
+		.set({
+		  Name: 'testing2',
+		  Location: 'testingLocation2',
+		})
+		.then(() => {
+		  console.log('User added!');
+		});
 	}
 
-	//if (loading) return null;
+	//writeData2()
 
-	// pushing data
-	const pushItem = async (parameter, param2) => {
-		const { data, error } = await supabase
-		.from('testChannel')
-		.insert([
-			{ name: parameter, lastname: param2},
-		])
-		if(error) 
-		{
-			console.log('gg', error.message)
-			return false
-		}
-		
-		if(data) {
-			return data
-		}
-	}
-
-	// deleting data
-	const deleteItem = async() => {
-		const { data, error } = await supabase
-		.from('testChannel')
-		.delete()
-		.eq('id', 4)
-	}
-
-	// update data
-	const updateData = async() => {
-		const { data, error } = await supabase
-		.from('testChannel')
-		.update({ name: "testies" })
-		.eq('id', '2')
-	}
 
 	return (
 		<SafeAreaView style={styles.notifFullScreen}>   
@@ -128,4 +170,138 @@ const NotificationDisplay = () => {
 }
 
 export default NotificationDisplay
+
+
+// real time db mode
+// async function GetNotifsRTDB () {
+
+// 	let notifarr = [];
+
+// 	const p =  new Promise((resolve)=>{
+//         database().ref('/notifs/').on('value',snapshot=>{
+// 			// console.log('data is:' + snapshot.val())
+//             resolve(snapshot.val())
+//         })
+//     });
+// 	const data = await p.then();
+
+	//console.log('notifs',data);
+
+	///////////////////////////////////////////////////////
+
+	// const p2 =  new Promise((resolve)=>{
+    //     database().ref('/channels/').on('value',snapshot=>{
+	// 		// console.log('data is:' + snapshot.val())
+    //         resolve(snapshot.val())
+    //     })
+    // });
+
+	// const data2 = await p2.then(
+	// 	snapshot => {
+	// 		snapshot.forEach(
+	// 			console.log()
+	// 		)
+	// 	}
+	// );
+	//return data;
+
+//}
+
+// async function testFunc () {
+// 	const data = new Promise((resolve) => {
+// 		firestore().collection('PinRequests').get()
+// 	})
+// }
+
+
+
+// SUPABASE
+	// const fetchData = async () => {
+
+	// 	setLoading(true);
+
+	// 	let {error, data} = await supabase
+	// 	.from('testChannel')
+	// 	.select()
+		
+	// 	setLoading(false);
+
+	// 	if(error) 
+	// 	{
+	// 		console.log('gg', error.message)
+	// 		return false
+	// 	}
+		
+	// 	if(data) {
+			
+	// 		return data
+	// 	}
+	// }
+
+	// useEffect(() => {
+
+	// 	// INITIALIZE
+		
+	// 	init ()
+		
+	// 	console.log(notifData)
+	// }, [])
+
+
+	// const init = async () =>
+	// {
+		
+	// 	const result = await fetchData()
+	// 	//setLoading(true);
+	// 	setnotifData(result)
+	// 	console.log("result", result)
+	// }
+
+	//if (loading) return null;
+
+	// pushing data
+	// const pushItem = async (parameter, param2) => {
+	// 	const { data, error } = await supabase
+	// 	.from('testChannel')
+	// 	.insert([
+	// 		{ name: parameter, lastname: param2},
+	// 	])
+	// 	if(error) 
+	// 	{
+	// 		console.log('gg', error.message)
+	// 		return false
+	// 	}
+		
+	// 	if(data) {
+	// 		return data
+	// 	}
+	// }
+
+	// deleting data
+	// const deleteItem = async() => {
+	// 	const { data, error } = await supabase
+	// 	.from('testChannel')
+	// 	.delete()
+	// 	.eq('id', 4)
+	// }
+
+	// update data
+	// const updateData = async() => {
+	// 	const { data, error } = await supabase
+	// 	.from('testChannel')
+	// 	.update({ name: "testies" })
+	// 	.eq('id', '2')
+	// }
+	////////////////////////////////////////////////////////
+
+	// FIREBASE
+	// real time db
+	// const getData = async () => {
+	// 	const data = await GetNotifsRTDB()
+	// 	// console.log('data',data)
+	// 	setnotifData(data)
+	// } 
+	// useEffect(() => {
+	// 	getData()
+	// }, [])
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { View, Text, Pressable, TextInput, SafeAreaView } from 'react-native';
 import styles from './styles';
 import ActiveNowModal from './captionModal';
@@ -6,10 +6,15 @@ import IIcon from 'react-native-vector-icons/Ionicons'
 import MIIcon from 'react-native-vector-icons/MaterialIcons';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ADIcon from 'react-native-vector-icons/AntDesign'
-import database from '@react-native-firebase/database';
+//import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 import OTPInputView from '@twotalltotems/react-native-otp-input';
+import {GettingStartedContext} from '../App'
+
+//import supabase from "../supabase";
+
 
 
 function SignUp ({navigation}) {
@@ -27,12 +32,16 @@ function SignUp ({navigation}) {
     const [usernameInputCheck, setUsernameInputCheck] = useState(false);
     const [passwordInputCheck, setPasswordInputCheck] = useState(false);
 
+    //const {user, setUser} = useContext(GettingStartedContext);
+
+
     useEffect(() => {
 		if (phoneInputCheck === true && nameInputCheck === true && usernameInputCheck === true && passwordInputCheck === true) {
             setSignUpBlur(false);
         }
 	}, [phoneNumber, name, username, password])
 
+    // FIREBASE
     // Handle the button press
     async function signInWithPhoneNumber(phoneNumber) {
         //const confirmation = await auth().signInWithPhoneNumber(phoneNumber);
@@ -42,11 +51,31 @@ function SignUp ({navigation}) {
 
     async function confirmCode() {
         try {
-          await confirm.confirm(code);
+            console.log('the code',code)
+            await confirm.confirm(code);
+            // const writeData2 = async() => {
+            //     await firestore()
+            //     .collection('PinRequests')
+            //     .doc('TestingID')
+            //     .set({
+            //       Name: 'testing2',
+            //       Location: 'testingLocation2',
+            //     })
+            //     .then(() => {
+            //       console.log('User added!');
+            //     });
+            // }
+            // await firestore()
+            // .collection
+            //console.log('user uid frmo signup', user.uid)
+
+
+
         } catch (error) {
           console.log('Invalid code.');
         }
     }
+    /////////////////////////////////////////
 
     if (!confirm) {
         return (
@@ -82,7 +111,7 @@ function SignUp ({navigation}) {
                 
                 
                 <Pressable style={[{ backgroundColor: signUpBlur ? '#DCDCDC' : 'white'}, styles.signUpButton]} 
-                disabled={signUpBlur}
+                disabled={false}
                 onPress={() => {signInWithPhoneNumber(phoneNumber)}}
                 >
                     <Text style={{fontSize: 16, fontWeight: '700', color: signUpBlur ? '#999999' : 'black'}}>
@@ -121,7 +150,7 @@ function SignUp ({navigation}) {
                     <Text style={styles.verifyPhoneNumBodyText}>
                         Please enter code sent to:
                         {'\n'}
-                        0435081321
+                        {phoneNumber}
                     </Text>
                 </View>
 
