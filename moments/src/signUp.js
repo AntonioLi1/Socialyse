@@ -44,8 +44,7 @@ function SignUp ({navigation}) {
     // FIREBASE
     // Handle the button press
     async function signInWithPhoneNumber(phoneNumber) {
-        //const confirmation = await auth().signInWithPhoneNumber(phoneNumber);
-        const confirmation = await auth().verifyPhoneNumber(phoneNumber);
+        const confirmation = await auth().signInWithPhoneNumber(phoneNumber);
         setConfirm(confirmation);
     }
 
@@ -72,7 +71,7 @@ function SignUp ({navigation}) {
 
 
         } catch (error) {
-          console.log('Invalid code.');
+          console.log('Invalid code.', error);
         }
     }
     /////////////////////////////////////////
