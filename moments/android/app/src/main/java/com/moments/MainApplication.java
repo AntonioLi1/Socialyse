@@ -12,6 +12,14 @@ import com.facebook.soloader.SoLoader;
 import com.moments.newarchitecture.MainApplicationReactNativeHost;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+// new
+//import io.invertase.firebase.storage.ReactNativeFirebaseStoragePackage;
+//import io.invertase.firebase.RNFirebasePackage;
+//import io.invertase.firebase.auth.RNFirebaseAuthPackage;
+//import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
+//import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;
+////////////////////
+
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -29,6 +37,11 @@ public class MainApplication extends Application implements ReactApplication {
           // Packages that cannot be autolinked yet can be added manually here, for example:
           // packages.add(new MyReactNativePackage());
           //packages.add(new RNTextGradientPackage());
+          //packages.add(new ReactNativeFirebaseStoragePackage());
+          // packages.add(new RNFirebaseMessagingPackage());
+          // packages.add(new RNFirebaseNotificationsPackage());
+          //packages.add(new RNFirebaseAuthPackage())
+          //packages.add(new RNFirebasePackage())
           return packages;
         }
 

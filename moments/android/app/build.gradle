@@ -132,7 +132,7 @@ def reactNativeArchitectures() {
 
 android {
     ndkVersion rootProject.ext.ndkVersion
-    buildToolsVersion "27.0.3"
+    //buildToolsVersion "27.0.3"
     compileSdkVersion rootProject.ext.compileSdkVersion
     //compileSdkVersion 33
 
@@ -264,13 +264,15 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
 
     // new
-    // Import the BoM for the Firebase platform
+    // // Import the BoM for the Firebase platform
     implementation platform('com.google.firebase:firebase-bom:31.1.1')
+    implementation 'com.google.firebase:firebase-analytics'
 
-    // Add the dependency for the Firebase Authentication library
-    // When using the BoM, you don't specify versions in Firebase library dependencies
-    implementation 'com.google.firebase:firebase-auth'
-    implementation 'com.google.android.play:integrity:1.0.2'
+    // // Add the dependency for the Firebase Authentication library
+    // // When using the BoM, you don't specify versions in Firebase library dependencies
+    // implementation 'com.google.firebase:firebase-auth'
+    // implementation 'com.google.android.play:integrity:1.0.2'
+    implementation "com.google.firebase:firebase-storage:16.5.0"
     ///////////////////////////////////////////////////////////////////////////////////////
 
     //noinspection GradleDynamicVersion

@@ -4,7 +4,7 @@ import styles from './styles';
 import IIcon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
-import { GettingStartedContext } from '../App'
+import { LoggedInContext } from '../App'
 import ImagePicker from 'react-native-image-crop-picker';
 import { Dimensions } from 'react-native';
 
@@ -14,7 +14,7 @@ const screenHeight = Dimensions.get("window").height
 function DPModal () {
 
     const navigation = useNavigation();
-    const { editProfileModal, setEditProfileModal, dpURL, setDpURL } = useContext(GettingStartedContext);
+    const { editProfileModal, setEditProfileModal, dpURL, setDpURL } = useContext(LoggedInContext);
 
     function PickImage() {
         ImagePicker.openPicker({

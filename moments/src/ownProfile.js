@@ -1,82 +1,126 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View,  Text, Pressable, SafeAreaView, SnapshotViewIOSComponent, SliderComponent  } from 'react-native';
+import { View,  Text, Pressable, SafeAreaView, ImageBackground, Image  } from 'react-native';
 import styles from './styles';
 import DPModal from './DPModal';
 import IIcon from 'react-native-vector-icons/Ionicons'
 import MIIcon from 'react-native-vector-icons/MaterialIcons';
 import FIcon from 'react-native-vector-icons/Feather';
-import { GettingStartedContext } from '../App'
+import { LoggedInContext } from '../App'
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
-import database from '@react-native-firebase/database';
+import storage from '@react-native-firebase/storage';
+import firestore from '@react-native-firebase/firestore';
 
 
-async function GetUsername () {
+// async function GetUsername () {
 
-	const p =  new Promise((resolve)=>{
-        database().ref('/users/-NE0w02LZXrMYjEZ7TQG').on('value',snapshot=>{
-			//console.log('data is:' + snapshot.val())
-            resolve(snapshot.val())
-        })
-    });
-	const data = await p.then();
+// 	const p =  new Promise((resolve)=>{
+//         database().ref('/users/-NE0w02LZXrMYjEZ7TQG').on('value',snapshot=>{
+// 			//console.log('data is:' + snapshot.val())
+//             resolve(snapshot.val())
+//         })
+//     });
+// 	const data = await p.then();
 	
-	//console.log('data****',data);
-	
-	return data;
+// 	return data; 
+// }
 
-	
-	// let data = new Promise((resolve)=>{
-    //     database().ref('/users/prathik1').on('value',snapshot=>{
-	// 		//console.log('data is:' + snapshot.val())
-    //         resolve(snapshot.val())
-    //     })
-    // })
-	// console.log(data)
-
-	// return data 
-
-
-}
+async function ViewOwnProfile(UserID) {
+	let dataRet = {
+		Name: '',
+		Username: '',
+		ProfilePic: '',
+		FriendCount: ''
+	};
+	await firestore()
+	.collection('Users')
+	.doc(UserID)
+	.get()
+	.then(docSnapshot => {
+		//console.log('docsnapshot', docSnapshot)
+		if(docSnapshot.exists) {
+		  dataRet.Name = docSnapshot.data().Name;
+		  dataRet.Username = docSnapshot.data().Username;
+		  dataRet.ProfilePic = docSnapshot.data().ProfilePic;
+		} 
+	})
+  
+	await firestore()
+	.collection('Friends')
+	.doc(UserID)
+	.get()
+	.then(docSnapshot => {
+		if(docSnapshot.exists) {
+		  dataRet.FriendCount = docSnapshot.data().FriendCount;
+		} 
+	})
+	//console.log(dataRet)
+	return dataRet
+  }
 
 function OwnProfile ({navigation}) {
 
 	const [DPModalDisplay, setDPModalDisplay] = useState(false);
-	const { editProfileModal, setEditProfileModal, testing, setTesting } = useContext(GettingStartedContext);
+	const { editProfileModal, setEditProfileModal, testing, setTesting, user, dpURL } = useContext(LoggedInContext);
 	const [userDetails, setUserDetails] = useState('')
+	const [FBImageURL, setFBImageURL] = useState(null)
+	//const [initializing, setInitializing] = useState(true);
+
+	//console.log('user', user)
+	
+	// async function getImage(profilePicURL) {
+	// 	const imageTest = await storage().ref(profilePicURL).getDownloadURL();
+	// 	console.log('imagetest',imageTest)
+	// 	setFBImageURL(imageTest)
+	// }
+
+	async function getImage2() {
+		const imageTest = await storage().ref('/ProfilePics/16a2066d261a38a5ba3bff2e101acb93.jpg').getDownloadURL();
+		console.log('imagetest',imageTest)
+		//setFBImageURL(imageTest)
+	}
+
+	getImage2()
 
 	const getData = async () => {
-		const data = await GetUsername()
-		// console.log('data',data)
+		const data = await ViewOwnProfile(user.uid)
 		setUserDetails(data)
-	} 
-	useEffect(() => {
-		getData()
-	}, [])
+		//console.log(user.uid)
+		//console.log(userDetails)
+		// console.log(userDetails)
+		// const DpURL = await getImage(userDetails.ProfilePic)
+		// setFBImageURL(DpURL)
+		// if (initializing) setInitializing(false)
+	}
 
-	//console.log(userDetails)
+    useEffect(() => {
+		getData()
+		//getImage2()
+    },[])
+
+	//console.log('userdetals',userDetails)
+	//console.log('dpurl', FBImageURL)
+
 
 	return (
 	<SafeAreaView style={styles.profileScreen}>
-		<View style={styles.profilePageProfile}>
-			<Pressable onPress={() => {navigation.navigate('SignUp')}}>
-				<Text>
-					go to signup
-				</Text>
-			</Pressable>
-			<Pressable style={styles.profilePicEdit} onPress={() => {setEditProfileModal(true)}}>
-				<FIcon name="edit" size={scale(32)} color='white'/>
-			</Pressable>
-		</View>   
+		<View style={styles.profilePageDPContainer}>
+			<ImageBackground  source={{uri: dpURL}} style={styles.profilePageDP} >
+				<Pressable style={styles.profilePicEdit} onPress={() => {setEditProfileModal(true)}}>
+					<FIcon name="edit" size={scale(32)} color='white'/>
+				</Pressable>
+			</ImageBackground>   
+		</View>
+			
 		
 		<View style={styles.profilePageUsernameNameSettingsContainer}>
 			<View style={styles.usernameAndNameContainer}>
 				<Text style={styles.profilePageName}>
-					{userDetails.name}
+					{userDetails.Name}
 					
 				</Text>
 				<Text style={styles.profilePageUsername}>
-					{userDetails.username}
+					{userDetails.Username}
 				</Text>
 			</View>
 			<Pressable onPress={() => {navigation.navigate('Settings')}}>
@@ -89,7 +133,7 @@ function OwnProfile ({navigation}) {
 		<View style={styles.profilePageFooter}>
 			<View style={{flexDirection: 'row', marginTop: '10%', justifyContent: 'center'}}>
 				<Text style={styles.socialyseCounter}>
-					SOCIALYSED: 10 
+					SOCIALYSED: {userDetails.FriendCount}
 				</Text>
 				<IIcon style={{marginLeft: '1%'}} name="md-people" color='white' size={25}/>
 			</View>
@@ -214,6 +258,12 @@ return new Promise((resolve)=>{
 // 	})
 
 
+// }
+
+// async function getImage() {
+// 	const imageTest = await storage().ref('/profilePics/16a2066d261a38a5ba3bff2e101acb93.jpg').getDownloadURL();
+// 	console.log('imagetest',imageTest)
+// 	setFBImageURL(imageTest)
 // }
 
 

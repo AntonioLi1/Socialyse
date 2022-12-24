@@ -1,12 +1,11 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View, Pressable, Text, SafeAreaView } from 'react-native';
+import { View, Pressable, Text, SafeAreaView, TurboModuleRegistry } from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import styles from './styles'
 import { LocationModalOne, LocationModalMultiple } from './locationModal';
-import { GettingStartedContext } from '../App'
-
+import { LoggedInContext } from '../App'
+import firestore from '@react-native-firebase/firestore';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import IIcon from 'react-native-vector-icons/Ionicons';
 import EIcon from 'react-native-vector-icons/Entypo';
@@ -15,23 +14,46 @@ import { PinchGesture } from 'react-native-gesture-handler/lib/typescript/handle
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 
 
-const pin = [
-	{
-		channelName: 'Law Library',
-		activeUsers: 40,
-		key: 1
-	},
-	{
-		channelName: 'Main Library',
-		activeUsers: 10,
-		key: 2
-	},
-	{
-		channelName: 'Some Library',
-		activeUsers: 90,
-		key: 3
-	},
-]
+// const pin = [
+// 	{
+// 		channelName: 'Law Library',
+// 		activeUsers: 40,
+// 		key: 1
+// 	},
+// 	{
+// 		channelName: 'Main Library',
+// 		activeUsers: 10,
+// 		key: 2
+// 	},
+// 	{
+// 		channelName: 'Some Library',
+// 		activeUsers: 90,
+// 		key: 3
+// 	},
+// ]
+
+async function ViewPins() {
+    let Pins = [];
+    await firestore()
+    .collection('Pins')
+    .get()
+    .then((querySnapshot) => {
+        querySnapshot.forEach(snapshot => {
+  
+            let data = {
+              Location: {},
+              PinID: ''
+            };
+  
+            data.Location = snapshot.data().Location,
+            data.PinID = snapshot.data().PinID
+            Pins.push(data)
+        })
+    })
+    //console.log('Pins',Pins)
+    //console.log(Pins[0].Location.latitude)
+    return Pins;
+  }
 
 function MapDisplay({ navigation }) {
 
@@ -39,8 +61,9 @@ function MapDisplay({ navigation }) {
 	const [latitude, setLatitude] = useState(0)
 	const [modalDisplay, setModalDisplay] = useState(false);
     const [multipleModalDisplay, setMultipleModalDisplay] = useState(false);
-
-	const { messageDisplay, setMessageDisplay, notifDisplay, setNotifDisplay } = useContext(GettingStartedContext);
+    const [pins, setPins] = useState()
+    const [pinsLoaded, setPinsLoaded] = useState(false)
+	const { messageDisplay, setMessageDisplay, notifDisplay, setNotifDisplay, selectedPinId, setSelectedPinId } = useContext(LoggedInContext);
 
 	const GetmyLocation = async () => {
 		await Geolocation.getCurrentPosition(info => {
@@ -48,9 +71,20 @@ function MapDisplay({ navigation }) {
 			setLongitude(info.coords.longitude)
 		})
 	}
+
+    async function getPins() {
+        const data  = await ViewPins()
+        setPins(data)
+        setPinsLoaded(true)
+    }
 	useEffect(() => {
 		GetmyLocation();
+        getPins();
 	}, [])
+
+    //console.log('map pinId',selectedPinId)
+
+    if (pinsLoaded == false) return null;
     //console.log(modalDisplay)
 	return (
 		<SafeAreaView style={styles.fullScreen}>
@@ -65,7 +99,24 @@ function MapDisplay({ navigation }) {
 					longitudeDelta: 0.007,
 				}}
 				showsUserLocation={true}>
-				<Marker coordinate={{ latitude: latitude, longitude: longitude }}
+                {
+                    pins.map((pin) => {
+                        return (
+                            <Marker coordinate={{ latitude: pin.Location.latitude, longitude: pin.Location.longitude }}
+					        onPress={() => { 
+                                console.log("pinId",pin.PinID)
+                                setSelectedPinId(pin.PinID);
+                            if (pin.length > 1) {                           
+                                setMultipleModalDisplay(true); setMessageDisplay(false); setNotifDisplay(false); 
+                            } else {
+                                setModalDisplay(true); setMessageDisplay(false); setNotifDisplay(false); 
+                            }
+                        // setModalDisplay(true); setMessageDisplay(false); setNotifDisplay(false);
+                        }} />
+                        )
+                    })
+                }
+				{/* <Marker coordinate={{ latitude: latitude, longitude: longitude }}
 					onPress={() => { 
                         if (pin.length > 1) {                           
                             setMultipleModalDisplay(true); setMessageDisplay(false); setNotifDisplay(false); 
@@ -73,7 +124,7 @@ function MapDisplay({ navigation }) {
                             setModalDisplay(true); setMessageDisplay(false); setNotifDisplay(false); 
                         }
                         // setModalDisplay(true); setMessageDisplay(false); setNotifDisplay(false);
-                        }} />
+                }} /> */}
 			</MapView>
 
 
@@ -83,9 +134,14 @@ function MapDisplay({ navigation }) {
 			
             {messageDisplay ?
 				<View style={styles.messageIconContainer}>
-					<TouchableOpacity style={styles.messageButton} onPress={() => navigation.navigate('Dms')}>
+					<Pressable style={styles.messageButton} onPress={() => navigation.navigate('Dms')}>
 						<IIcon style={styles.messageIcon} name='ios-chatbubbles-outline' size={scale(31)} />
-					</TouchableOpacity>
+					</Pressable>
+                    <View style={styles.messageCountContainerMap}>
+						<Text style={styles.notifCountText}>
+							5
+						</Text>
+					</View>
 				</View> : null}
 
 			{notifDisplay ?

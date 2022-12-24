@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Modal, Text, Pressable } from 'react-native';
 import styles from './styles';
 import IIcon from 'react-native-vector-icons/Ionicons';
@@ -8,6 +8,8 @@ import { useNavigation } from '@react-navigation/native';
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 import { FlatList } from 'react-native-gesture-handler';
 import { template } from '@babel/core';
+import { LoggedInContext } from '../App'
+
 
 // have a property that checks if use is checked in when openng the location modal again
 const pinData = [
@@ -55,7 +57,9 @@ export function LocationModalOne({modalDisplay, setModalDisplay, setMessageDispl
 	const [channelStatus, setChannelStatus] = useState(true);
 	const navigation = useNavigation();
 	
-	
+	const {selectedPinId, setSelectedPinId} = useContext(LoggedInContext)
+
+	//console.log('modalpinId', selectedPinId)
 	
 	return (
 		<Modal visible={modalDisplay} transparent={true}>
@@ -66,10 +70,14 @@ export function LocationModalOne({modalDisplay, setModalDisplay, setMessageDispl
 					<Text style={styles.locationNameModal}>
 						UNSW Roundhouse
 					</Text> 
-					<Text style={styles.locationModalActive}>
-						60 people active
-						<EIcon name='dot-single' size={50}/>
-					</Text>
+					<View style={styles.locationModalActiveDotContainer}>
+						<Text style={styles.locationModalActive}>
+							60 people active
+							
+						</Text>
+						<EIcon style={styles.locationModalDot} name='dot-single' size={scale(25)} color='#28FD15'/>
+					</View>
+					
 
 					<Pressable style={[{ backgroundColor: isPressed ? 'white' : 'black' }, styles.checkInButton ]} 
 					onPress={() => {setIsPressed(!isPressed); setChannelStatus(!channelStatus); {channelStatus ? navigation.navigate('MakeAPost') : setModalDisplay(false)} setModalDisplay(false)}}>

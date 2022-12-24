@@ -1,6 +1,6 @@
-import { StyleSheet, Text, View, SafeAreaView, Pressable, ScrollView, TextInput } from 'react-native'
+import { StyleSheet, Text, View, SafeAreaView, Pressable, ScrollView, TextInput, Image } from 'react-native'
 import React, {useContext, useState, useEffect}from 'react';
-import {GettingStartedContext} from '../App'
+import {LoggedInContext} from '../App'
 //import database from '@react-native-firebase/database';
 import firestore from '@react-native-firebase/firestore';
 // STYLES
@@ -14,132 +14,72 @@ import MIIcon from 'react-native-vector-icons/MaterialIcons';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ADIcon from 'react-native-vector-icons/AntDesign'
 
-
-
-
-
-
+async function getNotifs(uid) {
+	//console.log(uid)
+	
+	let returnArray = [];
+	await firestore()
+	.collection('Notifications')
+	.doc(uid) 
+	.collection('Matches')
+	.orderBy('TimeMatched', 'desc')
+	.get()
+	.then((querySnapshot) => {
+		querySnapshot.forEach(snapshot => {
+			let data = snapshot.data()
+			console.log(data)
+			let notifObj = {
+				username: '',
+				timeNotif: '',
+				profilePic: ''
+			}
+			notifObj.username = data.MatchedWith
+			let timeDiff = ((Math.round(Date.now() / 1000)) - Math.round((data.TimeMatched.nanoseconds / 1000000000) + data.TimeMatched.seconds))
+			// under a day
+			if (timeDiff < 86400) {
+				let hours = Math.ceil(timeDiff / 3600)
+				notifObj.timeNotif = `${hours}h`
+			} 
+			// under a week
+			else if (timeDiff >= 86400 && timeDiff < 604800) {
+				// how many days
+				let days = Math.ceil(timeDiff / 86400)
+				notifObj.timeNotif = `${days}d`
+			} 
+			// more than a week
+			else {
+				let weeks = Math.ceil(timeDiff / 604800)
+				notifObj.timeNotif = `${weeks}w`
+			}
+			notifObj.profilePic = data.ProfilePic
+			returnArray.push(notifObj)
+			
+		})
+	})
+	//console.log('returned array',returnArray)
+	return returnArray;
+}
 
 const NotificationDisplay = ({navigation}) => {
-	const {messageDisplay, setMessageDisplay, notifDisplay, setNotifDisplay, user, setUser} = useContext(GettingStartedContext);
+	const {messageDisplay, setMessageDisplay, notifDisplay, setNotifDisplay, user, setUser} = useContext(LoggedInContext);
 
 	const [notifData, setnotifData] = useState(null)
 	const [loading, setLoading] = useState(false)
 	const [input, setInput] = useState('')
 
-	console.log(user.uid)
+	//console.log(user.uid)
 	
-
-	async function getNotifs() {
-		let returnArray = [];
-		await firestore().collection('Users').get()
-		.then((querySnapshot) => {
-			querySnapshot.forEach(snapshot => {
-				let data = snapshot.data()
-				returnArray.push(data)
-				//console.log("here",data)
-			})
-		})
-		//console.log('returned array',returnArray[0].FriendCount)
-		return returnArray;
-	}
-
-	// firestore db
-
-	const users = async () => {
-		let retArray = [];
-		await firestore().collection('Users').get()
-		.then((querySnapshot) => {
-			querySnapshot.forEach(snapshot => {
-				let data = snapshot.data()
-				retArray.push(data)
-				//console.log("here",data)
-			})
-		})
-		console.log('returned array',retArray[0].FriendCount)
-		return retArray;
+	const getData = async () => {
+		const data = await getNotifs(user.uid)
+		setnotifData(data)
 
 	}
-	//console.log(users)
-	//users();
-
-
-
-	const users2 = async () => {
-		await firestore()
-		.collection('Users')
-		.doc('pveyvs6ViHYfp1uskHks')
-		.collection('Friends')
-		.doc('UidOfOtherPerson')
-		.get()
-		.then(docSnapshot => {
-			console.log(docSnapshot)
-			console.log('exists: ', docSnapshot.exists);
-			if(docSnapshot.exists) {
-				console.log('data', docSnapshot.data())
-			}
-
-			// querySnapshot.forEach(queryDocumentSnapshot => {
-			// 	console.log(queryDocumentSnapshot.get())
-			// })
-			
-		})
-
-	}
-	//console.log(users)
-	//users2();
-
-	const users3 = async () => {
-		await firestore()
-		.collection('Users')
-		.doc('pveyvs6ViHYfp1uskHks')
-		.collection('Friends')
-		.get()
-		.then((querySnapshot) => {
-			querySnapshot.forEach(snapshot => {
-				let data = snapshot.data()
-				console.log("here",data)
-			})
-		})
-
-	}
-	//console.log(users)
-	//users3();
 	
+	useEffect(() => {
+		getData()
+	}, [])
 
-
-
-	// Write data with random ID
-	const writeData = async() => {
-		await firestore()
-		.collection('PinRequests')
-		.add({
-		  Name: 'testing',
-		  Location: 'testingLocation',
-		})
-		.then(() => {
-		  console.log('User added!');
-		});
-	}
-
-	//writeData()
-
-	// Write data with specified ID
-	const writeData2 = async() => {
-		await firestore()
-		.collection('PinRequests')
-		.doc('TestingID')
-		.set({
-		  Name: 'testing2',
-		  Location: 'testingLocation2',
-		})
-		.then(() => {
-		  console.log('User added!');
-		});
-	}
-
-	//writeData2()
-
+	if (!notifData) return null;
 
 	return (
 		<SafeAreaView style={styles.notifFullScreen}>   
@@ -156,14 +96,25 @@ const NotificationDisplay = ({navigation}) => {
 			</View>
 
 			<View style={styles.notificationsList}>
+				<ScrollView>
+					{notifData.map((notif) =>
+						{
+							
+						return (
+							<View style={styles.notif1}>
+								<Text style={styles.notifMessage}> 
+									<Text style={{fontWeight: 'bold'}}>{notif.username} </Text>
+									caught a glimpse of you
+								</Text>
 
-			<Pressable onPress={() => {updateData()}}>
-				<Text style={styles.captionDone}>
-					Done
-				</Text>
-			</Pressable>
-
-				
+								<Image source={{uri: notif.profilePic}} style={styles.notifProfile}/>
+								
+								<Text style={styles.notifTime}>
+								{notif.timeNotif}
+								</Text> 
+							</View>)							
+					})}
+				</ScrollView>	
 			</View>	
 		</SafeAreaView>
 	)
@@ -304,4 +255,115 @@ export default NotificationDisplay
 	// useEffect(() => {
 	// 	getData()
 	// }, [])
+
+
+	// firestore db
+
+	// const users = async () => {
+	// 	let retArray = [];
+	// 	await firestore().collection('Users').get()
+	// 	.then((querySnapshot) => {
+	// 		querySnapshot.forEach(snapshot => {
+	// 			let data = snapshot.data()
+	// 			retArray.push(data)
+	// 			//console.log("here",data)
+	// 		})
+	// 	})
+	// 	console.log('returned array',retArray[0].FriendCount)
+	// 	return retArray;
+
+	// }
+	//console.log(users)
+	//users();
+
+
+
+	// const users2 = async () => {
+	// 	let dataRet = {
+	// 		Name: '',
+	// 		Username: '',
+	// 	};
+	// 	//console.log('hello')
+	// 	await firestore()
+	// 	.collection('Users')
+	// 	.doc('qwdihqwfhfoqw')
+	// 	.collection('Friends')
+	// 	.doc('UidOfOtherPerson')
+	// 	.get()
+	// 	.then (docSnapshot => {
+	// 		//console.log('gg')
+	// 		//console.log(docSnapshot.data().ProfilePicURL)
+	// 		//dataRet.Name = docSnapshot.data().ProfilePicURL;
+	// 		//dataRet.Username = docSnapshot.data().Username;
+	// 		//console.log('exists: ', docSnapshot.exists);
+	// 		//console.log('lol')
+	// 		if(docSnapshot.exists) {
+	// 			console.log('data', docSnapshot.data())
+	// 		}
+	// 		else {
+	// 			return null;
+	// 		}
+
+	// 		// querySnapshot.forEach(queryDocumentSnapshot => {
+	// 		// 	console.log(queryDocumentSnapshot.get())
+	// 		// })
+			
+	// 	})
+	// 	//console.log(dataRet)
+
+	// }
+	// //console.log(users)
+	// users2();
+
+	// const users3 = async () => {
+	// 	await firestore()
+	// 	.collection('Users')
+	// 	.doc('pveyvs6ViHYfp1uskHks')
+	// 	.collection('Friends')
+	// 	.get()
+	// 	.then((querySnapshot) => {
+	// 		querySnapshot.forEach(snapshot => {
+	// 			let data = snapshot.data()
+	// 			console.log("here",data)
+	// 		})
+	// 	})
+
+	// }
+	//console.log(users)
+	//users3();
+	
+
+
+
+	// Write data with random ID
+	// const writeData = async() => {
+	// 	await firestore()
+	// 	.collection('PinRequests')
+	// 	.add({
+	// 	  Name: 'testing',
+	// 	  Location: 'testingLocation',
+	// 	})
+	// 	.then(() => {
+	// 	  console.log('User added!');
+	// 	});
+	// }
+
+	//writeData()
+
+	// Write data with specified ID
+	// const writeData2 = async() => {
+	// 	await firestore()
+	// 	.collection('PinRequests')
+	// 	.doc('TestingID')
+	// 	.set({
+	// 	  Name: 'testing2',
+	// 	  Location: 'testingLocation2',
+	// 	})
+	// 	.then(() => {
+	// 	  console.log('User added!');
+	// 	});
+	// }
+
+	//writeData2()
+
 

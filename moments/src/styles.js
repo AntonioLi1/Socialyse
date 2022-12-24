@@ -32,14 +32,24 @@ const styles = ScaledSheet.create({
 		alignItems: 'center',
 		borderRadius: 100,
 		backgroundColor: 'black',
-			shadowColor: "#000",
-			shadowOffset: {
-				width: 0,
-				height: 5,
-			},
+		shadowColor: "#000",
+		shadowOffset: {
+			width: 0,
+			height: 5,
+		},
 		shadowOpacity: 0.34,
 		shadowRadius: 6.27,
 		elevation: 10,
+	},
+	messageCountContainerMap: {
+		backgroundColor: '#96B9FE',
+		width: '35%',
+		height: '35%', 
+		borderRadius: 100,
+		justifyContent: 'center',
+		alignItems: 'center',
+		position: 'absolute',
+		alignSelf: 'flex-end'
 	},
 	messageIcon: {
 		color: 'white',
@@ -273,6 +283,8 @@ const styles = ScaledSheet.create({
 	},
 	locationNameActiveAndJoinButtonContainer: {
 		height: '80%',
+		//backgroundColor: 'green',
+		flexDirection: 'column'
 	},
 	locationModalClose: {
 		color: 'black',
@@ -295,6 +307,7 @@ const styles = ScaledSheet.create({
 		shadowOpacity: 0.34,
 		shadowRadius: 6.27,
 		elevation: 10,
+		marginTop: '5%'
 	},
 	checkInText: {
 		color: 'white',
@@ -305,16 +318,27 @@ const styles = ScaledSheet.create({
 		fontSize: RFValue(12)
 	},
 	locationNameModal: {
-		color: 'black',
+		color: 'white',
 		fontSize: RFValue(17.5),
 		fontWeight: '500',
 		alignSelf: 'flex-start'
 	}, 
 	locationModalActive: {
 		color: 'black', 
-		marginBottom: '3%', 
+		//marginBottom: '3%', 
 		fontWeight: '600',
-		fontSize: RFValue(12)
+		fontSize: RFValue(12),
+		//backgroundColor: 'red'
+	},
+	locationModalDot: {
+		position: 'absolute',
+		alignSelf: 'center',
+		left: scale(90)
+	},
+	locationModalActiveDotContainer: {
+		flexDirection: 'row',
+		//backgroundColor: 'pink',
+		alignItems: 'flex-start'
 	},
 	notificationContainerMB: {
 		alignItems: 'flex-end',
@@ -595,14 +619,21 @@ const styles = ScaledSheet.create({
 		fontSize: RFValue(12),
 		fontWeight: '600'
 	},
-	profilePageProfile: {
+	profilePageDPContainer: {
 		height: screenHeight * 0.55,
 		width: screenWidth * 0.9,
 		borderRadius: 30,
 		marginTop: screenHeight * 0.05,
-		backgroundColor: 'green',
 		justifyContent: 'flex-end',
 		alignItems: 'center',
+		//backgroundColor: 'green',
+		overflow: 'hidden'
+	},
+	profilePageDP: {
+		height: '100%', 
+		width: '100%', 
+		justifyContent: 'flex-end',
+		alignItems: 'center'
 	},
 	profilePicEdit: {
 		marginLeft: '80%',

@@ -1,34 +1,33 @@
 {
   "project_info": {
-    "project_number": "689363109541",
-    "firebase_url": "https://socialyse-8cf03-default-rtdb.firebaseio.com",
-    "project_id": "socialyse-8cf03",
-    "storage_bucket": "socialyse-8cf03.appspot.com"
+    "project_number": "482290864249",
+    "project_id": "socialyse-dcb8b",
+    "storage_bucket": "socialyse-dcb8b.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:689363109541:android:e4c76845eeeb6c7f966f4c",
+        "mobilesdk_app_id": "1:482290864249:android:79feac7a594eaaa3cf84a8",
         "android_client_info": {
           "package_name": "com.moments"
         }
       },
       "oauth_client": [
         {
-          "client_id": "689363109541-u6ihb9l681a5ssipbk7srunbetpaef5s.apps.googleusercontent.com",
+          "client_id": "482290864249-9844as1g6r9sjhinpscsdcrb5lisuebr.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyByEPIrBhbaUpXIetX68zDBYFvMZZKvuUw"
+          "current_key": "AIzaSyAR87Cq5zcGmmSpe_WD4ZIawuIRABERu3I"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "689363109541-u6ihb9l681a5ssipbk7srunbetpaef5s.apps.googleusercontent.com",
+              "client_id": "482290864249-9844as1g6r9sjhinpscsdcrb5lisuebr.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
