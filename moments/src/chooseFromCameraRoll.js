@@ -17,6 +17,36 @@ import { utils } from '@react-native-firebase/app';
 const screenWidth = Dimensions.get("window").width
 const screenHeight = Dimensions.get("window").height
 
+async function UploadProfilePic(ProfilePicDownloadedURL, uid) {
+
+    let profilePicExists = false
+    await firestore()
+    .collection('Users')
+    .doc(uid)
+    .get()
+    .then (docSnapshot => {
+        if (docSnapshot.exists) {
+            profilePicExists = true
+        }
+    })
+    // update
+    if (profilePicExists === true) {
+        await firestore()
+        .collection('Users')
+        .doc(uid)
+        .update({
+            ProfilePic: ProfilePicDownloadedURL
+        })
+    } else {
+        await firestore()
+        .collection('Users')
+        .doc(uid)
+        .set({
+            ProfilePic: ProfilePicDownloadedURL
+        })
+    }
+}
+
 function ChooseFromCameraRoll ({navigation}) {
 
     const { dpURL, setDpURL, user, setUser } = useContext(LoggedInContext);
@@ -32,7 +62,6 @@ function ChooseFromCameraRoll ({navigation}) {
             cropping: true,
 
         }).then(image => {
-            //console.log("full image",image);
             setDpURL(image.path)
         });
     }
@@ -41,13 +70,13 @@ function ChooseFromCameraRoll ({navigation}) {
 
     async function uploadImage() {
         const pathToFile = dpURL;
-          // uploads file
+        // uploads file
         await reference.putFile(pathToFile);
         //console.log(user.uid)
         // assign DPURL to context state
-        const imageTest = await storage().ref(`/ProfilePics/${user.uid}`).getDownloadURL();
-        setDpURL(imageTest)
-		//console.log('imagetest',imageTest)
+        const downloadedURL = await storage().ref(`/ProfilePics/${user.uid}`).getDownloadURL();
+        setDpURL(downloadedURL)
+        await UploadProfilePic(downloadedURL, user.uid)
     }
     
     return (

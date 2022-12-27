@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View, Image, Text, Pressable, FlatList, Modal, Dimensions } from 'react-native';
+import { View, Image, Text, Pressable, FlatList, Modal, Dimensions, ImageBackground } from 'react-native';
 import styles from './styles';
 import IIcon from 'react-native-vector-icons/Ionicons';
 import MIIcon from 'react-native-vector-icons/MaterialIcons';
@@ -11,34 +11,79 @@ import MaskedView from '@react-native-community/masked-view';
 import PostModal from './postModal';
 import { ScrollView } from 'react-native-gesture-handler';
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
+import firestore from '@react-native-firebase/firestore';
+import { LoggedInContext } from '../App';
 
 const data = [{caption: 'hello', key: 1}, {caption: 'non', key: 2}, {caption: 'egf', key: 3}, {caption: 'egf', key: 4}, {caption: 'egf', key: 5} ]
 
+async function ViewOwnPosts(uid) {
+    
+    let ownPostsArray = []
 
+    await firestore()
+    .collection('Users')
+    .doc(uid)
+    .collection('UserPosts')
+    .orderBy('TimeUploaded', 'desc')
+    .get()
+    .then((querySnapshot) => {
+        querySnapshot.forEach(snapshot => {
+            let obj = {
+                ImageURL: '',
+                Caption: '',
+            }
+            obj.ImageURL = snapshot.data().ImageURL
+            obj.Caption = snapshot.data().Caption
+            ownPostsArray.push(obj)
+        })
+    })
+    console.log(ownPostsArray)
+    return ownPostsArray;
+}
 
 function OwnPosts({ownPost, setOwnPost}) {
     const width = Dimensions.get('window').width
+
+    const [ownPosts, setOwnPosts] = useState()
+    const [dataLoaded, setDataLoaded] = useState(false)
+
+    const {user} = useContext(LoggedInContext)
+
+    async function getData() {
+        const data = await ViewOwnPosts(user.uid)
+        setOwnPosts(data)
+        setDataLoaded(true)
+    }
+
+    useEffect(() => {
+        getData()
+    },[])
+
+    if (dataLoaded == false) return null
+
+    //console.log(ownPost)
+
     return (
         <Modal visible={ownPost} transparent={true}>
             <View style={styles.postModalFullScreen2}>
                 <View style={styles.ownPostModal}>                  
                     <FlatList
                         horizontal={true}
-                        data={data}
+                        data={ownPosts}
                         decelerationRate="fast"
                         snapToInterval={width}
                         //snapToAlignment="start"
                         renderItem={({item, index}) => {
                             return(
                                 <View style={styles.somewthing}>
-                                    <View style={styles.ownPostModalPlaceHolder}>
+                                    <ImageBackground source={{uri: item.ImageURL}} style={styles.ownPostModalPlaceHolder}>
                                         <IIcon style={{marginLeft: '2%', marginTop: '2%' }} name="ios-close-outline" size={32} color='white'
                                         onPress={() => {setOwnPost(false)}} 
-                                        />
-                                    </View>
+                                        />  
+                                    </ImageBackground>
                                     
                                     <Text style={styles.postModalCaption}>
-                                        {item.caption}
+                                        {item.Caption}
                                     </Text>
                                 </View>
                                     

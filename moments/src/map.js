@@ -9,28 +9,7 @@ import firestore from '@react-native-firebase/firestore';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import IIcon from 'react-native-vector-icons/Ionicons';
 import EIcon from 'react-native-vector-icons/Entypo';
-import { DrawerContentScrollView } from '@react-navigation/drawer';
-import { PinchGesture } from 'react-native-gesture-handler/lib/typescript/handlers/gestures/pinchGesture';
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
-
-
-// const pin = [
-// 	{
-// 		channelName: 'Law Library',
-// 		activeUsers: 40,
-// 		key: 1
-// 	},
-// 	{
-// 		channelName: 'Main Library',
-// 		activeUsers: 10,
-// 		key: 2
-// 	},
-// 	{
-// 		channelName: 'Some Library',
-// 		activeUsers: 90,
-// 		key: 3
-// 	},
-// ]
 
 async function ViewPins() {
     let Pins = [];
@@ -42,18 +21,49 @@ async function ViewPins() {
   
             let data = {
               Location: {},
-              PinID: ''
+              PinID: '',
+              ChannelCount: 0
             };
   
             data.Location = snapshot.data().Location,
             data.PinID = snapshot.data().PinID
+            data.ChannelCount = snapshot.data().ChannelCount
             Pins.push(data)
         })
     })
     //console.log('Pins',Pins)
     //console.log(Pins[0].Location.latitude)
     return Pins;
-  }
+}
+
+async function getNotifCount(uid) {
+    let notifCount = 0;
+    await firestore()
+    .collection('Notifications')
+    .doc(uid)
+    .get()
+    .then(docSnapshot => {
+        let data = docSnapshot.data()
+        notifCount = data.NotificationCount;
+    })
+    return notifCount;
+
+}
+
+async function getMessagesCount(uid) {
+    let messagesCount = 0;
+    await firestore()
+    .collection('Messages')
+    .doc(uid)
+    .get()
+    .then(docSnapshot => {
+        let data = docSnapshot.data()
+        messagesCount = data.UnopenedMessages;
+    })
+    return messagesCount;
+}
+
+
 
 function MapDisplay({ navigation }) {
 
@@ -62,8 +72,10 @@ function MapDisplay({ navigation }) {
 	const [modalDisplay, setModalDisplay] = useState(false);
     const [multipleModalDisplay, setMultipleModalDisplay] = useState(false);
     const [pins, setPins] = useState()
-    const [pinsLoaded, setPinsLoaded] = useState(false)
-	const { messageDisplay, setMessageDisplay, notifDisplay, setNotifDisplay, selectedPinId, setSelectedPinId } = useContext(LoggedInContext);
+    const [notificationCount, setNotificationCount] = useState(0)
+    const [msgCount, setMsgCount] = useState(0)
+    const [dataLoaded, setDataLoaded] = useState(false)
+	const { messageDisplay, setMessageDisplay, notifDisplay, setNotifDisplay, selectedPinId, setSelectedPinId, user } = useContext(LoggedInContext);
 
 	const GetmyLocation = async () => {
 		await Geolocation.getCurrentPosition(info => {
@@ -72,19 +84,27 @@ function MapDisplay({ navigation }) {
 		})
 	}
 
-    async function getPins() {
-        const data  = await ViewPins()
-        setPins(data)
-        setPinsLoaded(true)
+    async function getData() {
+        const pins = await ViewPins()
+        setPins(pins)
+        
+
+        const notifCount = await getNotifCount(user.uid)
+        setNotificationCount(notifCount)
+
+        const messagesCount = await getMessagesCount(user.uid)
+        setMsgCount(messagesCount)
+
+        setDataLoaded(true)
     }
 	useEffect(() => {
 		GetmyLocation();
-        getPins();
+        getData();
 	}, [])
 
     //console.log('map pinId',selectedPinId)
 
-    if (pinsLoaded == false) return null;
+    if (dataLoaded == false) return null;
     //console.log(modalDisplay)
 	return (
 		<SafeAreaView style={styles.fullScreen}>
@@ -104,9 +124,10 @@ function MapDisplay({ navigation }) {
                         return (
                             <Marker coordinate={{ latitude: pin.Location.latitude, longitude: pin.Location.longitude }}
 					        onPress={() => { 
-                                console.log("pinId",pin.PinID)
+                                //console.log("pinId",pin.PinID)
                                 setSelectedPinId(pin.PinID);
-                            if (pin.length > 1) {                           
+                                //console.log(pin)
+                            if (pin.ChannelCount > 1) {                       
                                 setMultipleModalDisplay(true); setMessageDisplay(false); setNotifDisplay(false); 
                             } else {
                                 setModalDisplay(true); setMessageDisplay(false); setNotifDisplay(false); 
@@ -135,11 +156,11 @@ function MapDisplay({ navigation }) {
             {messageDisplay ?
 				<View style={styles.messageIconContainer}>
 					<Pressable style={styles.messageButton} onPress={() => navigation.navigate('Dms')}>
-						<IIcon style={styles.messageIcon} name='ios-chatbubbles-outline' size={scale(31)} />
+						<IIcon style={styles.messageIcon} name='ios-chatbubbles-outline' size={scale(25)} />
 					</Pressable>
                     <View style={styles.messageCountContainerMap}>
 						<Text style={styles.notifCountText}>
-							5
+                            {msgCount}
 						</Text>
 					</View>
 				</View> : null}
@@ -147,11 +168,11 @@ function MapDisplay({ navigation }) {
 			{notifDisplay ?
 				<View style={styles.notificationContainerMap}>
 					<Pressable style={styles.notificationButton} onPress={() => navigation.navigate('notifications')}>
-						<IIcon name='notifications-outline' size={scale(30)} color='white' />
+						<IIcon name='notifications-outline' size={scale(28)} color='white' />
 					</Pressable>
 					<View style={styles.notificationCountContainerMap}>
 						<Text style={styles.notifCountText}>
-							5
+                            {notificationCount}
 						</Text>
 					</View>
 				</View>

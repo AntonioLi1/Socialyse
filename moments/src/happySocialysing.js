@@ -11,7 +11,14 @@ import {GettingStartedContext} from '../App';
 import LinearGradient from 'react-native-linear-gradient';
 import MaskedView from '@react-native-community/masked-view';
 
-function HappySocialysing({navigation}) {
+function HappySocialysing({navigation, route}) {
+
+    const {selectedChannelID} = route.params
+
+    setTimeout(() => {
+        navigation.navigate('PostsFeed', {selectedChannelID: selectedChannelID})
+    }, 4000)
+    
     return (
         <SafeAreaView style={styles.happySocialysingLoadingScreen}>
             <View style={styles.yourPostTextContainer}>
@@ -28,11 +35,6 @@ function HappySocialysing({navigation}) {
                     <Text style={styles.yourPostTextWhite}>
                         SOCIALYSING!
                     </Text>
-                </Text>
-            </View>
-            <View style={{marginBottom: 100}}>
-                <Text onPress={() => {navigation.navigate('PostsFeed')}}>
-                    go to posts
                 </Text>
             </View>
         </SafeAreaView>

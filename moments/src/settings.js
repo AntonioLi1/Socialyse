@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { View,  Text, Pressable, SafeAreaView } from 'react-native';
 import styles from './styles';
 import IIcon from 'react-native-vector-icons/Ionicons'
@@ -8,11 +8,52 @@ import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 import { scale, ScaledSheet } from 'react-native-size-matters';
 import { RFValue } from 'react-native-responsive-fontsize';
 import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 import SendFeedbackModal from './sendFeedbackModal';
+import { LoggedInContext } from '../App'
+import { useFocusEffect } from '@react-navigation/native';
+
+
+async function getUserDetails(uid) {
+    let returnObj = {
+        Name: '',
+        NameFirstLetter: '',
+        Username: ''
+    }
+
+    await firestore()
+    .collection('Users')
+    .doc(uid)
+    .get()
+    .then(docSnapshot => {
+        let data = docSnapshot.data()
+        returnObj.Name = data.Name
+        returnObj.Username = data.Username
+        returnObj.NameFirstLetter = data.Name.charAt(0)
+    })
+
+    return returnObj
+}
 
 function Settings ({navigation}) {
 
     const [sendFeedbackModal, setSendFeedbackModal] = useState(false);
+    const [userDetails, setUserDetails] = useState()
+    const [dataLoaded, setDataLoaded] = useState(false)
+
+    const { user } = useContext(LoggedInContext);
+
+    async function getData() {
+        const data = await getUserDetails(user.uid)
+        setUserDetails(data)
+        setDataLoaded(true)
+    }
+
+    useEffect(() => {
+        getData()
+    }, [])
+
+    if (dataLoaded == false) return null;
 
     return (
         <SafeAreaView style={styles.settingsScreen}>
@@ -31,12 +72,12 @@ function Settings ({navigation}) {
                         <View style={{flexDirection: 'row', }}>
                             <View style={styles.initialPlaceholder}>    
                                 <Text style={{color: 'white', fontSize: RFValue(16)}}>
-                                    A
+                                    {userDetails.NameFirstLetter}
                                 </Text>
                             </View>
                             <Text style={[styles.settingsText, {marginLeft: '5%'}]}>
-                            Antonio {'\n'}
-                            myusername
+                            {userDetails.Name} {'\n'}
+                            {userDetails.Username}
                             </Text>
                         </View>
                             
@@ -46,16 +87,7 @@ function Settings ({navigation}) {
                     </View>
                 </Pressable>
 
-                <Pressable onPress={() => {navigation.navigate('ChangePassword')}}>
-                    <View style={styles.settingsProfile}>
-                        <Text style={styles.settingsText}>
-                        Change Password
-                        </Text>
-                        <Pressable onPress={() => navigation.navigate('profile')}>
-                            <MIIcon name='arrow-forward-ios' size={25} color='white'/>
-                        </Pressable>
-                    </View>
-                </Pressable>
+
                 
                 <Pressable onPress={() => setSendFeedbackModal(true)}>
                     <View style={styles.settingsProfile}>

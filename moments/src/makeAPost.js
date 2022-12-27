@@ -9,20 +9,166 @@ import MIIcon from 'react-native-vector-icons/MaterialIcons';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ADIcon from 'react-native-vector-icons/AntDesign'
 import FIcon from 'react-native-vector-icons/Fontisto';
-import {GettingStartedContext} from '../App';
+import {LoggedInContext} from '../App';
 import { Camera, CameraPermissionStatus, useCameraDevices } from 'react-native-vision-camera';
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
+import firestore from '@react-native-firebase/firestore';
+import PostModal from './postModal';
+import storage from '@react-native-firebase/storage';
+import Geolocation from 'react-native-geolocation-service';
 
 
+async function CreatePost(UserID, Caption, Image, ChannelID) {
+
+	// store image into storage
+	const reference = storage().ref(`/Posts/${UserID}/${Image}`)
+	await reference.putFile(Image);
+	
+	// get downloadedURL from storage
+	const downloadedURL = await storage().ref(`/Posts/${UserID}/${Image}`).getDownloadURL();
+	// console.log('UserID', UserID)    
+	// console.log('caption', Caption)
+	// console.log('Image',downloadedURL)
+	// console.log('channelID', ChannelID)
+	let docID = '';
+	const messageSendTime = new Date();
+
+	await firestore()
+	.collection('Channels')
+	.doc(ChannelID)
+	.collection('Posts')
+	.add({
+	  Caption: Caption,
+	  ImageURL: downloadedURL,
+	  PostID: '',
+	  PostOwner: UserID,
+	  TimeUploaded: messageSendTime, 
+	  
+	})
+	.then(function(docRef) {
+	  	docID = docRef.id;
+	}); // test to see if it works
+  
+	// add doc id to the post
+	await firestore()
+	.collection('Channels')
+	.doc(ChannelID)
+	.collection('Posts')
+	.doc(docID)
+	.update({
+		PostID: docID,
+	});
+  
+	// add it under users for their own reference
+	await firestore()
+	.collection('Users')
+	.doc(UserID)
+	.collection('UserPosts')
+	.doc(docID)
+	.set({
+	  Caption: Caption,
+	  ImageURL: downloadedURL,
+	  TimeUploaded: messageSendTime, 
+	  UserID: UserID,
+	  PostID: docID
+	});
+  
+	// add post with doc id to UserPostLikes
+	await firestore()
+	.collection('PostLikes')
+	.doc(docID)
+	.set({
+	  LikeCount: 0
+	});
+}
+
+async function JoinChannel(UserID, ChannelID, Longitude, Latitude, PinID) {
+
+	let ChannelLongitude = 0;
+	let ChannelLatitude = 0;
+  
+	await firestore()
+	.collection('Channels')
+	.doc(ChannelID)
+	.get()
+	.then (docSnapshot => {
+		if(docSnapshot.exists) {
+		  ChannelLongitude = docSnapshot.data().Location.latitude;
+		  ChannelLatitude = docSnapshot.data().Location.longitude;
+		}
+	})
+	ChannelLongitude =  ChannelLongitude * Math.PI / 180;
+	ChannelLatitude =  ChannelLatitude * Math.PI / 180;
+	Latitude =  Latitude * Math.PI / 180;
+	Longitude =  Longitude * Math.PI / 180;
+  
+	// Haversine formula
+	let dlon = Longitude - ChannelLongitude;
+	let dlat = Latitude - ChannelLatitude;
+	let a = Math.pow(Math.sin(dlat / 2), 2)
+			+ Math.cos(ChannelLatitude) * Math.cos(Latitude)
+			* Math.pow(Math.sin(dlon / 2),2);
+		   
+	let c = 2 * Math.asin(Math.sqrt(a));
+	let r = 6371;
+  
+	// calculate the result
+	let distance = c * r;
+  
+	// Check user is within range
+	distance = distance/1000;
+	if (distance > 50) {
+	  throw error;
+	}
+	const messageSendTime = new Date();
+
+  
+	await firestore()
+	.collection('Users')
+	.doc(UserID)
+	.update({
+		ChannelJoined: messageSendTime,
+	  	CurrentChannel: ChannelID
+	});
+  
+	let activeUserCount = 0;
+  
+	await firestore()
+	.collection('Pins')
+	.doc(PinID)
+	.collection('Channels')
+	.doc(ChannelID)
+	.get()
+	.then(docSnapshot => {
+		if(docSnapshot.exists) {
+		  activeUserCount = docSnapshot.data().ActiveUsers
+		} 
+	});
+	activeUserCount += 1;
+  
+	await firestore()
+	.collection('Pins')
+	.doc(PinID)
+	.collection('Channels')
+	.doc(ChannelID)
+	.update({
+	  ActiveUsers: activeUserCount
+	});
+}
 
 
-function MakeAPost({}) {
+function MakeAPost({route}) {
+
 	const navigation = useNavigation();
+	const {selectedChannelID} = route.params;
+
+	//console.log(selectedChannelID)
+
 	const devices = useCameraDevices()
 	const deviceBack = devices.back;
 	const deviceFront = devices.front;
 
-    const {messageDisplay, setMessageDisplay, notifDisplay, setNotifDisplay} = useContext(GettingStartedContext);
+    const {messageDisplay, setMessageDisplay, notifDisplay, setNotifDisplay, user, selectedPinId} = useContext(LoggedInContext);
 	
 	const [cameraPermission, setCameraPermission] = useState();
   	const [microphonePermission, setMicrophonePermission] = useState();
@@ -34,11 +180,22 @@ function MakeAPost({}) {
 	const [captionModal, setCaptionModal] = useState(false);
 	const cameraref = useRef();
 
+	const [currLatitude, setCurrLatitude] = useState(0)
+	const [currLongitude, setCurrLongitude] = useState(0)
+
+	const GetmyLocation = async () => {
+		await Geolocation.getCurrentPosition(info => {
+			setCurrLatitude(info.coords.latitude)
+			setCurrLongitude(info.coords.longitude)
+		})
+	}
+
 	const takePhoto = async () => {
 		const photo = await cameraref.current.takeSnapshot({
 			quality: 85,
 			skipMetadata: true
 		})
+		console.log('photo', photo)
 		setImageURL(photo.path);
 	}
 
@@ -56,7 +213,8 @@ function MakeAPost({}) {
 		Camera.getCameraPermissionStatus().then(setCameraPermission);
 		// Camera.getMicrophonePermissionStatus().then(setMicrophonePermission);
 		getCameraPermission();
-	}, []);
+		GetmyLocation()
+	}, [imageURL]);
 
 	// const getCameraPermission = async () => {
 	// 	try {
@@ -76,6 +234,17 @@ function MakeAPost({}) {
 	// 	// still loading
 	// 	return null;
 	// }
+
+	async function JoinAndPost(UserID, Caption, Image, ChannelID) {
+		try {
+			await JoinChannel(UserID, ChannelID, currLongitude, currLatitude, selectedPinId)
+			await CreatePost(UserID, Caption, Image, ChannelID)
+		} catch (error) {
+			console.log('errro', error)
+		}
+	}
+
+	//console.log('picurl', imageURL)
 	
 	return (
 		<SafeAreaView style={styles.MBBackground}>
@@ -159,7 +328,7 @@ function MakeAPost({}) {
 			}
 			{   
 				imageURL ? 
-				<Pressable onPress={() => navigation.navigate('SocialyseLoading')}>
+				<Pressable onPress={() => {navigation.navigate('SocialyseLoading', {selectedChannelID: selectedChannelID}); JoinAndPost(user.uid, caption, imageURL, selectedChannelID)}}>
 					<View style={styles.sendPhotoButton}>
 						<IIcon name="ios-send" size={scale(28)} color='white'/>
 					</View>

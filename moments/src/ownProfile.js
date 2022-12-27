@@ -11,20 +11,6 @@ import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 import storage from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
 
-
-// async function GetUsername () {
-
-// 	const p =  new Promise((resolve)=>{
-//         database().ref('/users/-NE0w02LZXrMYjEZ7TQG').on('value',snapshot=>{
-// 			//console.log('data is:' + snapshot.val())
-//             resolve(snapshot.val())
-//         })
-//     });
-// 	const data = await p.then();
-	
-// 	return data; 
-// }
-
 async function ViewOwnProfile(UserID) {
 	let dataRet = {
 		Name: '',
@@ -74,23 +60,16 @@ function OwnProfile ({navigation}) {
 	// 	setFBImageURL(imageTest)
 	// }
 
-	async function getImage2() {
-		const imageTest = await storage().ref('/ProfilePics/16a2066d261a38a5ba3bff2e101acb93.jpg').getDownloadURL();
-		console.log('imagetest',imageTest)
-		//setFBImageURL(imageTest)
-	}
+	// async function getImage2() {
+	// 	const imageTest = await storage().ref('/ProfilePics/16a2066d261a38a5ba3bff2e101acb93.jpg').getDownloadURL();
+		
+	// }
 
-	getImage2()
+	// getImage2()
 
 	const getData = async () => {
 		const data = await ViewOwnProfile(user.uid)
 		setUserDetails(data)
-		//console.log(user.uid)
-		//console.log(userDetails)
-		// console.log(userDetails)
-		// const DpURL = await getImage(userDetails.ProfilePic)
-		// setFBImageURL(DpURL)
-		// if (initializing) setInitializing(false)
 	}
 
     useEffect(() => {
@@ -99,7 +78,7 @@ function OwnProfile ({navigation}) {
     },[])
 
 	//console.log('userdetals',userDetails)
-	//console.log('dpurl', FBImageURL)
+	console.log('dpurl', dpURL)
 
 
 	return (

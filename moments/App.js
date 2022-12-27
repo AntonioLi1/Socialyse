@@ -23,7 +23,10 @@ export const LoggedInContext = createContext({
 	user: null,
 	setUser: (value) => {},
 	selectedPinId: '',
-	setSelectedPinId: (value) => {}	
+	setSelectedPinId: (value) => {},
+	selectedPost: null,
+	setSelectedPost: (value) => {}
+	
 });
 
 export const LoggedOutContext = createContext({
@@ -44,6 +47,8 @@ function App () {
 	const [dpURL, setDpURL] = useState('https://firebasestorage.googleapis.com/v0/b/socialyse-8cf03.appspot.com/o/profilePics%2Fu1U1HkdfUVcNNeFD1gDr4yKlNzK2?alt=media&token=27328e55-510b-4ae8-b3de-4a1cf67a93b7');
 	const [user, setUser] = useState();
 	const [selectedPinId, setSelectedPinId] = useState('')
+	const [selectedPost, setSelectedPost] = useState()
+	
 	const { signUpName, signUpUsername, signUpPhoneNumber} = useContext(LoggedOutContext)
 
 
@@ -69,7 +74,7 @@ function App () {
             Name: signUpName, // fix this
             ProfilePic: '/ProfilePics/16a2066d261a38a5ba3bff2e101acb93.jpg',
             CurrentChannel: 0,
-			ChannelJoined: 1
+			ChannelJoined: null,
 		})
 		.then(() => {
 			console.log('User added!');
@@ -187,7 +192,11 @@ function App () {
 	// });
 
 	return (
-		<LoggedInContext.Provider value={{messageDisplay, setMessageDisplay, notifDisplay, setNotifDisplay, editProfileModal, setEditProfileModal, dpURL, setDpURL, user, setUser, selectedPinId, setSelectedPinId}}>
+		<LoggedInContext.Provider 
+		value={{messageDisplay, setMessageDisplay, notifDisplay, setNotifDisplay, 
+			editProfileModal, setEditProfileModal, dpURL, setDpURL, 
+			user, setUser, selectedPinId, setSelectedPinId, 
+			selectedPost, setSelectedPost}}>
 			<LoggedInNavigator></LoggedInNavigator>
 		</LoggedInContext.Provider>
 		

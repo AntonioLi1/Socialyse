@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import { View, Pressable, Text, ScrollView, SafeAreaView, Image } from 'react-native';
 import IIcon from 'react-native-vector-icons/Ionicons';
 import MIIcon from 'react-native-vector-icons/MaterialIcons';
+import ADIcon from 'react-native-vector-icons/AntDesign';
 import styles from './styles';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
@@ -104,10 +105,11 @@ async function ViewDMs(UserID) {
 	.then((querySnapshot) => {
 	  	querySnapshot.forEach(snapshot => {
 		  let data = snapshot.data()
+		  //console.log('messages data', data)
 		  DMs.push(data)
 	  })
 	});
-	console.log('dms', DMs)
+	//console.log('dms', DMs)
 	return DMs;
 }
 
@@ -119,7 +121,7 @@ function DmDisplay({navigation}) {
 	const [messagesArray, setMessagesArray] = useState()
 	const [dataLoaded, setDataLoaded] = useState(false)
 
-	const { user } = useContext(LoggedInContext);
+	const { user, dpURL } = useContext(LoggedInContext);
 
 	async function getData() {
 		const newFriendsData = await ViewNewFriends(user.uid)
@@ -139,8 +141,8 @@ function DmDisplay({navigation}) {
 	return (
 		<SafeAreaView style={styles.DMScreen}>
 			<View style={styles.DMHeader}>
-				<Pressable style={styles.profileButtonDM} onPress={() => navigation.navigate('profile')} >
-					<IIcon name='person' size={scale(33)} color='black'/>
+				<Pressable style={styles.profileButtonDM} onPress={() => navigation.navigate('profile')}>
+					<Image source={{uri: dpURL}} style={{height: '100%', width: '100%', borderRadius: 100,}}/>
 				</Pressable>	
 
 				<MCIcon name='message-text-outline' size={scale(37)} color='white'/>
@@ -157,10 +159,13 @@ function DmDisplay({navigation}) {
 
 				<ScrollView horizontal>
 					{newFriendsArray.map((dm)=>
-						<Pressable onPress={() => {navigation.navigate('Dm', {OtherUid: dm.Uid, OtherUsername: dm.Username})}}>
+						<Pressable onPress={() => {navigation.navigate('Dm', {OtherUid: dm.Uid, OtherUsername: dm.Username, OtherUserDP: dm.ProfilePic})}}>
 							<View style={styles.newConnectionProfile}>
 								
-								<Image source={{uri: dm.ProfilePic}} style={styles.newConnectionProfilePic}/>
+								<Pressable onPress={() => {navigation.navigate('OtherProfile', {FriendID: dm.Uid})}}>
+									<Image source={{uri: dm.ProfilePic}} style={styles.newConnectionProfilePic}/>
+								</Pressable>
+									
 								
 								
 								<Text style={styles.newConnectionUsername} >
@@ -179,28 +184,37 @@ function DmDisplay({navigation}) {
 		
 			<View style={styles.allDmsContainer}>
 				<ScrollView>
-					{/* {dms.map((dm) => 
-						<Pressable onPress={() => {navigation.navigate('Dm')}}>
+					{messagesArray.map((dm) => 					
+						<Pressable onPress={() => {navigation.navigate('Dm', {OtherUid: dm.RecipientID, OtherUsername: dm.Username, OtherUserDP: dm.ProfilePic})}}>
 							<View style={styles.dm}>
-								<Pressable onPress={() => {navigation.navigate('OtherProfile')}}>
-									<View style={styles.messagesProfilePic}/>
+								<Pressable onPress={() => {navigation.navigate('OtherProfile', {FriendID: dm.RecipientID})}}>
+									<Image source={{uri: dm.ProfilePic}} style={styles.messagesProfilePic}/>
 								</Pressable>
 									
-									
-								
 								<View style={styles.usernameAndLastMessageContainer}>
 									<Text style={styles.username}>
-										{dm.username}
+										{dm.Username}
 									</Text>
-									<Text style={styles.lastMessage}>
-										{dm.lastMessage}
-									</Text>
+									{
+										dm.LastMessageSender === user.uid ? 
+										<View style={{flexDirection: 'row', alignItems: 'center'}}>
+											<ADIcon name="back" size={scale(12)} color="white"/>
+											<Text style={styles.myLastMessage}>
+												{dm.LastMessage}
+											</Text>
+										</View>
+										: 
+										<Text style={styles.lastMessage}>
+											{dm.LastMessage}
+										</Text>
+									}
+									
 								</View>
 								
 							</View>
 						</Pressable>
 						)
-					} */}
+					}
 				</ScrollView>	
 			</View>
 			

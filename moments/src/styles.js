@@ -43,17 +43,34 @@ const styles = ScaledSheet.create({
 	},
 	messageCountContainerMap: {
 		backgroundColor: '#96B9FE',
-		width: '35%',
-		height: '35%', 
+		width: '30%',
+		height: '30%', 
 		borderRadius: 100,
 		justifyContent: 'center',
 		alignItems: 'center',
 		position: 'absolute',
 		alignSelf: 'flex-end'
 	},
+	messageCountContainerFeed: {
+		backgroundColor: 'white',
+		width: '30%',
+		height: '30%', 
+		borderRadius: 100,
+		justifyContent: 'center',
+		alignItems: 'center',
+		position: 'absolute',
+		alignSelf: 'flex-end',
+		top: 0
+	},
 	messageIcon: {
 		color: 'white',
 		justifyContent: 'center',
+	},
+	messageIcon2: {
+		color: 'white',
+		position: 'absolute'
+		//justifyContent: 'center',
+		//alignSelf: 'center'
 	},
 	DMScreen: {
 		height: screenHeight,
@@ -75,7 +92,6 @@ const styles = ScaledSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center',
 		borderRadius: 100,
-		backgroundColor: '#F2F2F2',
 		shadowColor: "#000",
 		shadowOffset: {
 			width: 0,
@@ -162,6 +178,12 @@ const styles = ScaledSheet.create({
 		color: 'white',
 		fontStyle: 'italic'
 	},
+	myLastMessage: {
+		fontSize: RFValue(9.5),
+		color: 'white',
+		marginLeft: '5%'
+		
+	},
 	lastMessage: {
 		fontSize: RFValue(9.5),
 		color: 'white',
@@ -191,25 +213,28 @@ const styles = ScaledSheet.create({
 	},
 	notificationCountContainerMap: {
 		backgroundColor: '#96B9FE',
-		width: '35%',
-		height: '35%', 
+		width: '30%',
+		height: '30%', 
 		borderRadius: 100,
 		justifyContent: 'center',
 		alignItems: 'center',
 		position: 'absolute',
+
 	},
 	notificationCountContainer: {
-		backgroundColor: '#96B9FE',
-		width: '35%',
-		height: '25%', 
+		backgroundColor: 'white',
+		width: '30%',
+		height: '30%', 
 		borderRadius: 100,
 		justifyContent: 'center',
 		alignItems: 'center',
 		position: 'absolute',
+		top: 0,
+		alignSelf: 'flex-end'
 	},
 	notifCountText: {
 		fontSize: RFValue(9), 
-		color: 'white'
+		color: 'black'
 	},
 	mapPinContaner: {
 		position: 'absolute',
@@ -327,18 +352,22 @@ const styles = ScaledSheet.create({
 		color: 'black', 
 		//marginBottom: '3%', 
 		fontWeight: '600',
-		fontSize: RFValue(12),
+		fontSize: RFValue(13),
+		alignSelf: 'center'
 		//backgroundColor: 'red'
 	},
 	locationModalDot: {
-		position: 'absolute',
+		
 		alignSelf: 'center',
-		left: scale(90)
+		// left: scale(90),
+		marginLeft: '2%'
 	},
 	locationModalActiveDotContainer: {
 		flexDirection: 'row',
 		//backgroundColor: 'pink',
-		alignItems: 'flex-start'
+		
+		//alignItems: 'flex-start',
+		//textAlign: 'center',
 	},
 	notificationContainerMB: {
 		alignItems: 'flex-end',
@@ -626,7 +655,7 @@ const styles = ScaledSheet.create({
 		marginTop: screenHeight * 0.05,
 		justifyContent: 'flex-end',
 		alignItems: 'center',
-		//backgroundColor: 'green',
+		backgroundColor: 'green',
 		overflow: 'hidden'
 	},
 	profilePageDP: {
@@ -671,9 +700,10 @@ const styles = ScaledSheet.create({
 		borderTopWidth: 1,
 		alignItems: 'center',
 		justifyContent: 'space-between',
+		//backgroundColor: 'green'
 	},
 	usernameAndNameContainer: {
-		marginLeft: screenWidth * 0.05
+		marginLeft: screenWidth * 0.05,
 	},
 	settingsIcon: {
 		marginRight: screenWidth * 0.05
@@ -800,7 +830,8 @@ const styles = ScaledSheet.create({
 	},
 	postCaption: {
 		fontSize: RFValue(10.5), 
-		marginHorizontal: '2%'
+		marginHorizontal: '2%',
+		color: 'black'
 	},
 	postModalCaption: {
 		color: 'white', 
@@ -1063,9 +1094,11 @@ const styles = ScaledSheet.create({
 	postContainer: {
 		height: screenHeight * 0.3,
 		width: screenWidth * 0.45,
-		marginTop: '10%',
+		marginTop: '2%',
 		flexDirection: 'row',
 		justifyContent: 'center',
+		//backgroundColor: 'red',
+
 	},
 	blank: {
 		height: screenHeight * 0.3,
@@ -1074,11 +1107,12 @@ const styles = ScaledSheet.create({
 	},
 	fullPost: {
 		height: '100%', 
-		width: '80%', 
+		width: '80%',
+		justifyContent: 'center' 
 
 	},
 	postPhoto: {
-		backgroundColor: 'red', 
+		//backgroundColor: 'red', 
 		height: '85%', 
 		borderRadius: 10
 	},
@@ -1203,12 +1237,25 @@ const styles = ScaledSheet.create({
 	ownPostModal: {
 		width: '320@s',
 		backgroundColor: 'transparent',
+		//backgroundColor: 'green',
 		alignSelf: 'center',
 		marginTop: '105@s',
 		marginBottom: '190@s',
 		height: '450@s',
 		alignItems: 'center',
-		// justifyContent: 'center',
+		//justifyContent: 'center',
+		
+	},
+	ownPostModal2: {
+		width: screenWidth,
+		//backgroundColor: 'transparent',
+		//backgroundColor: 'green',
+		alignSelf: 'center',
+		marginTop: '105@s',
+		marginBottom: '190@s',
+		height: '450@s',
+		alignItems: 'center',
+		//justifyContent: 'center',
 		
 	},
 	ownPostModalPost: {
@@ -1270,28 +1317,59 @@ const styles = ScaledSheet.create({
 		padding: 10
 	},
 	messageLeftContainer: {
-		backgroundColor: '#BAD0FB', 
+		backgroundColor: '#292929', 
 		alignSelf: 'flex-start', 
-		borderRadius: 100, 
-		paddingHorizontal: '3%', 
-		paddingVertical: '0.3%', 
-		marginLeft: '1%', 
+		borderRadius: 15, 
+		padding: '2%',
+		marginLeft: 30, 
 		marginTop: '1%',
-		maxWidth: '80%'
+		maxWidth: '80%',
+		minWidth: '8%'
+	},
+	messageLeftWithDPContainer: {
+		backgroundColor: '#292929', 
+		alignSelf: 'flex-start', 
+		borderBottomLeftRadius: 5, 
+		borderBottomRightRadius: 15, 
+		borderTopLeftRadius: 15, 
+		borderTopRightRadius: 15, 
+		padding: '2%',
+		marginLeft: '1%', 
+		maxWidth: '80%',
+		minWidth: '8%'
+	},
+	messageOtherDP: {
+		height: scale(23), 
+		width: scale(23), 
+		borderRadius: 30, 
+		alignSelf:'flex-end'
 	},
 	messageRightContainer: {
-		backgroundColor: '#BAD0FB', 
+		backgroundColor: '#96B9FE', 
 		alignSelf: 'flex-end', 
-		borderRadius: 100, 
-		paddingHorizontal: '4%', 
-		paddingVertical: '0.5%', 
+		borderRadius: 15, 
+		padding: '2%',
 		marginRight: '1%', 
-		marginTop: '1%',
-		maxWidth: '80%'
+		marginBottom: '0.5%',
+		maxWidth: '80%',
+		minWidth: '8%'
+	},
+	messageRightContainerWithSpace: {
+		backgroundColor: '#96B9FE', 
+		alignSelf: 'flex-end', 
+		borderBottomLeftRadius: 15, 
+		borderBottomRightRadius: 5, 
+		borderTopLeftRadius: 15, 
+		borderTopRightRadius: 15, 
+		padding: '2%',
+		marginRight: '1%', 
+		marginBottom: '2%',
+		maxWidth: '80%',
+		minWidth: '8%'
 	},
 	messageText: {
 		fontSize: RFValue(12),
-		color: 'black'
+		color: 'white',
 	},
 	messageTime: {
 		fontSize: RFValue(10), 
@@ -1301,7 +1379,7 @@ const styles = ScaledSheet.create({
 		transform: [{rotateY: '180deg'}],
 		alignSelf: 'flex-start',
 		marginLeft: '5%',
-		marginTop: '25%'
+		marginTop: '35%'
 	},
 	dpEditModalFullScreen: {
 		height: screenHeight,
@@ -1317,7 +1395,7 @@ const styles = ScaledSheet.create({
 		width: screenWidth,
 		backgroundColor: 'rgba(0, 0, 0, 0.25)',
 		//backgroundColor: 'pink',
-		alignSelf: 'center',
+		alignItems: 'center',
 	},
 	postModalFullScreen2: {
 		height: screenHeight,
@@ -1462,18 +1540,28 @@ const styles = ScaledSheet.create({
 		fontSize: RFValue(14)
 	},
 	ownPostModalPlaceHolder: {
-		height: '90%',
-		width: '320@s',
-		backgroundColor: 'aqua'
+		height: '100%',
+		//width: '320@s',
+		width: '100%',
+		//backgroundColor: 'aqua'
 	},
 	postModalPostPlaceholder: {
-		height: '90%',
-		width: screenWidth,
-		backgroundColor: 'aqua'
+		height: '100%',
+		width: '100%',
+		
 	},
 	somewthing: {
-		backgroundColor: 'transparent', 
+		//marginTop: '105@s',
+		backgroundColor: 'grey', 
 		width: screenWidth,
+		
+		height: '400@s'
+	},
+	somewthing2: {
+		//marginTop: '105@s',
+		backgroundColor: 'grey', 
+		width: '320@s',
+		//width: screenWidth,
 		height: '400@s'
 	},
 	multipleLocationModal: {
@@ -1699,7 +1787,12 @@ const styles = ScaledSheet.create({
 		marginTop: screenHeight * 0.1,
 		color: 'black',
 		fontWeight: '700'
-	}
+	},
+	otherUserUsernameAndNameContainer: {
+		marginLeft: screenWidth * 0.05,
+		//backgroundColor: 'green',
+		width: screenWidth
+	},
 	
 
 
