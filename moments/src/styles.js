@@ -160,7 +160,8 @@ const styles = ScaledSheet.create({
 		flexDirection: 'row',
 		height: screenHeight * 0.1,
 		width: screenWidth,
-		alignItems: 'center'
+		alignItems: 'center',
+		//backgroundColor: 'red'
 	},
 	messagesProfilePic: {
 		marginLeft: screenHeight * 0.005,
@@ -171,10 +172,17 @@ const styles = ScaledSheet.create({
 	},
 	usernameAndLastMessageContainer: {
 		marginLeft: '5%',
+		//backgroundColor: 'grey'
 	},
 	username: {
-		fontWeight: '600',
-		fontSize: RFValue(12),
+		fontWeight: '400',
+		fontSize: RFValue(14),
+		color: 'white',
+		fontStyle: 'italic'
+	},
+	usernameUnread: {
+		fontWeight: '800',
+		fontSize: RFValue(15),
 		color: 'white',
 		fontStyle: 'italic'
 	},
@@ -187,7 +195,11 @@ const styles = ScaledSheet.create({
 	lastMessage: {
 		fontSize: RFValue(9.5),
 		color: 'white',
-		
+	},
+	lastMessageUnread: {
+		fontSize: RFValue(9.5),
+		color: 'white',
+		fontWeight: '800'
 	},
 	notificationContainerMap: {
 		position: 'absolute',
@@ -285,7 +297,7 @@ const styles = ScaledSheet.create({
 		backgroundColor: '#96B9FE',
 		width: screenWidth * 0.96,
 		alignSelf: 'center',
-		marginTop: screenHeight * 0.75,
+		//marginTop: screenHeight,
 		borderRadius: 10,
 		shadowColor: "#000",
 		shadowOffset: {
@@ -298,18 +310,23 @@ const styles = ScaledSheet.create({
 		alignItems:'center',
 		flexDirection: 'row',
 		justifyContent: 'space-evenly',
-		height: '15%'
+		height: '15%',
+		marginTop: screenHeight * 0.5
 	},
 	locationImagePlaceholderSingle: {
 		backgroundColor: 'grey',
-		width: '35%',
-		height: '80%',
+		//width: '35%',
+		//height: '80%',
+		height: '80@s',
+		width: '120@s',
 		borderRadius: 10,
 	},
 	locationNameActiveAndJoinButtonContainer: {
 		height: '80%',
-		//backgroundColor: 'green',
-		flexDirection: 'column'
+		//backgroundColor: 'red',
+		flexDirection: 'column',
+		justifyContent: 'space-evenly',
+		width: '45%'
 	},
 	locationModalClose: {
 		color: 'black',
@@ -339,13 +356,17 @@ const styles = ScaledSheet.create({
 		fontSize: RFValue(12)
 	},
 	checkedInText: {
-		color: 'black',
+		//color: 'white',
+		fontSize: RFValue(12)
+	},
+	createChannelText: {
+		color: 'white',
 		fontSize: RFValue(12)
 	},
 	locationNameModal: {
-		color: 'white',
+		color: 'black',
 		fontSize: RFValue(17.5),
-		fontWeight: '500',
+		fontWeight: '600',
 		alignSelf: 'flex-start'
 	}, 
 	locationModalActive: {
@@ -970,7 +991,7 @@ const styles = ScaledSheet.create({
 		marginLeft: screenWidth * 0.27
 	},
 	captionModal: {
-		height: screenHeight * 0.28,
+		height: screenHeight * 0.4,
 		width: screenWidth * 0.96,
 		backgroundColor: 'white',
 		borderRadius: 20,
@@ -1347,7 +1368,7 @@ const styles = ScaledSheet.create({
 	messageRightContainer: {
 		backgroundColor: '#96B9FE', 
 		alignSelf: 'flex-end', 
-		borderRadius: 15, 
+		borderRadius: 15,
 		padding: '2%',
 		marginRight: '1%', 
 		marginBottom: '0.5%',
@@ -1569,7 +1590,7 @@ const styles = ScaledSheet.create({
 		width: screenWidth * 0.96,
 		alignSelf: 'center',
 		marginTop: screenHeight * 0.5,
-		borderRadius: 20,
+		borderRadius: 10,
 		shadowColor: "#000",
 		shadowOffset: {
 			width: 0,
@@ -1583,7 +1604,7 @@ const styles = ScaledSheet.create({
 	},
 	multiLocationModalHeader: {
 		//backgroundColor: 'pink', 
-		flex: 1.5, 
+		flex: 2.3, 
 		flexDirection: 'row', 
 		alignItems: 'center', 
 		justifyContent: 'space-evenly', 
@@ -1593,8 +1614,10 @@ const styles = ScaledSheet.create({
 
 	locationImagePlaceholderMulti: {
 		backgroundColor: 'grey',
-		width: '35%',
-		height: '80%',
+		// width: '35%',
+		// height: '80%',
+		height: '80@s',
+		width: '120@s',
 		borderRadius: 10,
 	},
 	multiCheckInText: {
@@ -1604,7 +1627,7 @@ const styles = ScaledSheet.create({
 	multiCheckInButton: {
 		height: '50%',
 		width: '30%', 
-		alignSelf: 'flex-end',
+		//alignSelf: 'flex-end',
 		flexDirection: 'row',
 		justifyContent: 'center',
 		alignItems: 'center',
@@ -1617,7 +1640,8 @@ const styles = ScaledSheet.create({
 		shadowOpacity: 0.34,
 		shadowRadius: 6.27,
 		elevation: 10,
-		marginRight: '3%'
+		marginRight: '3%',
+		backgroundColor: 'black'
 	},
 	multiLocationModalChannelContainer: {
 		flexDirection: 'row', 
@@ -1792,6 +1816,109 @@ const styles = ScaledSheet.create({
 		marginLeft: screenWidth * 0.05,
 		//backgroundColor: 'green',
 		width: screenWidth
+	},
+	multipleChannelLocationActiverUsers: {
+		fontSize: RFValue(12),
+		color: 'black'
+	},
+	locationModalFooter: {
+		flex: 1, 
+		justifyContent: 'space-between', 
+		//backgroundColor: 'pink', 
+		flexDirection: 'row',
+		alignItems: 'center'
+	},
+	multiCreateChannelButton: {
+		height: '50%',
+		width: '30%', 
+		//alignSelf: 'flex-end',
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center',
+		borderRadius: 20,
+		shadowColor: "#000",
+		shadowOffset: {
+			width: 0,
+			height: 5,
+		},
+		shadowOpacity: 0.34,
+		shadowRadius: 6.27,
+		elevation: 10,
+		marginLeft: '3%',
+		backgroundColor: 'black'
+	},
+	createChannelModelFullScreen: {
+		height: screenHeight,
+		width: screenWidth,
+	},
+	newChannelModelPLaceholder: {
+		//backgroundColor: 'aqua',
+		height: '40%',
+		fontWeight: '700'
+		
+	},
+	createChannelButton: {
+		height: '25%',
+		width: '80%', 
+		alignSelf: 'flex-end',
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center',
+		borderRadius: 20,
+		shadowColor: "#000",
+		shadowOffset: {
+			width: 0,
+			height: 5,
+		},
+		shadowOpacity: 0.34,
+		shadowRadius: 6.27,
+		elevation: 10,
+		backgroundColor: 'black'
+		//marginBottom: '10%'
+		//marginTop: '5%'
+	},
+	locationNameActiveAndJoinButtonContainer2: {
+		height: '80%',
+		//backgroundColor: 'red',
+		flexDirection: 'column',
+		
+		width: '45%'
+	},
+	channelNameInPostFeed: {
+		position: 'absolute', 
+		bottom: 0, 
+		alignSelf: 'center',
+		fontSize: RFValue(11),
+		color: 'black',
+		fontWeight: '600'
+	},
+	notificationButton2: {
+		width: '45@s',
+		height: '45@s',
+		justifyContent: 'center',
+		alignItems: 'center',
+		borderRadius: 100,
+		backgroundColor: 'black',
+		shadowColor: "#000",
+		shadowOffset: {
+			width: 0,
+			height: 5,
+		},
+		shadowOpacity: 0.34,
+		shadowRadius: 6.27,
+		elevation: 10,
+	},
+	takePhotoButtonPostFeed: {
+		backgroundColor: 'black',
+		width: '50@s',
+		height: '50@s',
+		borderRadius: 100,
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center',
+		//marginTop: screenHeight * 0.05,
+		borderColor: 'white',
+		borderWidth: 2.5
 	},
 	
 

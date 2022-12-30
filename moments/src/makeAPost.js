@@ -31,7 +31,7 @@ async function CreatePost(UserID, Caption, Image, ChannelID) {
 	// console.log('Image',downloadedURL)
 	// console.log('channelID', ChannelID)
 	let docID = '';
-	const messageSendTime = new Date();
+	const messageSendTime = new Date(); 
 
 	await firestore()
 	.collection('Channels')
@@ -84,45 +84,45 @@ async function CreatePost(UserID, Caption, Image, ChannelID) {
 
 async function JoinChannel(UserID, ChannelID, Longitude, Latitude, PinID) {
 
-	let ChannelLongitude = 0;
-	let ChannelLatitude = 0;
+	// let ChannelLongitude = 0;
+	// let ChannelLatitude = 0;
   
-	await firestore()
-	.collection('Channels')
-	.doc(ChannelID)
-	.get()
-	.then (docSnapshot => {
-		if(docSnapshot.exists) {
-		  ChannelLongitude = docSnapshot.data().Location.latitude;
-		  ChannelLatitude = docSnapshot.data().Location.longitude;
-		}
-	})
-	ChannelLongitude =  ChannelLongitude * Math.PI / 180;
-	ChannelLatitude =  ChannelLatitude * Math.PI / 180;
-	Latitude =  Latitude * Math.PI / 180;
-	Longitude =  Longitude * Math.PI / 180;
+	// await firestore()
+	// .collection('Channels')
+	// .doc(ChannelID)
+	// .get()
+	// .then (docSnapshot => {
+	// 	if(docSnapshot.exists) {
+	// 	  ChannelLongitude = docSnapshot.data().Location.latitude;
+	// 	  ChannelLatitude = docSnapshot.data().Location.longitude;
+	// 	}
+	// })
+	// ChannelLongitude =  ChannelLongitude * Math.PI / 180;
+	// ChannelLatitude =  ChannelLatitude * Math.PI / 180;
+	// Latitude =  Latitude * Math.PI / 180;
+	// Longitude =  Longitude * Math.PI / 180;
   
-	// Haversine formula
-	let dlon = Longitude - ChannelLongitude;
-	let dlat = Latitude - ChannelLatitude;
-	let a = Math.pow(Math.sin(dlat / 2), 2)
-			+ Math.cos(ChannelLatitude) * Math.cos(Latitude)
-			* Math.pow(Math.sin(dlon / 2),2);
+	// // Haversine formula
+	// let dlon = Longitude - ChannelLongitude;
+	// let dlat = Latitude - ChannelLatitude;
+	// let a = Math.pow(Math.sin(dlat / 2), 2)
+	// 		+ Math.cos(ChannelLatitude) * Math.cos(Latitude)
+	// 		* Math.pow(Math.sin(dlon / 2),2);
 		   
-	let c = 2 * Math.asin(Math.sqrt(a));
-	let r = 6371;
+	// let c = 2 * Math.asin(Math.sqrt(a));
+	// let r = 6371;
   
-	// calculate the result
-	let distance = c * r;
+	// // calculate the result
+	// let distance = c * r;
   
-	// Check user is within range
-	distance = distance/1000;
-	if (distance > 50) {
-	  throw error;
-	}
+	// // Check user is within range
+	// distance = distance/1000;
+	// if (distance > 50) {
+	//   throw error;
+	// }
+
 	const messageSendTime = new Date();
 
-  
 	await firestore()
 	.collection('Users')
 	.doc(UserID)
@@ -175,7 +175,7 @@ function MakeAPost({route}) {
 	const [imageURL, setImageURL] = useState(null);
 	const [takePhotoButton, setTakePhotoButton] = useState(true);
 	const [backCamera, setbackCamera] = useState(true);
-	const [caption, setCaption] = useState('add a caption...');
+	const [caption, setCaption] = useState('');
 	const [addedCaption, setAddedCaption] = useState(false);
 	const [captionModal, setCaptionModal] = useState(false);
 	const cameraref = useRef();
@@ -260,7 +260,7 @@ function MakeAPost({route}) {
 					<View>
 						<View style={styles.justTakenPhotoContainerMakePost}>
 							<ImageBackground style={styles.justTakenPhotoMakePost} source={{uri:'file://' + imageURL}}>
-								<FIcon name='close' style={styles.justTakenPhotoClose} size={scale(25)} color='black'
+								<MCIcon name='camera-retake' style={styles.justTakenPhotoClose} size={scale(25)} color='white'
 								onPress={() => {closePhoto(); setCaption('add a caption...')}}
 								/>
 							</ImageBackground>	 
@@ -300,12 +300,12 @@ function MakeAPost({route}) {
 							onPress={() => setbackCamera(false)}/>
 						</View>
 						:
-						<View style={styles.cameraContaner}>
+						<View style={styles.cameraContainerMakePost}>
 							<Camera
 							video={false}
 							isActive
 							device={deviceFront}
-							style={styles.camera}
+							style={styles.cameraMakePost}
 							ref={cameraref}
 							photo={true}
 							enableZoomGesture={true}
@@ -321,14 +321,16 @@ function MakeAPost({route}) {
 				<Pressable onPress={() => takePhotoAndButton() }>
 					<View style={styles.takePhotoButton}>
 						<IIcon name="ios-camera-outline" size={scale(36)} color='white'/>
-					</View>
+					</View> 
 				</Pressable> 
 				:
 				null
 			}
 			{   
 				imageURL ? 
-				<Pressable onPress={() => {navigation.navigate('SocialyseLoading', {selectedChannelID: selectedChannelID}); JoinAndPost(user.uid, caption, imageURL, selectedChannelID)}}>
+				<Pressable onPress={() => {navigation.navigate('SocialyseLoading', {selectedChannelID: selectedChannelID}); JoinAndPost(user.uid, caption, imageURL, selectedChannelID); 
+				setCaption(''); setAddedCaption(false); setImageURL()
+				}}>
 					<View style={styles.sendPhotoButton}>
 						<IIcon name="ios-send" size={scale(28)} color='white'/>
 					</View>

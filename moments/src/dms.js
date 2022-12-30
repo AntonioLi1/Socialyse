@@ -3,6 +3,7 @@ import { View, Pressable, Text, ScrollView, SafeAreaView, Image } from 'react-na
 import IIcon from 'react-native-vector-icons/Ionicons';
 import MIIcon from 'react-native-vector-icons/MaterialIcons';
 import ADIcon from 'react-native-vector-icons/AntDesign';
+import OIcon from 'react-native-vector-icons/Octicons';
 import styles from './styles';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
@@ -11,59 +12,7 @@ import { LoggedInContext } from '../App'
 import storage from '@react-native-firebase/storage';
 
 
-// const dms = [
-// 	{
-// 		username: 'fwqei',
-// 		lastMessage: 'weih',
-// 		key: 1
-// 	},
-// 	{
-// 		username: 'wef',
-// 		lastMessage: 'refbh',
-// 		key: 2
-// 	},
-// 	{
-// 		username: 'qwd',
-// 		lastMessage: 'fytnj',
-// 		key: 3
-// 	},
-// 	{
-// 		username: 'e5rh',
-// 		lastMessage: 'ersbg',
-// 		key: 4
-// 	},
-// 	{
-// 		username: 'tyuk',
-// 		lastMessage: 'we',
-// 		key: 5
-// 	},
-// 	{
-// 		username: 'wfq',
-// 		lastMessage: 'wqwe',
-// 		key: 6
-// 	},
-// 	{
-// 		username: 'tyweuk',
-// 		lastMessage: 'wewerg',
-// 		key: 7
-// 	},
-// 	{
-// 		username: 'tyweuk',
-// 		lastMessage: 'wewerg',
-// 		key: 8
-// 	},
-// 	{
-// 		username: 'tyweuk',
-// 		lastMessage: 'wewerg',
-// 		key: 9
-// 	},
-// 	{
-// 		username: 'tyweuk',
-// 		lastMessage: 'wewerg',
-// 		key: 10
-// 	},
-	
-// ]
+
 
 async function ViewNewFriends(UserID) {
 	let unmessagedFriends = [];
@@ -105,7 +54,7 @@ async function ViewDMs(UserID) {
 	.then((querySnapshot) => {
 	  	querySnapshot.forEach(snapshot => {
 		  let data = snapshot.data()
-		  //console.log('messages data', data)
+		  console.log('messages data', data)
 		  DMs.push(data)
 	  })
 	});
@@ -137,7 +86,7 @@ function DmDisplay({navigation}) {
 
 	//console.log(newFriendsArray)
 	if (dataLoaded != true) return null;
-
+ 
 	return (
 		<SafeAreaView style={styles.DMScreen}>
 			<View style={styles.DMHeader}>
@@ -168,7 +117,7 @@ function DmDisplay({navigation}) {
 									
 								
 								
-								<Text style={styles.newConnectionUsername} >
+								<Text style={styles.newConnectionUsername} numberOfLines={1}>
 									{dm.Username}
 								</Text>
 							</View>
@@ -186,15 +135,35 @@ function DmDisplay({navigation}) {
 				<ScrollView>
 					{messagesArray.map((dm) => 					
 						<Pressable onPress={() => {navigation.navigate('Dm', {OtherUid: dm.RecipientID, OtherUsername: dm.Username, OtherUserDP: dm.ProfilePic})}}>
-							<View style={styles.dm}>
-								<Pressable onPress={() => {navigation.navigate('OtherProfile', {FriendID: dm.RecipientID})}}>
-									<Image source={{uri: dm.ProfilePic}} style={styles.messagesProfilePic}/>
-								</Pressable>
-									
-								<View style={styles.usernameAndLastMessageContainer}>
-									<Text style={styles.username}>
-										{dm.Username}
-									</Text>
+							{
+								dm.Opened === false && dm.LastMessageSender !== user.uid ?
+								// unopened message from other user
+								<View style={styles.dm}>
+									<Pressable onPress={() => {navigation.navigate('OtherProfile', {FriendID: dm.RecipientID})}}>
+										<Image source={{uri: dm.ProfilePic}} style={styles.messagesProfilePic}/>
+									</Pressable>
+								
+									<View style={styles.usernameAndLastMessageContainer}>
+										<Text style={styles.usernameUnread}>
+											{dm.Username}
+										</Text>									
+										<Text style={styles.lastMessageUnread}>
+											{dm.LastMessage}		
+										</Text> 																																			
+									</View>	
+									<OIcon style={{marginLeft: '30%'}}name='dot-fill' size={scale(18)} color='#96B9FE'/>															
+								</View>
+								:
+								// all other instances
+								<View style={styles.dm}>
+									<Pressable onPress={() => {navigation.navigate('OtherProfile', {FriendID: dm.RecipientID})}}>
+										<Image source={{uri: dm.ProfilePic}} style={styles.messagesProfilePic}/>
+									</Pressable>
+
+									<View style={styles.usernameAndLastMessageContainer}>
+										<Text style={styles.username}>
+											{dm.Username}
+										</Text>									
 									{
 										dm.LastMessageSender === user.uid ? 
 										<View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -206,12 +175,68 @@ function DmDisplay({navigation}) {
 										: 
 										<Text style={styles.lastMessage}>
 											{dm.LastMessage}
-										</Text>
+										</Text> 
 									}
-									
+									</View>
+												
 								</View>
+							}
+							
+							
+							
+							
+							
+							
+							{/* <View style={styles.dm}>
+								<Pressable onPress={() => {navigation.navigate('OtherProfile', {FriendID: dm.RecipientID})}}>
+									<Image source={{uri: dm.ProfilePic}} style={styles.messagesProfilePic}/>
+								</Pressable>
+								{
+									dm.Opened ? 
+									// opened DMS OR USER SENT LAST MESSAGE
+									<View style={styles.usernameAndLastMessageContainer}>
+										<Text style={styles.username}>
+											{dm.Username}
+										</Text>									
+									{
+										dm.LastMessageSender === user.uid ? 
+										<View style={{flexDirection: 'row', alignItems: 'center'}}>
+											<ADIcon name="back" size={scale(12)} color="white"/>
+											<Text style={styles.myLastMessage}>
+												{dm.LastMessage}
+											</Text>
+										</View>
+										: 
+										<Text style={styles.lastMessage}>
+											{dm.LastMessage}
+										</Text> 
+									}
+									</View>
+									:
+									// unopened DMS
+									<View style={styles.usernameAndLastMessageContainer}>
+										<Text style={styles.usernameUnread}>
+											{dm.Username}
+										</Text>
+									{
+										dm.LastMessageSender === user.uid ? 
+										<View style={{flexDirection: 'row', alignItems: 'center'}}>
+										 	<ADIcon name="back" size={scale(12)} color="white"/>
+										 	<Text style={styles.myLastMessage}>
+										 		{dm.LastMessage}
+										 	</Text>
+										</View> 
+										 : 
+										<Text style={styles.lastMessageUnread}>
+											{dm.LastMessage}		
+										</Text> 	
+																	
+									}
+									</View>
+
+								}
 								
-							</View>
+							</View> */}
 						</Pressable>
 						)
 					}
