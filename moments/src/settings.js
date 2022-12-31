@@ -92,9 +92,9 @@ function Settings ({navigation}) {
                 <Pressable onPress={() => setSendFeedbackModal(true)}>
                     <View style={styles.settingsProfile}>
                         <Text style={styles.settingsText}>
-                            New pin suggestion!
+                            Make a new location suggestion!
                         </Text>
-                        <Pressable onPress={() => navigation.navigate('profile')}>
+                        <Pressable onPress={() => navigation.navigate('ChangePassword')}>
                             <MIIcon name='arrow-forward-ios' size={25} color='white'/>
                         </Pressable>
                     </View>
@@ -107,7 +107,7 @@ function Settings ({navigation}) {
                         <Text style={styles.settingsText}>
                             Delete Account
                         </Text>
-                        <Pressable onPress={() => navigation.navigate('profile')}>
+                        <Pressable onPress={() => navigation.navigate('ChangePassword')}>
                             <MIIcon name='arrow-forward-ios' size={25} color='white'/>
                         </Pressable>
                     </View>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext, useTransition} from 'react';
-import { View, Pressable, Text, FlatList, TextInput, SafeAreaView, Image } from 'react-native';
+import { View, Pressable, Text, FlatList, TextInput, SafeAreaView, Image, Keyboard } from 'react-native';
 import IIcon from 'react-native-vector-icons/Ionicons';
 import MIIcon from 'react-native-vector-icons/MaterialIcons';
 import styles from './styles';
@@ -9,100 +9,8 @@ import { LoggedInContext } from '../App'
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 import firestore from '@react-native-firebase/firestore';
 import { useDrawerProgress } from '@react-navigation/drawer';
+import { ContinousBaseGesture } from 'react-native-gesture-handler/lib/typescript/handlers/gestures/gesture';
 
-
-// const data = [
-//     {
-//         key: 1,
-//         message: 'hello jim',
-//         timeSent: '09:32',
-//         sentBy: 0
-//     },
-//     {
-//         key: 2,
-//         message: 'hello jac!qwduiwefhewfujefwhiewufhewiufhwiufewhifuewifeuwfiw',
-//         timeSent: '09:33',
-//         sentBy: 1
-//     },
-//     {
-//         key: 3,
-//         message: 'hello hello ehllo ehleoefjowejefwejfw',
-//         timeSent: '09:34',
-//         sentBy: 0
-//     },
-//     {
-//         key: 4,
-//         message: 'wegweg',
-//         timeSent: '09:35',
-//         sentBy: 1
-//     },
-//     {
-//         key: 5,
-//         message: 'qwduiwefhewfujefwhiewufhewiufhwiufewhifuewifeuwfiw',
-//         timeSent: '09:35',
-//         sentBy: 1
-//     },
-//     {
-//         key: 6,
-//         message: 'qwduiwefhewfujefwhiewufhewiufhwiufewhifuewifeuwfiw',
-//         timeSent: '09:35',
-//         sentBy: 1
-//     },
-//     {
-//         key: 7,
-//         message: 'wegweg',
-//         timeSent: '09:35',
-//         sentBy: 1
-//     },
-//     {
-//         key: 8,
-//         message: 'qwduiwefhewfujefwhiewufhewiufhwiufewhifuewifeuwfiw',
-//         timeSent: '09:35',
-//         sentBy: 1
-//     },
-//     {
-//         key: 9,
-//         message: 'wegweg',
-//         timeSent: '09:35',
-//         sentBy: 0
-//     },
-//     {
-//         key: 10,
-//         message: 'qwduiwefhewfujefwhiewufhewiufhwiufewhifuewifeuwfiw',
-//         timeSent: '09:35',
-//         sentBy: 1
-//     },
-//     {
-//         key: 11,
-//         message: 'wegweg',
-//         timeSent: '09:35',
-//         sentBy: 1
-//     },
-//     {
-//         key: 12,
-//         message: 'qwduiwefhewfujefwhiewufhewiufhwiufewhifuewifeuwfiw',
-//         timeSent: '09:35',
-//         sentBy: 1
-//     },
-//     {
-//         key: 13,
-//         message: 'qwduiwefhewfujefwhiewufhewiufhwiufewhifuewifeuwfiw',
-//         timeSent: '09:35',
-//         sentBy: 0
-//     },
-//     {
-//         key: 14,
-//         message: 'qwduiwefhewfujefwhiewufhewiufhwiufewhifuewifeuwfiw',
-//         timeSent: '09:35',
-//         sentBy: 1
-//     },
-//     {
-//         key: 15,
-//         message: 'qwduiwefhewfujefwhiewufhewiufhwiufewhifuewifeuwfiw',
-//         timeSent: '09:35',
-//         sentBy: 0
-//     },
-// ]
 
 async function SendMessage(UserID, FriendID, Text) {
     // first check if messaged is false
@@ -311,7 +219,37 @@ async function ViewMessage(UserID, FriendID) {
     // you getting all the individual messages in a dm
    let messages = [];
  
-   await firestore()
+//    await firestore()
+//    .collection('Messages')
+//    .doc(UserID)
+//    .collection('Chats')
+//    .doc(FriendID)
+//    .collection('IndividualMessages')
+//    .orderBy('TimeSent', 'desc')
+//    .limit(100)
+//    .get()
+//    .then((querySnapshot) => {
+//      querySnapshot.forEach(snapshot => {
+//         let data = snapshot.data()
+
+//         let timeSent = new Date((data.TimeSent.nanoseconds / 1000000) + data.TimeSent.seconds * 1000)
+//         let hours = timeSent.getHours()
+//         let hoursString = ('0' + hours).slice(-2)
+//         let mins = timeSent.getMinutes().toString()
+//         let minsString = ('0' + mins).slice(-2)
+//         let displayTime = hoursString.concat(":",minsString)
+//         let timeInSeconds = timeSent/1000
+//         let obj = {
+//             Sender: data.Sender,
+//             Text: data.Text, 
+//             DisplayTime: displayTime,
+//             TimeInSeconds: timeInSeconds
+//         }
+//         messages.push(obj)
+//      })
+//    });
+
+    firestore()
    .collection('Messages')
    .doc(UserID)
    .collection('Chats')
@@ -319,8 +257,7 @@ async function ViewMessage(UserID, FriendID) {
    .collection('IndividualMessages')
    .orderBy('TimeSent', 'desc')
    .limit(100)
-   .get()
-   .then((querySnapshot) => {
+   .onSnapshot((querySnapshot) => {
      querySnapshot.forEach(snapshot => {
         let data = snapshot.data()
 
@@ -337,6 +274,7 @@ async function ViewMessage(UserID, FriendID) {
             DisplayTime: displayTime,
             TimeInSeconds: timeInSeconds
         }
+        //console.log(obj)
         messages.push(obj)
      })
    });
@@ -388,7 +326,7 @@ async function ViewMessage(UserID, FriendID) {
             UnopenedMessages: unopenedMessageCount
         });
     }
-   
+   //console.log('all messages', messages)
    return messages;
 }
 
@@ -402,13 +340,46 @@ function Dm ({route, navigation}) {
     const [messages, setMessages] = useState()
 
     async function getData() {
-        const data = await ViewMessage(user.uid, OtherUid)
+        const data = ViewMessage(user.uid, OtherUid)
         setMessages(data)
     }
 
     useEffect(() => {
-       getData()
-    }, [])
+        
+        let messagesArr = []
+        const subscriber = firestore()
+        .collection('Messages')
+        .doc(user.uid)
+        .collection('Chats')
+        .doc(OtherUid)
+        .collection('IndividualMessages')
+        .orderBy('TimeSent', 'desc')
+        .limit(100)
+        .onSnapshot((querySnapshot) => {
+            querySnapshot.forEach(snapshot => {
+                let data = snapshot.data()
+                let timeSent = new Date((data.TimeSent.nanoseconds / 1000000) + data.TimeSent.seconds * 1000)
+                let hours = timeSent.getHours()
+                let hoursString = ('0' + hours).slice(-2)
+                let mins = timeSent.getMinutes().toString()
+                let minsString = ('0' + mins).slice(-2)
+                let displayTime = hoursString.concat(":",minsString)
+                let timeInSeconds = timeSent/1000
+                let obj = {
+                    Sender: data.Sender,
+                    Text: data.Text, 
+                    DisplayTime: displayTime,
+                    TimeInSeconds: timeInSeconds
+                } 
+                console.log(obj)
+                messagesArr.push(obj)
+            
+            //messages.push(obj)
+          })
+          setMessages(messagesArr)
+        });
+        return () => subscriber()
+    }, [firestore()])
     
     return (
         <SafeAreaView style={styles.messagesScreen}>
@@ -560,7 +531,7 @@ function Dm ({route, navigation}) {
                         // bottom message, no space underneath
                         if (index === 0) {
                             return (
-                                <View style={styles.messageRightContainer}>
+                                <View style={styles.messageRightContainerWithSpace}>
                                     <Text style={styles.messageText}>
                                         {item.Text}
                                     </Text>
@@ -609,8 +580,9 @@ function Dm ({route, navigation}) {
                 style={styles.messageInput}
                 placeholder='Send a message'
                 onChangeText={(text) => {setTextInput(text)}}
-                />
-                <Pressable onPress={() => {SendMessage(user.uid, OtherUid, textInput)}}>
+                value={textInput}
+                /> 
+                <Pressable onPress={() => {SendMessage(user.uid, OtherUid, textInput); Keyboard.dismiss(); setTextInput('')}}>
                     <IIcon name="ios-send" size={scale(23)} color='white'/>
                 </Pressable>
                 
@@ -622,3 +594,20 @@ function Dm ({route, navigation}) {
 export default Dm;
 
                     
+
+//getData()
+        // const subscriber = firestore()
+        // .collection('Messages')
+        // .doc('wKASOUF1CGW7vFaWuoW9bzCERd53')
+        // .collection('Chats')
+        // .doc('J6kNuPPoUzVe4I3b3yTAfqwcWY32')
+        // .collection('IndividualMessages')
+        // .onSnapshot((querySnapshot) => {
+        //     querySnapshot.forEach(snapshot => {
+        //         console.log('User data: ', snapshot.data());
+        //     })
+            
+        // });
+
+
+        

@@ -3,7 +3,7 @@ import { View, Pressable, Text, SafeAreaView, TurboModuleRegistry } from 'react-
 import Geolocation from 'react-native-geolocation-service';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import styles from './styles'
-import { LocationModalOne, LocationModalMultiple } from './locationModal';
+import { LocationModalMultiple } from './locationModal';
 import { LoggedInContext } from '../App'
 import firestore from '@react-native-firebase/firestore';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -127,30 +127,14 @@ function MapDisplay({ navigation }) {
                                 //console.log("pinId",pin.PinID)
                                 setSelectedPinId(pin.PinID);
                                 //console.log(pin)
-                            if (pin.ChannelCount > 1) {                       
                                 setMultipleModalDisplay(true); setMessageDisplay(false); setNotifDisplay(false); 
-                            } else {
-                                setModalDisplay(true); setMessageDisplay(false); setNotifDisplay(false); 
-                            }
                         // setModalDisplay(true); setMessageDisplay(false); setNotifDisplay(false);
                         }} />
                         )
                     })
                 }
-				{/* <Marker coordinate={{ latitude: latitude, longitude: longitude }}
-					onPress={() => { 
-                        if (pin.length > 1) {                           
-                            setMultipleModalDisplay(true); setMessageDisplay(false); setNotifDisplay(false); 
-                        } else {
-                            setModalDisplay(true); setMessageDisplay(false); setNotifDisplay(false); 
-                        }
-                        // setModalDisplay(true); setMessageDisplay(false); setNotifDisplay(false);
-                }} /> */}
 			</MapView>
 
-
-			<LocationModalOne modalDisplay={modalDisplay} setModalDisplay={setModalDisplay} setMessageDisplay={setMessageDisplay} setNotifDisplay={setNotifDisplay} />
-            
             <LocationModalMultiple multipleModalDisplay={multipleModalDisplay} setMultipleModalDisplay={setMultipleModalDisplay} setMessageDisplay={setMessageDisplay} setNotifDisplay={setNotifDisplay} />
 			
             {messageDisplay ?

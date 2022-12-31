@@ -14,16 +14,25 @@ import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 import firestore from '@react-native-firebase/firestore';
 import { LoggedInContext } from '../App';
 
-const data = [{caption: 'hello', key: 1}, {caption: 'non', key: 2}, {caption: 'egf', key: 3}, {caption: 'egf', key: 4}, {caption: 'egf', key: 5} ]
-
 async function ViewOwnPosts(uid) {
     
     let ownPostsArray = []
+
+    let start = new Date();
+
+    function subtractHours(numOfHours, date = new Date()) {
+        date.setHours(date.getHours() - numOfHours);
+      
+        return date;
+    }
+
+    let test = subtractHours(1, start)
 
     await firestore()
     .collection('Users')
     .doc(uid)
     .collection('UserPosts')
+    .where('TimeUploaded', '>', test )
     .orderBy('TimeUploaded', 'desc')
     .get()
     .then((querySnapshot) => {
@@ -37,7 +46,7 @@ async function ViewOwnPosts(uid) {
             ownPostsArray.push(obj)
         })
     })
-    console.log(ownPostsArray)
+    //console.log(ownPostsArray)
     return ownPostsArray;
 }
 

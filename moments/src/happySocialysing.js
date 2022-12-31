@@ -15,9 +15,9 @@ function HappySocialysing({navigation, route}) {
 
     const {selectedChannelID} = route.params
 
-    setTimeout(() => {
-        navigation.navigate('PostsFeed', {selectedChannelID: selectedChannelID})
-    }, 4000)
+    // setTimeout(() => {
+    //     navigation.navigate('PostsFeed', {selectedChannelID: selectedChannelID})
+    // }, 5000)
     
     return (
         <SafeAreaView style={styles.happySocialysingLoadingScreen}>
@@ -27,7 +27,7 @@ function HappySocialysing({navigation, route}) {
                     LAST FOR 15 {'\n'}
                     MINUTES. {'\n'} {'\n'}
                 </Text>
-                
+                  
             </View>
             <View style={{width: '100%', marginBottom: '70%',}}>
                 <Text style={styles.yourPostTextBlack}>
