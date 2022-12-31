@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext, useRef } from 'react';
-import { View, Image, Text, Pressable, FlatList, SafeAreaView,  } from 'react-native';
+import { View, Image, Text, Pressable, FlatList, SafeAreaView, RefreshControl } from 'react-native';
 import styles from './styles';
 import IIcon from 'react-native-vector-icons/Ionicons';
 import MIIcon from 'react-native-vector-icons/MaterialIcons';
@@ -78,7 +78,7 @@ async function ViewChannelFeed(userUId, selectedChannelID) {
             Posts.push(data)
         })
     })
-    //console.log(Posts)
+    //console.log(Posts) 
     return Posts;
   
 }
@@ -112,7 +112,7 @@ async function getMessagesCount(uid) {
 
 async function getChannelName(selectedChannelID) {
     let channelName = ''
-    console.log(selectedChannelID)
+    //console.log(selectedChannelID)
     await firestore()
     .collection('Channels')
     .doc(selectedChannelID)
@@ -121,7 +121,7 @@ async function getChannelName(selectedChannelID) {
         let data = docSnapshot.data()
         channelName = data.ChannelName
     })
-
+  
     return channelName 
 
 }
@@ -160,6 +160,7 @@ function PostsFeed ({navigation, route}) {
     const [messageCount, setMessageCount] = useState()
     const [dataLoaded, setDataLoaded] = useState(false)
     const [channelName, setChannelName] = useState('')
+    const [refresh, setRefresh] = useState(false)
 
     const {selectedChannelID} = route.params;
 
@@ -184,6 +185,14 @@ function PostsFeed ({navigation, route}) {
         console.log('doubles')
     })
 
+    function PullToRefresh () {
+        setRefresh(true)
+
+        setTimeout(() => {
+            setRefresh(false)
+        }, 3000)
+    }
+
 
     async function getData() {
         const data = await ViewChannelFeed(user.uid, selectedChannelID)
@@ -197,7 +206,7 @@ function PostsFeed ({navigation, route}) {
         setMessageCount(msgCount)
         const channelNameGet = await getChannelName(selectedChannelID)
         setChannelName(channelNameGet)
-        test()
+        //test()
         setDataLoaded(true)
     }
 
@@ -247,6 +256,9 @@ function PostsFeed ({navigation, route}) {
                 contentContainerStyle={{alignItems: 'center'}} 
                 numColumns={2} 
                 data={channelPosts} 
+                refreshControl={
+                    <RefreshControl refreshing={refresh} onRefresh={() => PullToRefresh()}/>
+                }
                 renderItem={({item, index}) => 
 				{
                     if (item.empty === true) {

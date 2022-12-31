@@ -14,8 +14,6 @@ import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 import firestore from '@react-native-firebase/firestore';
 import { LoggedInContext } from '../App';
 
-const data = [{caption: 'hello', key: 1}, {caption: 'non', key: 2}, {caption: 'egf', key: 3}, {caption: 'egf', key: 4}, {caption: 'egf', key: 5} ]
-
 async function ViewOwnPosts(uid) {
     
     let ownPostsArray = []

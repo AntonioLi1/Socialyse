@@ -357,22 +357,22 @@ function Dm ({route, navigation}) {
         .limit(100)
         .onSnapshot((querySnapshot) => {
             querySnapshot.forEach(snapshot => {
-            let data = snapshot.data()
-            let timeSent = new Date((data.TimeSent.nanoseconds / 1000000) + data.TimeSent.seconds * 1000)
-            let hours = timeSent.getHours()
-            let hoursString = ('0' + hours).slice(-2)
-            let mins = timeSent.getMinutes().toString()
-            let minsString = ('0' + mins).slice(-2)
-            let displayTime = hoursString.concat(":",minsString)
-            let timeInSeconds = timeSent/1000
-            let obj = {
-                Sender: data.Sender,
-                Text: data.Text, 
-                DisplayTime: displayTime,
-                TimeInSeconds: timeInSeconds
-            } 
-            console.log(obj)
-            messagesArr.push(obj)
+                let data = snapshot.data()
+                let timeSent = new Date((data.TimeSent.nanoseconds / 1000000) + data.TimeSent.seconds * 1000)
+                let hours = timeSent.getHours()
+                let hoursString = ('0' + hours).slice(-2)
+                let mins = timeSent.getMinutes().toString()
+                let minsString = ('0' + mins).slice(-2)
+                let displayTime = hoursString.concat(":",minsString)
+                let timeInSeconds = timeSent/1000
+                let obj = {
+                    Sender: data.Sender,
+                    Text: data.Text, 
+                    DisplayTime: displayTime,
+                    TimeInSeconds: timeInSeconds
+                } 
+                console.log(obj)
+                messagesArr.push(obj)
             
             //messages.push(obj)
           })
@@ -608,3 +608,6 @@ export default Dm;
         //     })
             
         // });
+
+
+        

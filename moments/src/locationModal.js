@@ -31,12 +31,12 @@ async function ViewPinChannelsMultiple(PinID) {
 			  ChannelID: '',
 			  selected: false 
 			};
-			console.log('snapshots', snapshot)
+			//console.log('snapshots', snapshot)
 			channel.ChannelName = snapshot.data().Name;
 			channel.ActiveUsers = snapshot.data().ActiveUsers;
 			channel.ChannelID = snapshot.data().ChannelID;
 			Channels.push(channel)
-			console.log('lol')
+			//console.log('lol')
 		})
 	})
 	//console.log(Channels)

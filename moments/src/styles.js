@@ -974,7 +974,8 @@ const styles = ScaledSheet.create({
 		fontSize: RFValue(18),
 		paddingTop: 0,
 		paddingBottom: 0,
-		color: 'white'
+		color: 'white',
+		marginLeft: '1%'
 	},
 	sendPhotoButton: {
 		backgroundColor: 'black',
@@ -1619,6 +1620,7 @@ const styles = ScaledSheet.create({
 		height: '80@s',
 		width: '120@s',
 		borderRadius: 10,
+		marginTop: '1%',
 	},
 	multiCheckInText: {
 		
