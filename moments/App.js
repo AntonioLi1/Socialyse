@@ -25,7 +25,11 @@ export const LoggedInContext = createContext({
 	selectedPinId: '',
 	setSelectedPinId: (value) => {},
 	selectedPost: null,
-	setSelectedPost: (value) => {}
+	setSelectedPost: (value) => {},
+	channelPosts: null,
+	setChannelPosts: (value) => {},
+	justUnliked: null,
+	setJustUnliked: (value) => {},
 	
 });
 
@@ -48,6 +52,8 @@ function App () {
 	const [user, setUser] = useState();
 	const [selectedPinId, setSelectedPinId] = useState('')
 	const [selectedPost, setSelectedPost] = useState()
+	const [channelPosts, setChannelPosts] = useState()
+	const [justUnliked, setJustUnliked] = useState(false)
 	
 	const { signUpName, signUpUsername, signUpPhoneNumber} = useContext(LoggedOutContext)
 
@@ -75,6 +81,7 @@ function App () {
             ProfilePic: '/ProfilePics/16a2066d261a38a5ba3bff2e101acb93.jpg',
             CurrentChannel: 0,
 			ChannelJoined: null,
+			LastPosted: null,
 		})
 		.then(() => {
 			console.log('User added!');
@@ -196,7 +203,8 @@ function App () {
 		value={{messageDisplay, setMessageDisplay, notifDisplay, setNotifDisplay, 
 			editProfileModal, setEditProfileModal, dpURL, setDpURL, 
 			user, setUser, selectedPinId, setSelectedPinId, 
-			selectedPost, setSelectedPost}}>
+			selectedPost, setSelectedPost, channelPosts, setChannelPosts,
+			justUnliked, setJustUnliked}}>
 			<LoggedInNavigator></LoggedInNavigator>
 		</LoggedInContext.Provider>
 		

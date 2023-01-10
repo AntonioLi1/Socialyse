@@ -20,8 +20,10 @@ const styles = ScaledSheet.create({
 	},
 	messageIconContainer: {
 		position: 'absolute',
-		marginTop: screenHeight * 0.88,
-		marginLeft: screenWidth * 0.05
+		//marginTop: screenHeight * 0.88,
+		//marginLeft: screenWidth * 0.05
+		left: '15@s',
+		bottom: '40@s'
 	},
 	messageButton: {
 		width: '50@s',
@@ -71,6 +73,13 @@ const styles = ScaledSheet.create({
 		position: 'absolute'
 		//justifyContent: 'center',
 		//alignSelf: 'center'
+	},
+	createPinButton: {
+		position: 'absolute',
+		//marginTop: screenHeight * 0.88,
+		//marginRight: screenWidth * 0.05
+		right: '15@s',
+		bottom: '40@s'
 	},
 	DMScreen: {
 		height: screenHeight,
@@ -326,12 +335,48 @@ const styles = ScaledSheet.create({
 		//backgroundColor: 'red',
 		flexDirection: 'column',
 		justifyContent: 'space-evenly',
-		width: '45%'
+		alignItems: 'center',
+		width: '60%'
+	},
+	locationNameActiveAndJoinButtonContainerCreate: {
+		height: '80%',
+		//backgroundColor: 'red',
+		flexDirection: 'column',
+		justifyContent: 'space-evenly',
+		alignItems: 'center',
+		width: '40%'
 	},
 	locationModalClose: {
 		color: 'black',
 		alignSelf: 'flex-start',
 		
+	},
+	createPinModalClose: {
+		color: 'black',
+		alignSelf: 'flex-start',
+		position: 'absolute',
+		right: scale(2)
+		
+	},
+	createPinModal: {
+		backgroundColor: '#96B9FE',
+		width: screenWidth * 0.96,
+		alignSelf: 'center',
+		//marginTop: screenHeight,
+		borderRadius: 10,
+		shadowColor: "#000",
+		shadowOffset: {
+			width: 0,
+			height: 5,
+		},
+		shadowOpacity: 0.34,
+		shadowRadius: 6.27,
+		elevation: 10,
+		alignItems:'center',
+		flexDirection: 'row',
+		justifyContent: 'center',
+		height: '15%',
+		marginTop: screenHeight * 0.5
 	},
 	checkInButton: {
 		height: '25%',
@@ -808,10 +853,10 @@ const styles = ScaledSheet.create({
 	},
 	takeAPhotoBackButton: {
 		transform: [{rotateY: '180deg'}],
-		position: 'absolute',
-		alignSelf: 'flex-start',
-		marginTop: screenHeight * 0.85,
-		marginLeft: screenWidth * 0.07
+		// position: 'absolute',
+		// alignSelf: 'flex-start',
+		// marginTop: screenHeight * 0.85,
+		// marginLeft: screenWidth * 0.07
 		 
 	},
 	takeAPhotoText: {
@@ -856,11 +901,22 @@ const styles = ScaledSheet.create({
 	},
 	postModalCaption: {
 		color: 'white', 
+		//alignSelf: 'flex-start', 
+		fontSize: RFValue(12.5), 
+		marginLeft: '5%',
+		flexWrap: 'wrap',
+		//marginTop: '3%',
+		//backgroundColor: 'grey',
+
+		flex: 1
+	},
+	postModalCaption2: {
+		color: 'white', 
 		alignSelf: 'flex-start', 
 		fontSize: RFValue(12.5), 
 		marginLeft: '5%',
 		flexWrap: 'wrap',
-		marginTop: '3%'
+		marginTop: '1%'
 	},
 	socialTextPurple30: {
 		fontSize: 30,
@@ -971,7 +1027,7 @@ const styles = ScaledSheet.create({
 	},
 	addACaptionPlaceHolder: {
 		fontStyle: 'italic',
-		fontSize: RFValue(18),
+		fontSize: RFValue(16),
 		paddingTop: 0,
 		paddingBottom: 0,
 		color: 'white',
@@ -987,9 +1043,9 @@ const styles = ScaledSheet.create({
 		alignItems: 'center',
 		borderColor: 'white',
 		borderWidth: 2.5,
-		position: 'absolute',
-		marginTop: screenHeight * 0.115,
-		marginLeft: screenWidth * 0.27
+		// position: 'absolute',
+		// marginTop: screenHeight * 0.115,
+		// marginLeft: screenWidth * 0.27
 	},
 	captionModal: {
 		height: screenHeight * 0.4,
@@ -1130,13 +1186,17 @@ const styles = ScaledSheet.create({
 	fullPost: {
 		height: '100%', 
 		width: '80%',
-		justifyContent: 'center' 
+		justifyContent: 'center',
+		//backgroundColor: 'grey',
+		
+
 
 	},
 	postPhoto: {
 		//backgroundColor: 'red', 
-		height: '85%', 
-		borderRadius: 10
+		height: '100%', 
+		borderRadius: 10,
+		overflow: 'hidden',
 	},
 	postModal: {
 		height: screenHeight * 0.55,
@@ -1378,6 +1438,7 @@ const styles = ScaledSheet.create({
 	},
 	messageRightContainerWithSpace: {
 		backgroundColor: '#96B9FE', 
+		//backgroundColor: 'red',
 		alignSelf: 'flex-end', 
 		borderBottomLeftRadius: 15, 
 		borderBottomRightRadius: 5, 
@@ -1385,7 +1446,7 @@ const styles = ScaledSheet.create({
 		borderTopRightRadius: 15, 
 		padding: '2%',
 		marginRight: '1%', 
-		marginBottom: '2%',
+		// marginBottom: '2%',
 		maxWidth: '80%',
 		minWidth: '8%'
 	},
@@ -1415,7 +1476,7 @@ const styles = ScaledSheet.create({
 	postModalFullScreen: {
 		height: screenHeight,
 		width: screenWidth,
-		backgroundColor: 'rgba(0, 0, 0, 0.25)',
+		backgroundColor: 'rgba(0, 0, 0, 0.8)',
 		//backgroundColor: 'pink',
 		alignItems: 'center',
 	},
@@ -1562,26 +1623,33 @@ const styles = ScaledSheet.create({
 		fontSize: RFValue(14)
 	},
 	ownPostModalPlaceHolder: {
-		height: '100%',
+		height: '400@s',
 		//width: '320@s',
 		width: '100%',
 		//backgroundColor: 'aqua'
+		overflow: 'hidden',
+		borderRadius: 10,
 	},
 	postModalPostPlaceholder: {
 		height: '100%',
 		width: '100%',
-		
+		overflow: 'hidden',
+		borderRadius: 10,
 	},
 	somewthing: {
 		//marginTop: '105@s',
-		backgroundColor: 'grey', 
-		width: screenWidth,
-		
-		height: '400@s'
+		//backgroundColor: 'grey', 
+		width: '320@s',
+
+		height: '500@s'
+	},
+	ownPostLikeCount: {
+		color: 'white',
+		fontSize: RFValue(12.5)
 	},
 	somewthing2: {
 		//marginTop: '105@s',
-		backgroundColor: 'grey', 
+		//backgroundColor: 'grey', 
 		width: '320@s',
 		//width: screenWidth,
 		height: '400@s'
@@ -1856,8 +1924,16 @@ const styles = ScaledSheet.create({
 	newChannelModelPLaceholder: {
 		//backgroundColor: 'aqua',
 		height: '40%',
-		fontWeight: '700'
+		fontWeight: '700',
 		
+	},
+	createPinModalPlaceholder: {
+		//backgroundColor: 'aqua',
+		//height: '40%',
+		fontWeight: '700',
+		fontSize: RFValue(15),
+		width: '100%',
+		textAlign: 'center'
 	},
 	createChannelButton: {
 		height: '25%',
@@ -1879,6 +1955,27 @@ const styles = ScaledSheet.create({
 		//marginBottom: '10%'
 		//marginTop: '5%'
 	},
+	createPinModalButton: {
+		height: '25%',
+		width: '50%', 
+		//alignSelf: 'flex-end',
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center',
+		borderRadius: 20,
+		shadowColor: "#000",
+		shadowOffset: {
+			width: 0,
+			height: 5,
+		},
+		shadowOpacity: 0.34,
+		shadowRadius: 6.27,
+		elevation: 10,
+		backgroundColor: 'black'
+		//marginBottom: '10%'
+		//marginTop: '5%'
+	},
+
 	locationNameActiveAndJoinButtonContainer2: {
 		height: '80%',
 		//backgroundColor: 'red',
@@ -1919,9 +2016,22 @@ const styles = ScaledSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center',
 		//marginTop: screenHeight * 0.05,
-		borderColor: 'white',
+		//borderColor: 'white',
 		borderWidth: 2.5
 	},
+	makeAPostFooter: {
+		//ckgroundColor: 'green', 
+		flexDirection: 'row', 
+		width: screenWidth,
+		height: screenHeight * 0.1,
+		justifyContent: 'space-between',
+		alignItems: 'center',
+		paddingHorizontal: '5%',
+		position: 'absolute',
+		bottom: '40@s',
+
+
+	}
 	
 
 

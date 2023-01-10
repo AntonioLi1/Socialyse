@@ -20,10 +20,10 @@ async function ViewPinChannelsMultiple(PinID) {
 	.collection('Pins')
 	.doc(PinID)
 	.collection('Channels')
-	//.orderBy('ActiveUsers', 'desc')
+	.orderBy('ActiveUsers', 'desc')
 	.get()
 	.then((querySnapshot) => {
-		console.log('querySnapshot', querySnapshot)
+		//console.log('querySnapshot', querySnapshot)
 		querySnapshot.forEach(snapshot => {
 			let channel = {
 			  ChannelName: '',
@@ -113,7 +113,7 @@ async function checkIfUserCanCreateChannel(uid, selectedPinId, userLatitude, use
 		if (docSnapshot.exists) {
 			// convert firebase storage time into seconds
 			let data = docSnapshot.data()
-			LastTime = new Date((data.LastCreated.nanoseconds / 1000000000) + data.LastCreated.seconds)
+			LastTime = (data.LastCreated.nanoseconds / 1000000000) + data.LastCreated.seconds
 		}
 	})
 	// current time in seconds
@@ -155,7 +155,7 @@ async function checkIfUserCanViewButton(uid, channelID) {
 
 // error with pin far away??
 async function getPinName(selectedPinId) {
-	//console.log(selectedPinId)
+	console.log(selectedPinId)
 	let channelName = ''
 	await firestore()
 	.collection('Pins')
@@ -164,130 +164,15 @@ async function getPinName(selectedPinId) {
 	.then(docSnapshot => { 
 		//console.log(docSnapshot)
 		let data = docSnapshot.data()
-		//console.log(data)
+		console.log('size',docSnapshot.size)
+
+		console.log('data',data)
 		channelName = data.Name
 	})
 
 	return channelName
 }
 
-async function CreateChannel(UserID, PinID, ChannelName) {
-  
-	const currTime = new Date();
-  
-	// Check channel of same name doesn't exist 
-	// YOU NEED TO DIFFERENTIATE ERROR FOR USER AND CHANNEL NAME EXISTING ALREADY
-	await firestore()
-	.collection('Pins')
-	.doc(PinID)
-	.collection('Channels')
-	.where('ChannelName', '==', ChannelName)
-	.get()
-	.then(docSnapshot => {
-	  if (docSnapshot.exists) {
-		throw error;
-	  }
-	})
-	// Create channel
-	// Get location of pin
-	let Location = {};
-	await firestore()
-	.collection('Pins')
-	.doc(PinID)
-	.get()
-	.then(docSnapshot => {
-	  if (docSnapshot.exists) {
-		Location = docSnapshot.data().Location;
-	  }
-	});
-  
-	// add to channels
-	let ChannelID = '';
-	await firestore()
-	.collection('Channels')
-	.add({
-	  Name: ChannelName,
-	  Location: Location
-	})
-	.then(function(docRef) {
-	  ChannelID = docRef.id;
-	});
-  
-	// add under pins
-	await firestore()
-	.collection('Pins')
-	.doc(PinID)
-	.collection('Channels')
-	.doc(ChannelID)
-	.set({
-	  ActiveUsers: 0,
-	  ChannelID: ChannelID, 
-	  ChannelName: ChannelName
-	});
-  
-	// increment channel count inside of pin by 1
-	let channelCount = 0;
-	await firestore() 
-	.collection('Pins')
-	.doc(PinID)
-	.get()
-	.then(docSnapshot => {
-	  if (docSnapshot.exists) {
-		channelCount = docSnapshot.data().ChannelCount;
-	  }
-	});
-  
-	channelCount += 1;
-	// update pin field
-	await firestore()
-	.collection('Pins')
-	.doc(PinID)
-	.update({
-	  ChannelCount: channelCount
-	});
-  
-	// add to channel creations
-	let createdBefore = false
-	await firestore()
-	.collection('ChannelCreations')
-	.doc(UserID)
-	.collection('Pins')
-	.doc(PinID)
-	.get()
-	.then(docSnapshot => {
-	  if (docSnapshot.exists) {
-		createdBefore = true
-	  }
-	})
-  
-	// if channel doesnt exist, set a new one
-	if (createdBefore == false) {
-	  await firestore()
-	  .collection('ChannelCreations')
-	  .doc(UserID)
-	  .collection('Pins')
-	  .doc(PinID)
-	  .set({
-		ChannelID: ChannelID, 
-		LastCreated: currTime
-	  });
-  
-	} 
-	// if channel does exist, update
-	else {
-	  await firestore()
-	  .collection('ChannelCreations')
-	  .doc(UserID)
-	  .collection('Pins')
-	  .doc(PinID)
-	  .update({
-		ChannelID: ChannelID, 
-		LastCreated: currTime
-	  });
-  
-	}
-  
-  }
 
 
 
@@ -317,6 +202,128 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 			setLongitude(info.coords.longitude)
 		})
 	}
+
+	async function CreateChannel(UserID, PinID, ChannelName) {
+  
+		const currTime = new Date();
+	  
+		// Check channel of same name doesn't exist 
+		// YOU NEED TO DIFFERENTIATE ERROR FOR USER AND CHANNEL NAME EXISTING ALREADY
+		await firestore()
+		.collection('Pins')
+		.doc(PinID)
+		.collection('Channels')
+		.where('ChannelName', '==', ChannelName)
+		.get()
+		.then(docSnapshot => {
+		  if (docSnapshot.exists) {
+			throw error;
+		  }
+		})
+		// Create channel
+		// Get location of pin
+		let Location = {};
+		await firestore()
+		.collection('Pins')
+		.doc(PinID)
+		.get()
+		.then(docSnapshot => {
+		  if (docSnapshot.exists) {
+			Location = docSnapshot.data().Location;
+		  }
+		});
+	  
+		// add to channels
+		let ChannelID = '';
+		await firestore()
+		.collection('Channels')
+		.add({
+		  ChannelName: ChannelName,
+		  Location: Location
+		})
+		.then(function(docRef) {
+		  ChannelID = docRef.id;
+		});
+
+		console.log('ChannelID',ChannelID)
+		setSelectedChannelID(ChannelID)
+	  
+		// add under pins
+		await firestore()
+		.collection('Pins')
+		.doc(PinID)
+		.collection('Channels')
+		.doc(ChannelID)
+		.set({
+		  ActiveUsers: 0,
+		  ChannelID: ChannelID, 
+		  Name: ChannelName
+		});
+	  
+		// increment channel count inside of pin by 1
+		let channelCount = 0;
+		await firestore() 
+		.collection('Pins')
+		.doc(PinID)
+		.get()
+		.then(docSnapshot => {
+		  if (docSnapshot.exists) {
+			channelCount = docSnapshot.data().ChannelCount;
+		  }
+		});
+	  
+		channelCount += 1;
+		// update pin field
+		await firestore()
+		.collection('Pins')
+		.doc(PinID)
+		.update({
+		  ChannelCount: channelCount
+		});
+	  
+		// add to channel creations
+		let createdBefore = false
+		await firestore()
+		.collection('ChannelCreations')
+		.doc(UserID)
+		.collection('Pins')
+		.doc(PinID)
+		.get()
+		.then(docSnapshot => {
+		  if (docSnapshot.exists) {
+			createdBefore = true
+		  }
+		})
+	  
+		// if channel doesnt exist, set a new one
+		if (createdBefore == false) {
+		  await firestore()
+		  .collection('ChannelCreations')
+		  .doc(UserID)
+		  .collection('Pins')
+		  .doc(PinID)
+		  .set({
+			ChannelID: ChannelID, 
+			LastCreated: currTime
+		  });
+	  
+		} 
+		// if channel does exist, update
+		else {
+		  await firestore()
+		  .collection('ChannelCreations')
+		  .doc(UserID)
+		  .collection('Pins')
+		  .doc(PinID)
+		  .update({
+			ChannelID: ChannelID, 
+			LastCreated: currTime
+		  });
+	  
+		}
+	  
+	}
+	
 
 	async function getData() {
 		const data = await ViewPinChannelsMultiple(selectedPinId)
@@ -365,6 +372,17 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 	// console.log('channelstatus',channelStatus)
 	// console.log('channelselected', channelSelected)
 	// console.log('viewCheck', viewCheck)
+	//console.log('createChannelModel', createChannelModel)
+
+	async function createChannelAndJoin() {
+		try {
+			await CreateChannel(user.uid, selectedPinId, createChannelName)
+			navigation.navigate('MakeAPost', {selectedChannelID: selectedChannelID})
+		} catch {
+			console.log('error createchannelandjoin')
+		}
+	}
+
 
 	if (createChannelModel == true) 
 		return (
@@ -375,18 +393,18 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 					<View style={styles.locationModal}>
 						<View style={styles.locationImagePlaceholderSingle}/>
 					
-						<View style={styles.locationNameActiveAndJoinButtonContainer}>
+						<View style={styles.locationNameActiveAndJoinButtonContainerCreate}>
 							<Text style={styles.locationNameModal}>
 								{pinName}
 							</Text> 
 							
 							<TextInput style={styles.newChannelModelPLaceholder} placeholderTextColor='#585858' placeholder="New channel name..." autoFocus={true}
-							onChangeText={(text) => setCreateChannelName(text)} multiline={true}
+							onChangeText={(text) => setCreateChannelName(text)} multiline={true} maxLength={15}
 							/>
 
 							<Pressable style={styles.createChannelButton} 
-							onPress={() => {CreateChannel(user.uid, selectedPinId, createChannelName); 
-								navigation.navigate('MakeAPost', {selectedChannelID: selectedChannelID})}}
+							onPress={() => {setMultipleModalDisplay(false); setCreateChannelModel(false);createChannelAndJoin();
+								}}
 							>
 								<Text style={styles.createChannelText}>Create</Text>				
 							</Pressable>
@@ -412,7 +430,7 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 					<View style={styles.locationNameActiveAndJoinButtonContainer2}>
 						<Text style={styles.locationNameModal}>
 							{pinName}
-							{/* UNSW Roundhouse */}
+							
 						</Text> 
 					</View>
 					
@@ -472,7 +490,7 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 
 
 					<Pressable disabled={joinEnable} style={[{ backgroundColor: isPressed ? 'white' : 'black' }, styles.multiCheckInButton ]} 
-					onPress={() => {setIsPressed(!isPressed); setChannelStatus(!channelStatus); {channelStatus ? navigation.navigate('MakeAPost', {selectedChannelID: selectedChannelID}) : setMultipleModalDisplay(false)} setMultipleModalDisplay(false)
+					onPress={() => {setIsPressed(!isPressed); setChannelStatus(!channelStatus); {channelStatus ? navigation.navigate('MakeAPost', {selectedChannelID: selectedChannelID}) : setMultipleModalDisplay(false)}; setMultipleModalDisplay(false)
 					{viewCheck ? navigation.navigate('PostsFeed', {selectedChannelID: selectedChannelID}) : null}
 					}}>
 					{viewCheck ? 

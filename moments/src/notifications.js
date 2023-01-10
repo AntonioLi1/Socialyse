@@ -65,18 +65,46 @@ const NotificationDisplay = ({navigation}) => {
 
 	const [notifData, setnotifData] = useState(null)
 	const [loading, setLoading] = useState(false)
-	const [input, setInput] = useState('')
 
-	//console.log(user.uid)
-	
-	const getData = async () => {
-		const data = await getNotifs(user.uid)
-		setnotifData(data)
-
-	}
-	
 	useEffect(() => {
-		getData()
+		firestore()
+		.collection('Notifications')
+		.doc(user.uid) 
+		.collection('Matches')
+		.orderBy('TimeMatched', 'desc')
+		.onSnapshot((querySnapshot) => {
+			let returnArray = [];
+			querySnapshot.forEach(snapshot => {
+				let data = snapshot.data()
+				console.log(data)
+				let notifObj = {
+					username: '',
+					timeNotif: '',
+					profilePic: ''
+				}
+				notifObj.username = data.MatchedWith
+				let timeDiff = ((Math.round(Date.now() / 1000)) - Math.round((data.TimeMatched.nanoseconds / 1000000000) + data.TimeMatched.seconds))
+				// under a day
+				if (timeDiff < 86400) {
+					let hours = Math.ceil(timeDiff / 3600)
+					notifObj.timeNotif = `${hours}h`
+				} 
+				// under a week
+				else if (timeDiff >= 86400 && timeDiff < 604800) {
+					// how many days
+					let days = Math.ceil(timeDiff / 86400)
+					notifObj.timeNotif = `${days}d`
+				} 
+				// more than a week
+				else {
+					let weeks = Math.ceil(timeDiff / 604800)
+					notifObj.timeNotif = `${weeks}w`
+				}
+				notifObj.profilePic = data.ProfilePic
+				returnArray.push(notifObj)
+			})
+			setnotifData(returnArray)
+		})
 	}, [])
 
 	if (!notifData) return null;

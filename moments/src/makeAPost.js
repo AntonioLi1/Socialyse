@@ -72,7 +72,16 @@ async function CreatePost(UserID, Caption, Image, ChannelID) {
 	  UserID: UserID,
 	  PostID: docID
 	});
-  
+
+	// added 02/01, for storing when a user last posted. Helped checking if 
+	// use can post again in the channel
+	await firestore()
+	.collection('Users')
+	.doc(UserID)
+	.update({
+		LastPosted: messageSendTime,
+	})
+	
 	// add post with doc id to UserPostLikes
 	await firestore()
 	.collection('PostLikes')
@@ -168,7 +177,7 @@ function MakeAPost({route}) {
 	const deviceBack = devices.back;
 	const deviceFront = devices.front;
 
-    const {messageDisplay, setMessageDisplay, notifDisplay, setNotifDisplay, user, selectedPinId} = useContext(LoggedInContext);
+    const {messageDisplay, setMessageDisplay, notifDisplay, setNotifDisplay, user, selectedPinId, } = useContext(LoggedInContext);
 	
 	const [cameraPermission, setCameraPermission] = useState();
   	const [microphonePermission, setMicrophonePermission] = useState();
@@ -178,6 +187,7 @@ function MakeAPost({route}) {
 	const [caption, setCaption] = useState('');
 	const [addedCaption, setAddedCaption] = useState(false);
 	const [captionModal, setCaptionModal] = useState(false);
+	const [showFooter, setShowFooter] = useState(true)
 	const cameraref = useRef();
 
 	const [currLatitude, setCurrLatitude] = useState(0)
@@ -235,10 +245,15 @@ function MakeAPost({route}) {
 	// 	return null;
 	// }
 
+	const callback = ()=>{
+        navigation.navigate('PostsFeed', {selectedChannelID: selectedChannelID})
+	};
+
 	async function JoinAndPost(UserID, Caption, Image, ChannelID) {
 		try {
 			await JoinChannel(UserID, ChannelID, currLongitude, currLatitude, selectedPinId)
 			await CreatePost(UserID, Caption, Image, ChannelID)
+			callback();
 		} catch (error) {
 			console.log('errro', error)
 		}
@@ -266,7 +281,7 @@ function MakeAPost({route}) {
 							</ImageBackground>	 
 						</View>
 						
-						<Pressable onPress={() => {setCaptionModal(true)}}>
+						<Pressable onPress={() => {setCaptionModal(true); setShowFooter(false)}}>
 							{
 								addedCaption ? 
 									<Text style={styles.addACaptionPlaceHolder}>
@@ -279,7 +294,8 @@ function MakeAPost({route}) {
 									</Text>	
 							}
 						</Pressable>
-						<CaptionModal captionModal={captionModal} setCaptionModal={setCaptionModal} caption={caption} setCaption={setCaption} setAddedCaption={setAddedCaption}/>
+						<CaptionModal captionModal={captionModal} setCaptionModal={setCaptionModal} caption={caption} setCaption={setCaption} setAddedCaption={setAddedCaption}
+						showFooter={showFooter} setShowFooter={setShowFooter}/>
 
 							
 					</View>
@@ -326,22 +342,28 @@ function MakeAPost({route}) {
 				:
 				null
 			}
-			{   
-				imageURL ? 
+			{
+				showFooter ?
+				<View style={styles.makeAPostFooter}>
+					<Pressable style={styles.takeAPhotoBackButton} onPress={() => {setMessageDisplay(true); navigation.goBack(); setNotifDisplay(true) }}>
+						<MIIcon name='arrow-forward-ios' size={scale(30)} color='white'/>
+					</Pressable>
+				{imageURL ? 
 				<Pressable onPress={() => {navigation.navigate('SocialyseLoading', {selectedChannelID: selectedChannelID}); JoinAndPost(user.uid, caption, imageURL, selectedChannelID); 
-				setCaption(''); setAddedCaption(false); setImageURL()
+				setCaption(''); setAddedCaption(false); setImageURL(null)
 				}}>
 					<View style={styles.sendPhotoButton}>
 						<IIcon name="ios-send" size={scale(28)} color='white'/>
 					</View>
 				</Pressable>
 				:
+				null}
+				</View> 
+				:
 				null
 			}
 			
-			<Pressable style={styles.takeAPhotoBackButton} onPress={() => {setMessageDisplay(true); navigation.goBack(); setNotifDisplay(true) }}>
-				<MIIcon name='arrow-forward-ios' size={scale(30)} color='white'/>
-			</Pressable>
+			
 
 			
 		</SafeAreaView>

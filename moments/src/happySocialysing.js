@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { View, Text, Pressable, ScrollView, SafeAreaView } from 'react-native';
+import { View, Text, Pressable, ScrollView, SafeAreaView, RefreshControl, ActivityIndicator } from 'react-native';
 import styles from './styles';
 import { useNavigation } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -15,9 +15,6 @@ function HappySocialysing({navigation, route}) {
 
     const {selectedChannelID} = route.params
 
-    // setTimeout(() => {
-    //     navigation.navigate('PostsFeed', {selectedChannelID: selectedChannelID})
-    // }, 5000)
     
     return (
         <SafeAreaView style={styles.happySocialysingLoadingScreen}>
@@ -37,6 +34,7 @@ function HappySocialysing({navigation, route}) {
                     </Text>
                 </Text>
             </View>
+            <ActivityIndicator size="large" style={{bottom: '30%'}} color='white'/>
         </SafeAreaView>
     )
 }

@@ -1,13 +1,10 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View, Image, Text, Pressable, FlatList, Modal, Dimensions, ImageBackground } from 'react-native';
+import { View, Image, Text, Pressable, FlatList, Modal, Dimensions, ImageBackground, TextComponent } from 'react-native';
 import styles from './styles';
 import IIcon from 'react-native-vector-icons/Ionicons';
 import MIIcon from 'react-native-vector-icons/MaterialIcons';
 import ADIcon from 'react-native-vector-icons/AntDesign';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {GettingStartedContext} from '../App';
-import LinearGradient from 'react-native-linear-gradient';
-import MaskedView from '@react-native-community/masked-view';
 import PostModal from './postModal';
 import { ScrollView } from 'react-native-gesture-handler';
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
@@ -28,33 +25,98 @@ async function ViewOwnPosts(uid) {
 
     let test = subtractHours(1, start)
 
-    await firestore()
+    const querySnapshot = await firestore()
     .collection('Users')
     .doc(uid)
     .collection('UserPosts')
     .where('TimeUploaded', '>', test )
     .orderBy('TimeUploaded', 'desc')
     .get()
-    .then((querySnapshot) => {
-        querySnapshot.forEach(snapshot => {
-            let obj = {
-                ImageURL: '',
-                Caption: '',
-            }
-            obj.ImageURL = snapshot.data().ImageURL
-            obj.Caption = snapshot.data().Caption
-            ownPostsArray.push(obj)
-        })
-    })
-    //console.log(ownPostsArray)
+
+    for (let i = 0; i < querySnapshot.size; i++) {
+        const snapshot = querySnapshot.docs[i]
+        let obj = {
+            Id: i,
+            ImageURL: '',
+            Caption: '',
+            PostID: '',
+            LikeCount: 0
+        }
+        const docID = snapshot.id
+        const likeCountQuerySnapshot = await firestore()
+        .collection('PostLikes').doc(docID).get()
+        
+        //console.log('likeCountQuerySnapshot', likeCountQuerySnapshot)
+        obj.ImageURL = snapshot.data().ImageURL
+        obj.Caption = snapshot.data().Caption
+        obj.PostID = snapshot.data().PostID
+        obj.LikeCount = likeCountQuerySnapshot.data().LikeCount
+        ownPostsArray.push(obj)
+    }
+    //console.log('ownPostsArray',ownPostsArray)
     return ownPostsArray;
 }
 
-function OwnPosts({ownPost, setOwnPost}) {
+async function DeletePost(UserID, PostID, selectedChannelID) {
+    // ASSUMPTION MADE
+    // USER CAN ONLY DELETE POST WITHIN CHANNEL THEY'RE IN
+    
+    // let ownerCheck = false;
+    // // check userid is owner of postid
+    // await firestore()
+    // .collection('Channels')
+    // .doc(selectedChannelID)
+    // .collection('Posts')
+    // .doc(PostID)
+    // .get()
+    // .then (docSnapshot => {
+    //   if(docSnapshot.exists) {
+    //     if (docSnapshot.data().PostOwner == UserID) {
+    //       ownerCheck = true;
+    //     }
+    //   }
+    // });
+    // // if not owner throw error
+    // if (ownerCheck == false) {
+    //   throw error;
+    // }
+
+    // otherwise delete from channel posts, user posts and posts liked
+    console.log('selectedChannelID', selectedChannelID)
+    console.log('PostID',PostID)
+    console.log('UserID', UserID)
+    await firestore()
+    .collection('Channels')
+    .doc(selectedChannelID) 
+    .collection('Posts')
+    .doc(PostID)
+    .update({ 
+        TimeUploaded: 0
+    });
+  
+    await firestore()
+    .collection('Users')
+    .doc(UserID)
+    .collection('UserPosts')
+    .doc(PostID)
+    .update({
+        TimeUploaded: 0
+    });
+  
+    // await firestore()
+    // .collection('PostLikes')
+    // .doc(PostID)
+    // .delete();
+  
+}
+
+function OwnPosts({ownPost, setOwnPost, selectedChannelID}) { 
     const width = Dimensions.get('window').width
 
     const [ownPosts, setOwnPosts] = useState()
     const [dataLoaded, setDataLoaded] = useState(false)
+    const [deletedPost, setDeletePost] = useState(false)
+    //const [selectedOwnPostIndex, setSelectedOwnPostIndex] = useState()
 
     const {user} = useContext(LoggedInContext)
 
@@ -63,26 +125,55 @@ function OwnPosts({ownPost, setOwnPost}) {
         setOwnPosts(data)
         setDataLoaded(true)
     }
-
+ 
     useEffect(() => {
         getData()
-    },[])
+        //console.log(ownPosts) 
+    },[])  
 
-    if (dataLoaded == false) return null
+    // useEffect(() => {
+    //     setDataLoaded(false)
+    //     //console.log('deletedPost', deletedPost)
+    //     //console.log('selectedOwnPostIndex', selectedOwnPostIndex)
+    //     if (deletedPost == true && selectedOwnPostIndex >= 0) {
+    //         let temp = ownPosts;
+    //         temp.splice(selectedOwnPostIndex, 1) 
+    //         setOwnPosts(temp)
+    //         console.log('ownposts new',ownPosts)
+    //         setDeletePost(false) 
+    //         console.log('deletepost', deletedPost)
+    //         setDataLoaded(true)
+    //         //setOwnPosts(ownPost.filter(item => ))
+    //     }
+    // }, [deletedPost])
 
-    //console.log(ownPost)
+    // if the ownposts becomes empty, close the modal using useeffect
+    useEffect(() => { 
+        if (ownPosts.length == 0) {
+            setOwnPost(false) 
+        }
+    }, [ownPosts, ownPost])
+
+    function updateOwnPosts(itemID) {
+        let temp = [...ownPosts]
+        temp = temp.filter(post => post.Id !== itemID) 
+        setOwnPosts(temp)
+    }
+
+    if (dataLoaded == false) return null  
 
     return (
         <Modal visible={ownPost} transparent={true}>
             <View style={styles.postModalFullScreen2}>
                 <View style={styles.ownPostModal}>                  
-                    <FlatList
+                    <FlatList 
                         horizontal={true}
                         data={ownPosts}
-                        decelerationRate="fast"
-                        snapToInterval={width}
-                        //snapToAlignment="start"
-                        renderItem={({item, index}) => {
+                        decelerationRate={'fast'}
+                        snapToInterval={scale(320)}
+                        extraData={ownPosts}
+                        keyExtractor={item => item.Id}
+                        renderItem={({item}) => {   
                             return(
                                 <View style={styles.somewthing}>
                                     <ImageBackground source={{uri: item.ImageURL}} style={styles.ownPostModalPlaceHolder}>
@@ -91,9 +182,32 @@ function OwnPosts({ownPost, setOwnPost}) {
                                         />  
                                     </ImageBackground>
                                     
-                                    <Text style={styles.postModalCaption}>
-                                        {item.Caption}
-                                    </Text>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: '1%'}}>
+                                        <View style={{flexDirection: 'row', alignItems: 'center', flex: 1}}>
+                                            <View style={{flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-start'}}>
+                                                <IIcon name='ios-heart' color='white' size={scale(14)}
+                                                />
+                                                <Text style={styles.ownPostLikeCount}>
+                                                    {item.LikeCount}
+                                                </Text> 
+                                            </View>
+                                            <Text style={styles.postModalCaption}>
+                                                {item.Caption} 
+                                                
+                                            </Text>
+                                        </View> 
+                                            
+                                        <Pressable onPress={() => {
+                                            DeletePost(user.uid, item.PostID, selectedChannelID);
+                                            updateOwnPosts(item.Id);
+                                        }}>
+                                            <IIcon name='ios-trash' size={scale(16)} color='white'/>
+                                        </Pressable>
+                                        
+                                        
+                                        
+                                    </View>
+                                        
                                 </View>
                                     
                             );

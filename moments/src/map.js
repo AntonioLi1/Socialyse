@@ -1,15 +1,21 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View, Pressable, Text, SafeAreaView, TurboModuleRegistry } from 'react-native';
+import { View, Pressable, Text, SafeAreaView, TurboModuleRegistry, Image, Dimensions } from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import styles from './styles'
 import { LocationModalMultiple } from './locationModal';
+import CreatePinModal from './createPinModal';
 import { LoggedInContext } from '../App'
 import firestore from '@react-native-firebase/firestore';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import IIcon from 'react-native-vector-icons/Ionicons';
 import EIcon from 'react-native-vector-icons/Entypo';
+import ADIcon from 'react-native-vector-icons/AntDesign';
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
+import { sub } from 'react-native-reanimated';
+
+const screenWidth = Dimensions.get("window").width
+const screenHeight = Dimensions.get("window").height
 
 async function ViewPins() {
     let Pins = [];
@@ -36,41 +42,12 @@ async function ViewPins() {
     return Pins;
 }
 
-async function getNotifCount(uid) {
-    let notifCount = 0;
-    await firestore()
-    .collection('Notifications')
-    .doc(uid)
-    .get()
-    .then(docSnapshot => {
-        let data = docSnapshot.data()
-        notifCount = data.NotificationCount;
-    })
-    return notifCount;
-
-}
-
-async function getMessagesCount(uid) {
-    let messagesCount = 0;
-    await firestore()
-    .collection('Messages')
-    .doc(uid)
-    .get()
-    .then(docSnapshot => {
-        let data = docSnapshot.data()
-        messagesCount = data.UnopenedMessages;
-    })
-    return messagesCount;
-}
-
-
-
 function MapDisplay({ navigation }) {
 
 	const [longitude, setLongitude] = useState(0)
 	const [latitude, setLatitude] = useState(0)
-	const [modalDisplay, setModalDisplay] = useState(false);
     const [multipleModalDisplay, setMultipleModalDisplay] = useState(false);
+    const [createPinModalDisplay, setCreatePinModalDisplay] = useState(false)
     const [pins, setPins] = useState()
     const [notificationCount, setNotificationCount] = useState(0)
     const [msgCount, setMsgCount] = useState(0)
@@ -84,52 +61,106 @@ function MapDisplay({ navigation }) {
 		})
 	}
 
-    async function getData() {
-        const pins = await ViewPins()
-        setPins(pins)
-        
-
-        const notifCount = await getNotifCount(user.uid)
-        setNotificationCount(notifCount)
-
-        const messagesCount = await getMessagesCount(user.uid)
-        setMsgCount(messagesCount)
-
-        setDataLoaded(true)
-    }
+    // async function getData() {
+    //     const pins = await ViewPins()
+    //     setPins(pins)
+    //     setDataLoaded(true)
+    // }
 	useEffect(() => {
 		GetmyLocation();
-        getData();
+        //getData();
 	}, [])
+
+    //console.log(zoom)
+
+    useEffect(() => {
+        const subscriber = firestore()
+        .collection('Pins')
+        .onSnapshot((querySnapshot) => {
+            let pinsArray = []
+            querySnapshot.forEach(snapshot => {
+                let data = {
+                Location: {},
+                PinID: '',
+                ChannelCount: 0
+                };
+    
+                data.Location = snapshot.data().Location,
+                data.PinID = snapshot.data().PinID
+                data.ChannelCount = snapshot.data().ChannelCount
+                pinsArray.push(data)
+            })
+            setPins(pinsArray)
+        })
+
+        return () => subscriber()
+    })
+
+
+    // get notifCount
+    useEffect(() => {
+		const subscriber = firestore()
+		.collection('Notifications')
+		.doc(user.uid)
+		.onSnapshot(docSnapshot => {
+			let notifCount = docSnapshot.data().NotificationCount;
+			setNotificationCount(notifCount)
+		})
+
+		return () => subscriber()
+	},[])
+
+    // get messages count
+    useEffect(() => {
+		const subscriber = firestore()
+		.collection('Messages')
+		.doc(user.uid)
+		.onSnapshot(docSnapshot => {
+			let messageCount = docSnapshot.data().UnopenedMessages;
+			setMsgCount(messageCount)
+		})
+
+		return () => subscriber()
+	},[])
 
     //console.log('map pinId',selectedPinId)
 
-    if (dataLoaded == false) return null;
+    if (!pins) return null;
+
+    //console.log('createPinModalDisplay',createPinModalDisplay)
     //console.log(modalDisplay)
+
 	return (
 		<SafeAreaView style={styles.fullScreen}>
 			<MapView
 				provider={PROVIDER_GOOGLE}
 				style={styles.map}
 				customMapStyle={mapStyle}
+                // onRegionChangeComplete={event => {
+                //     const zoomLevel = event.nativeEvent.zoomLevel
+                //     setZoom(zoomLevel)
+                // }}
+                //proportional={true}
+                
 				region={{
 					latitude: latitude,
 					longitude: longitude,
-					latitudeDelta: 0.007,
-					longitudeDelta: 0.007,
+					latitudeDelta: 0.004,
+					longitudeDelta: 0.004,
 				}}
 				showsUserLocation={true}>
                 {
                     pins.map((pin) => {
                         return (
                             <Marker coordinate={{ latitude: pin.Location.latitude, longitude: pin.Location.longitude }}
+                            
 					        onPress={() => { 
-                                //console.log("pinId",pin.PinID)
                                 setSelectedPinId(pin.PinID);
-                                //console.log(pin)
                                 setMultipleModalDisplay(true); setMessageDisplay(false); setNotifDisplay(false); 
-                        // setModalDisplay(true); setMessageDisplay(false); setNotifDisplay(false);
-                        }} />
+                            }}>
+                                <IIcon name='ios-location-sharp' size={scale(30)} color='red'/>
+                                
+                            </Marker>
                         )
                     })
                 }
@@ -161,6 +192,18 @@ function MapDisplay({ navigation }) {
 					</View>
 				</View>
 				: null}
+            
+            {messageDisplay ?
+				<View style={styles.createPinButton}>
+					<Pressable style={styles.messageButton} onPress={() => setCreatePinModalDisplay(true)}>
+						<ADIcon style={styles.messageIcon} name='plus' size={scale(25)} />
+					</Pressable>
+				</View> : null}
+            <CreatePinModal createPinModalDisplay={createPinModalDisplay} setCreatePinModalDisplay={setCreatePinModalDisplay}
+            multipleModalDisplay={multipleModalDisplay} setMultipleModalDisplay={setMultipleModalDisplay}
+            />
+
+            
 			
 
 

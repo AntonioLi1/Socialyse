@@ -16,7 +16,6 @@ async function ViewOwnProfile(UserID) {
 		Name: '',
 		Username: '',
 		ProfilePic: '',
-		FriendCount: ''
 	};
 	await firestore()
 	.collection('Users')
@@ -31,15 +30,7 @@ async function ViewOwnProfile(UserID) {
 		} 
 	})
   
-	await firestore()
-	.collection('Friends')
-	.doc(UserID)
-	.get()
-	.then(docSnapshot => {
-		if(docSnapshot.exists) {
-		  dataRet.FriendCount = docSnapshot.data().FriendCount;
-		} 
-	})
+	
 	//console.log(dataRet)
 	return dataRet
   }
@@ -50,6 +41,7 @@ function OwnProfile ({navigation}) {
 	const { editProfileModal, setEditProfileModal, testing, setTesting, user, dpURL } = useContext(LoggedInContext);
 	const [userDetails, setUserDetails] = useState('')
 	const [FBImageURL, setFBImageURL] = useState(null)
+	const [friendCount, setFriendCount] = useState()
 	//const [initializing, setInitializing] = useState(true);
 
 	//console.log('user', user)
@@ -76,6 +68,18 @@ function OwnProfile ({navigation}) {
 		getData()
 		//getImage2()
     },[])
+
+	useEffect(() => {
+		const subscriber = firestore()
+		.collection('Friends')
+		.doc(user.uid)
+		.onSnapshot(docSnapshot => {
+			let FriendCount = docSnapshot.data().FriendCount;
+			setFriendCount(FriendCount)
+		})
+
+		return () => subscriber()
+	},[])
 
 	//console.log('userdetals',userDetails)
 	console.log('dpurl', dpURL)
@@ -112,7 +116,7 @@ function OwnProfile ({navigation}) {
 		<View style={styles.profilePageFooter}>
 			<View style={{flexDirection: 'row', marginTop: '10%', justifyContent: 'center'}}>
 				<Text style={styles.socialyseCounter}>
-					SOCIALYSED: {userDetails.FriendCount}
+					SOCIALYSED: {friendCount}
 				</Text>
 				<IIcon style={{marginLeft: '1%'}} name="md-people" color='white' size={25}/>
 			</View>

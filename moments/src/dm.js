@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext, useTransition} from 'react';
-import { View, Pressable, Text, FlatList, TextInput, SafeAreaView, Image, Keyboard } from 'react-native';
+import { View, Pressable, Text, FlatList, TextInput, SafeAreaView, Image, Keyboard, Animated } from 'react-native';
 import IIcon from 'react-native-vector-icons/Ionicons';
 import MIIcon from 'react-native-vector-icons/MaterialIcons';
 import styles from './styles';
@@ -8,9 +8,9 @@ import FAIcon from 'react-native-vector-icons/FontAwesome';
 import { LoggedInContext } from '../App'
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 import firestore from '@react-native-firebase/firestore';
-import { useDrawerProgress } from '@react-navigation/drawer';
-import { ContinousBaseGesture } from 'react-native-gesture-handler/lib/typescript/handlers/gestures/gesture';
-
+import { RFValue } from 'react-native-responsive-fontsize';
+//import { GestureHandlerRootView, GestureDetector, Gesture } from 'react-native-gesture-handler';
+//import { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 
 async function SendMessage(UserID, FriendID, Text) {
     // first check if messaged is false
@@ -156,7 +156,7 @@ async function SendMessage(UserID, FriendID, Text) {
 
   // if last... details exist, update them
   if (friendLastDetailsExist == true) {
-    console.log('friendLastDetailsExist', friendLastDetailsExist)
+    //console.log('friendLastDetailsExist', friendLastDetailsExist)
     await firestore()
     .collection('Messages')
     .doc(FriendID)
@@ -171,7 +171,7 @@ async function SendMessage(UserID, FriendID, Text) {
   } 
   // last... details dont exist, set
   else {
-    console.log('friendLastDetailsExist', friendLastDetailsExist)
+    //console.log('friendLastDetailsExist', friendLastDetailsExist)
     await firestore()
     .collection('Messages')
     .doc(FriendID)
@@ -197,7 +197,7 @@ async function SendMessage(UserID, FriendID, Text) {
   .then (docSnapshot => {
     if(docSnapshot.exists) {
       friendUnopenedMessageCount = docSnapshot.data().UnopenedMessages;
-      console.log('friendUnopenedMessageCount', friendUnopenedMessageCount)
+      //console.log('friendUnopenedMessageCount', friendUnopenedMessageCount)
     }
   });
 
@@ -211,125 +211,7 @@ async function SendMessage(UserID, FriendID, Text) {
     .update({
       UnopenedMessages: friendUnopenedMessageCount
   });
-
-
 }
-
-async function ViewMessage(UserID, FriendID) {
-    // you getting all the individual messages in a dm
-   let messages = [];
- 
-//    await firestore()
-//    .collection('Messages')
-//    .doc(UserID)
-//    .collection('Chats')
-//    .doc(FriendID)
-//    .collection('IndividualMessages')
-//    .orderBy('TimeSent', 'desc')
-//    .limit(100)
-//    .get()
-//    .then((querySnapshot) => {
-//      querySnapshot.forEach(snapshot => {
-//         let data = snapshot.data()
-
-//         let timeSent = new Date((data.TimeSent.nanoseconds / 1000000) + data.TimeSent.seconds * 1000)
-//         let hours = timeSent.getHours()
-//         let hoursString = ('0' + hours).slice(-2)
-//         let mins = timeSent.getMinutes().toString()
-//         let minsString = ('0' + mins).slice(-2)
-//         let displayTime = hoursString.concat(":",minsString)
-//         let timeInSeconds = timeSent/1000
-//         let obj = {
-//             Sender: data.Sender,
-//             Text: data.Text, 
-//             DisplayTime: displayTime,
-//             TimeInSeconds: timeInSeconds
-//         }
-//         messages.push(obj)
-//      })
-//    });
-
-    firestore()
-   .collection('Messages')
-   .doc(UserID)
-   .collection('Chats')
-   .doc(FriendID)
-   .collection('IndividualMessages')
-   .orderBy('TimeSent', 'desc')
-   .limit(100)
-   .onSnapshot((querySnapshot) => {
-     querySnapshot.forEach(snapshot => {
-        let data = snapshot.data()
-
-        let timeSent = new Date((data.TimeSent.nanoseconds / 1000000) + data.TimeSent.seconds * 1000)
-        let hours = timeSent.getHours()
-        let hoursString = ('0' + hours).slice(-2)
-        let mins = timeSent.getMinutes().toString()
-        let minsString = ('0' + mins).slice(-2)
-        let displayTime = hoursString.concat(":",minsString)
-        let timeInSeconds = timeSent/1000
-        let obj = {
-            Sender: data.Sender,
-            Text: data.Text, 
-            DisplayTime: displayTime,
-            TimeInSeconds: timeInSeconds
-        }
-        //console.log(obj)
-        messages.push(obj)
-     })
-   });
- 
-   // check if the dm being opened has already been opened
-    let dmOpenedCheck = false;
-    await firestore()
-    .collection('Messages')
-    .doc(UserID)
-    .collection('Chats')
-    .doc(FriendID)
-    .get()
-    .then(docSnapshot => {
-        if (docSnapshot.exists) {
-            dmOpenedCheck = docSnapshot.data().Opened
-        }
-    }) 
-
-   // if it hasn't been opened
-    if (dmOpenedCheck == false) {
-        await firestore()
-        .collection('Messages')
-        .doc(UserID)
-        .collection('Chats')
-        .doc(FriendID)
-        .update({
-            Opened: true
-        })
-        // get the unopened message count and decrease it by 1
-        let unopenedMessageCount = 0;
-        await firestore()
-        .collection('Messages')
-        .doc(UserID)
-        .get()
-        .then(docSnapshot => {
-            if(docSnapshot.exists) {
-                unopenedMessageCount = docSnapshot.data().UnopenedMessages;
-            }
-        }) 
-   
-        if (unopenedMessageCount > 0) {
-        unopenedMessageCount -= 1;
-        }
-        // update the unopened message count
-        await firestore()
-        .collection('Messages')
-        .doc(UserID)
-        .update({
-            UnopenedMessages: unopenedMessageCount
-        });
-    }
-   //console.log('all messages', messages)
-   return messages;
-}
-
 
 function Dm ({route, navigation}) {
 
@@ -338,15 +220,12 @@ function Dm ({route, navigation}) {
     const { messageDisplay, setMessageDisplay, notifDisplay, setNotifDisplay, user } = useContext(LoggedInContext);
     const [textInput, setTextInput] = useState('')
     const [messages, setMessages] = useState()
+	const [viewMessageSendTime, setViewMessageSendTime] = useState(false)
 
-    async function getData() {
-        const data = ViewMessage(user.uid, OtherUid)
-        setMessages(data)
-    }
+    //console.log(user)
 
     useEffect(() => {
         
-        let messagesArr = []
         const subscriber = firestore()
         .collection('Messages')
         .doc(user.uid)
@@ -356,6 +235,7 @@ function Dm ({route, navigation}) {
         .orderBy('TimeSent', 'desc')
         .limit(100)
         .onSnapshot((querySnapshot) => {
+            let messagesArr = []
             querySnapshot.forEach(snapshot => {
                 let data = snapshot.data()
                 let timeSent = new Date((data.TimeSent.nanoseconds / 1000000) + data.TimeSent.seconds * 1000)
@@ -371,208 +251,456 @@ function Dm ({route, navigation}) {
                     DisplayTime: displayTime,
                     TimeInSeconds: timeInSeconds
                 } 
-                console.log(obj)
+                //console.log(obj)
                 messagesArr.push(obj)
-            
-            //messages.push(obj)
-          })
-          setMessages(messagesArr)
+            })
+            setMessages(messagesArr)
         });
+        
         return () => subscriber()
-    }, [firestore()])
+    }, [])
+
+
+
     
     return (
-        <SafeAreaView style={styles.messagesScreen}>
-            <View style={styles.messagesHeader}>
-                <Text style={styles.messagesHeaderUsername}>
-                    {OtherUsername}
-                </Text>  
-                <Pressable style={styles.messagesBackButton} onPress={() => {setMessageDisplay(true); navigation.goBack(); setNotifDisplay(true) }}>
-				    <MIIcon name='arrow-forward-ios' size={scale(30)} color='white'/>
-			    </Pressable>     
-            </View>
-
-            <View style={styles.messagesBody}>
-                <FlatList
-                data={messages}
-                inverted={true}
-                
-                renderItem={({item, index}) => {
-                    // sent by other person 
-                    if (item.Sender != user.uid) {
-                        // when message is at top
-                        if (index === messages.length - 1) {
-                            // if message below is from me, show dp
-                            if(messages[messages.length - 2] == user.uid) {
-                                return (
-                                    <View>
-                                        <Image source={{uri: OtherUserDP}} style={styles.messageOtherDP}/>
-                                        <View style={styles.messageLeftContainer}>
-                                            <Text style={styles.messageText}>
-                                                {item.Text}
-                                            </Text>
-                                            {/* <Text style={styles.messageTime}>
-                                                {item.DisplayTime}
-                                            </Text> */}
-                                        </View>
-                                    </View>
-                                )                                
-                            } 
-                            // if message below is from other in > 3mins, show dp                            
-                            else if ((messages[messages.length - 2].TimeInSeconds - item.TimeInSeconds) >= 180) {
-                                return (
-                                    <View>
-                                        <Image source={{uri: OtherUserDP}} style={styles.messageOtherDP}/>
-                                        <View style={styles.messageLeftContainer}>
-                                            <Text style={styles.messageText}>
-                                                {item.Text}
-                                            </Text>
-                                            {/* <Text style={styles.messageTime}>
-                                                {item.DisplayTime}
-                                            </Text> */}
-                                        </View>
-                                    </View>
-                                )
-                            } 
-                            // normal
-                            else {
-                                return (
-                                    <View>
-                                        <View style={styles.messageLeftContainer}>
-                                            <Text style={styles.messageText}>
-                                                {item.Text}
-                                            </Text>
-                                            {/* <Text style={styles.messageTime}>
-                                                {item.DisplayTime}
-                                            </Text> */}
-                                        </View>
-                                    </View>
-                                )
-                            }                  
-                        } 
-                        // when message is at bottom and from other
-                        else if (index === 0) {
-                            return (
-                                <View style={{flexDirection: 'row'}}>
-                                    <Image source={{uri: OtherUserDP}} style={styles.messageOtherDP}/>
-                                    <View style={styles.messageLeftWithDPContainer}>
-                                        <Text style={styles.messageText}>
-                                            {item.Text}
-                                        </Text>
-                                        {/* <Text style={styles.messageTime}>
-                                            {item.DisplayTime}
-                                        </Text> */}
-                                    </View>
-                                </View>
-                                    
-                            )         
-                        } 
-                        
-                        // message is in the middle somewhere
-                        else {
-                            // if message below is from me
-                            if (messages[index - 1].Sender === user.uid) {
-                                return (
-                                    <View style={{flexDirection: 'row'}}>
-                                        <Image source={{uri: OtherUserDP}} style={styles.messageOtherDP}/>
-                                        <View style={styles.messageLeftWithDPContainer}>
-                                            <Text style={styles.messageText}>
-                                                {item.Text}
-                                            </Text>
-                                            {/* <Text style={styles.messageTime}>
-                                                {item.DisplayTime}
-                                            </Text> */}
-                                        </View>
-                                    </View>
-                                        
-                                )         
-                            }
-                            // if message below is from other
-                            else {
-                                // message below is more than 3mins away
-                                if ((messages[index - 1].TimeInSeconds - item.TimeInSeconds) >= 180) {
-                                    return (
-                                        <View style={{flexDirection: 'row', marginBottom: '2%'}}>
-                                            <Image source={{uri: OtherUserDP}} style={styles.messageOtherDP}/>
-                                            <View style={styles.messageLeftWithDPContainer}>
-                                                <Text style={styles.messageText}>
-                                                    {item.Text}
-                                                </Text>
-                                                {/* <Text style={styles.messageTime}>
-                                                    {item.DisplayTime}
-                                                </Text> */}
-                                            </View>
-                                        </View>
-                                            
-                                    )
-                                } else {
-                                    return (
-                                        <View style={{flexDirection: 'row', marginBottom: '0.5%'}}>
-                                            
-                                            <View style={styles.messageLeftContainer}>
-                                                <Text style={styles.messageText}>
-                                                    {item.Text}
-                                                </Text>
-                                                {/* <Text style={styles.messageTime}>
-                                                    {item.DisplayTime}
-                                                </Text> */}
-                                            </View>
-                                        </View>
-                                            
-                                    )
-                                }
-                                         
-                            }
-                            
-                        }                       
-                    } 
-                    // sent by me
-                    else {                       
-                        // bottom message, no space underneath
-                        if (index === 0) {
-                            return (
-                                <View style={styles.messageRightContainerWithSpace}>
-                                    <Text style={styles.messageText}>
-                                        {item.Text}
-                                    </Text>
-                                    {/* <Text style={styles.messageTime}>
-                                        {item.DisplayTime}
-                                    </Text> */}
-                                </View>
-                            )
-                        }
-                        // if not bottom message, 
-                        // if true, space underneath
-                        else {
-                            // check if below is by other or by me after 3mins
-                            if ((messages[index - 1].TimeInSeconds - item.TimeInSeconds) >= 180) {
-                                return (
-                                    <View style={styles.messageRightContainerWithSpace}>
-                                        <Text style={styles.messageText}>
-                                            {item.Text}
-                                        </Text>
-                                        {/* <Text style={styles.messageTime}>
-                                            {item.DisplayTime}
-                                        </Text> */}
-                                    </View>
-                                )
-                            } else {
-                                return (
-                                    <View style={styles.messageRightContainer}>
-                                        <Text style={styles.messageText}>
-                                            {item.Text}
-                                        </Text>
-                                        {/* <Text style={styles.messageTime}>
-                                            {item.DisplayTime}
-                                        </Text> */}
-                                    </View>
-                                )
-                            }                           
-                        }
-                    }
-                }}
-                > 
-                </FlatList>
+      <SafeAreaView style={styles.messagesScreen}>
+        <View style={styles.messagesHeader}>
+			<Text style={styles.messagesHeaderUsername}>
+				{OtherUsername}
+			</Text>  
+			<Pressable style={styles.messagesBackButton} onPress={() => {setMessageDisplay(true); navigation.goBack(); setNotifDisplay(true) }}>
+				<MIIcon name='arrow-forward-ios' size={scale(30)} color='white'/>
+			</Pressable>     
+		</View>
+            {/* put flatlist inside the view below */}
+		<View style={styles.messagesBody}>
+			<FlatList
+				data={messages}
+				inverted={true}
+				
+				renderItem={({item, index}) => {
+					// sent by other person 
+					if (item.Sender != user.uid) {
+						// when message is at top
+						if (index === messages.length - 1) {
+							// if message below is from me, show dp
+							if(messages[messages.length - 2] == user.uid) {
+								return (
+									
+									<View>
+										<View style={{alignItems: 'center'}}>
+											<Text style={{color: 'white'}}>
+												{item.DisplayTime}
+											</Text>
+										</View>
+										<Image source={{uri: OtherUserDP}} style={styles.messageOtherDP}/>
+										<View style={styles.messageLeftContainer}>
+											<Text style={styles.messageText}>
+												{item.Text}
+											</Text>
+											{/* <Text style={styles.messageTime}>
+												{item.DisplayTime}
+											</Text> */}
+										</View>
+									</View>
+									
+								)                                
+							} 
+							// if message below is from other in > 3mins, show dp                            
+							else if (item.TimeInSeconds - messages[index + 1].TimeInSeconds >= 1800) {
+								return (
+									
+									<View>
+										<View style={{alignItems: 'center'}}>
+											<Text style={{color: 'white'}}>
+												{item.DisplayTime}
+											</Text>
+										</View>
+										<Image source={{uri: OtherUserDP}} style={styles.messageOtherDP}/>
+										<View style={styles.messageLeftContainer}>
+											<Text style={styles.messageText}>
+												{item.Text}
+											</Text>
+											{/* <Text style={styles.messageTime}>
+												{item.DisplayTime}
+											</Text> */}
+										</View>
+									</View>									
+								)
+							} 
+							// normal
+							else {
+								return (
+									<View>
+										<View style={{alignItems: 'center'}}>
+											<Text style={{color: 'white'}}>
+												{item.DisplayTime}
+											</Text>
+										</View>
+										<View style={styles.messageLeftContainer}>
+											<Text style={styles.messageText}>
+												{item.Text}
+											</Text>
+											{/* <Text style={styles.messageTime}>
+												{item.DisplayTime}
+											</Text> */}
+										</View>
+									</View>										
+								)
+							}                  
+						} 
+						// when message is at bottom and from other
+						else if (index === 0) {
+							// above message is more than 30mins earlier
+							if (item.TimeInSeconds - messages[index + 1].TimeInSeconds >= 1800) {
+								return (
+									<View>
+										<View style={{alignItems: 'center'}}>
+											<Text style={{color: 'white'}}>
+												{item.DisplayTime}
+											</Text>
+										</View>
+										<View style={{flexDirection: 'row', backgroundColor: 'red'}}>
+											<Image source={{uri: OtherUserDP}} style={styles.messageOtherDP}/>
+											<View style={styles.messageLeftWithDPContainer}>
+												<Text style={styles.messageText}>
+													{item.Text}
+												</Text>
+												{/* <Text style={styles.messageTime}>
+													{item.DisplayTime}
+												</Text> */}
+											</View>
+										</View>
+									</View>
+								)	         
+							} else {
+								return (
+									<View style={{flexDirection: 'row', backgroundColor: 'red'}}>
+										<Image source={{uri: OtherUserDP}} style={styles.messageOtherDP}/>
+										<View style={styles.messageLeftWithDPContainer}>
+											<Text style={styles.messageText}>
+												{item.Text}
+											</Text>
+											{/* <Text style={styles.messageTime}>
+												{item.DisplayTime}
+											</Text> */}
+										</View>
+									</View>
+								)         
+							}
+							
+						} 
+						
+						// message is in the middle somewhere
+						else {
+							// if message below is from me
+							if (messages[index - 1].Sender === user.uid) {
+								// above message is more than 30mins earlier
+								if (item.TimeInSeconds - messages[index + 1].TimeInSeconds >= 1800) {
+									return (
+										<View>
+											<View style={{alignItems: 'center'}}>
+												<Text style={{color: 'white'}}>
+													{item.DisplayTime}
+												</Text>
+											</View>
+											<View style={{flexDirection: 'row'}}>
+												<Image source={{uri: OtherUserDP}} style={styles.messageOtherDP}/>
+												<View style={styles.messageLeftWithDPContainer}>
+													<Text style={styles.messageText}>
+														{item.Text}
+													</Text>
+													{/* <Text style={styles.messageTime}>
+														{item.DisplayTime}
+													</Text> */}
+												</View>
+											</View>
+										</View>
+									)
+									
+								} else {
+									return (													
+										<View style={{flexDirection: 'row'}}>
+											<Image source={{uri: OtherUserDP}} style={styles.messageOtherDP}/>
+											<View style={styles.messageLeftWithDPContainer}>
+												<Text style={styles.messageText}>
+													{item.Text}
+												</Text>
+												{/* <Text style={styles.messageTime}>
+													{item.DisplayTime}
+												</Text> */}
+											</View>
+										</View>
+									)        
+								}
+								 
+							}
+							// if message below is from other
+							else {
+								// message below is more than 3mins away
+								if ((messages[index - 1].TimeInSeconds - item.TimeInSeconds) >= 180) {
+									// above message is more than 30mins earlier
+									if (item.TimeInSeconds - messages[index + 1].TimeInSeconds >= 1800) {
+										return (
+											<View>
+												<View style={{alignItems: 'center'}}>
+													<Text style={{color: 'white'}}>
+														{item.DisplayTime}
+													</Text>
+												</View>
+												<View style={{flexDirection: 'row', marginBottom: viewMessageSendTime ? '0%' : '2%'}}>
+													<Image source={{uri: OtherUserDP}} style={styles.messageOtherDP}/>
+													<View style={styles.messageLeftWithDPContainer}>
+														<Text style={styles.messageText}>
+															{item.Text}
+														</Text>
+														{/* <Text style={styles.messageTime}>
+															{item.DisplayTime}
+														</Text> */}
+													</View>
+												</View>	
+											</View>
+										)
+									} else {
+										return (
+										
+											<View style={{flexDirection: 'row', marginBottom: viewMessageSendTime ? '0%' : '2%'}}>
+												<Image source={{uri: OtherUserDP}} style={styles.messageOtherDP}/>
+												<View style={styles.messageLeftWithDPContainer}>
+													<Text style={styles.messageText}>
+														{item.Text}
+													</Text>
+													{/* <Text style={styles.messageTime}>
+														{item.DisplayTime}
+													</Text> */}
+												</View>
+											</View>	
+										)
+									}
+									
+								} else {
+									// above message is 30mins earlier
+									if (item.TimeInSeconds - messages[index + 1].TimeInSeconds >= 1800) {
+										return (
+											<View>
+												<View style={{alignItems: 'center'}}>
+													<Text style={{color: 'white'}}>
+														{item.DisplayTime}
+													</Text>
+												</View>
+												<View style={{flexDirection: 'row', marginBottom: '0.5%'}}>
+													<View style={styles.messageLeftContainer}>
+														<Text style={styles.messageText}>
+															{item.Text}
+														</Text>
+														{/* <Text style={styles.messageTime}>
+															{item.DisplayTime}
+														</Text> */}
+													</View>
+												</View>
+											</View>
+										)
+									} else {
+										return (
+											<View style={{flexDirection: 'row', marginBottom: '0.5%'}}>
+												
+												<View style={styles.messageLeftContainer}>
+													<Text style={styles.messageText}>
+														{item.Text}
+													</Text>
+													{/* <Text style={styles.messageTime}>
+														{item.DisplayTime}
+													</Text> */}
+												</View>
+											</View>
+										)
+									}
+									
+								}
+											
+							}
+							
+						}                       
+					} 
+					// sent by me
+					else {                       
+						// bottom message, no space underneath
+						if (index === 0) {
+							// above message was more than 30mins earlier
+							if (item.TimeInSeconds - messages[index + 1].TimeInSeconds >= 1800) {
+								return (
+									<View>
+										<View style={{alignItems: 'center'}}>
+											<Text style={{color: 'white'}}>
+												{item.DisplayTime}
+											</Text>
+										</View>
+									
+										<View style={[styles.messageRightContainerWithSpace, { marginBottom: viewMessageSendTime ? '0%' : '2%'}]}>
+											<Text style={styles.messageText}>
+												{item.Text}
+											</Text>
+											{/* <Text style={styles.messageTime}>
+												{item.DisplayTime}
+											</Text> */}
+										</View>
+									</View>
+								)
+							} else {
+								return (
+									<View style={[styles.messageRightContainerWithSpace, { marginBottom: viewMessageSendTime ? '0%' : '2%'}]}>
+										<Text style={styles.messageText}>
+											{item.Text}
+										</Text>
+										{/* <Text style={styles.messageTime}>
+											{item.DisplayTime}
+										</Text> */}
+									</View>
+								)
+							}
+						}
+						// top message
+						else if (index === messages.length - 1) {
+							// top message, but below is from other
+							if (messages[messages.length - 2] != user.uid) {
+								return (
+									<View>
+										<View style={{alignItems: 'center'}}>
+											<Text style={{color: 'white'}}>
+												{item.DisplayTime}
+											</Text>
+										</View>
+									
+										<View style={[styles.messageRightContainerWithSpace, { marginBottom: viewMessageSendTime ? '0%' : '2%'}]}>
+											<Text style={styles.messageText}>
+												{item.Text}
+											</Text>
+											{/* <Text style={styles.messageTime}>
+												{item.DisplayTime}
+											</Text> */}
+										</View>
+									</View>
+								)
+							} 
+							// top message, below is from me but after 3 mins
+							else if ((messages[messages.length - 2].TimeInSeconds - item.TimeInSeconds) >= 180) {
+								return (
+									<View>
+										<View style={{alignItems: 'center'}}>
+											<Text style={{color: 'white'}}>
+												{item.DisplayTime}
+											</Text>
+										</View>
+									
+										<View style={[styles.messageRightContainerWithSpace, { marginBottom: viewMessageSendTime ? '0%' : '2%'}]}>
+											<Text style={styles.messageText}>
+												{item.Text}
+											</Text>
+											{/* <Text style={styles.messageTime}>
+												{item.DisplayTime}
+											</Text> */}
+										</View>
+									</View>
+								)
+							} 
+							// top message, below is from me within 3mins
+							else {
+								return (
+									<View>
+										<View style={{alignItems: 'center'}}>
+											<Text style={{color: 'white'}}>
+												{item.DisplayTime}
+											</Text>
+										</View>
+									
+										<View style={styles.messageRightContainer}>
+											
+											<Text style={styles.messageText}>
+												{item.Text}
+											</Text>
+											{/* <Text style={styles.messageTime}>
+												{item.DisplayTime}
+											</Text> */}
+										</View>
+									</View>
+								)
+							}
+							
+						}
+						// if not bottom message, 
+						// if true, space underneath
+						else {
+							// check if below is by other or by me after 3mins
+							if ((messages[index - 1].TimeInSeconds - item.TimeInSeconds) >= 180) {
+								if (item.TimeInSeconds - messages[index + 1].TimeInSeconds >= 1800) {
+									return (
+										<View>
+											<View style={{alignItems: 'center'}}>
+												<Text style={{color: 'white'}}>
+													{item.DisplayTime}
+												</Text>
+											</View>
+											<View style={[styles.messageRightContainerWithSpace, { marginBottom: viewMessageSendTime ? '0%' : '2%'}]}>
+												<Text style={styles.messageText}>
+													{item.Text}
+												</Text>
+												{/* <Text style={styles.messageTime}>
+													{item.DisplayTime}
+												</Text> */}
+											</View>
+										</View>
+									)
+								} else {
+									return (								
+										<View style={[styles.messageRightContainerWithSpace, { marginBottom: viewMessageSendTime ? '0%' : '2%'}]}>
+											<Text style={styles.messageText}>
+												{item.Text}
+											</Text>
+											{/* <Text style={styles.messageTime}>
+												{item.DisplayTime}
+											</Text> */}
+										</View>
+									)
+								}
+							} else {
+								if (item.TimeInSeconds - messages[index + 1].TimeInSeconds >= 1800) {
+									return (
+										<View>
+											<View style={{alignItems: 'center'}}>
+												<Text style={{color: 'white'}}>
+													{item.DisplayTime}
+												</Text>
+											</View>
+											<View style={styles.messageRightContainer}>
+												<Text style={styles.messageText}>
+													{item.Text}
+												</Text>
+												{/* <Text style={styles.messageTime}>
+													{item.DisplayTime}
+												</Text> */}
+											</View>
+										</View>
+									)
+								} else {
+									return (
+										<View style={styles.messageRightContainer}>
+											<Text style={styles.messageText}>
+												{item.Text}
+											</Text>
+											{/* <Text style={styles.messageTime}>
+												{item.DisplayTime} 
+											</Text> */}
+										</View>
+									)
+								}
+								
+							}                           
+						}
+					}
+				}}
+				> 
+				</FlatList>
             </View>
 
             <View style={styles.messagesFooter}>
@@ -587,7 +715,10 @@ function Dm ({route, navigation}) {
                 </Pressable>
                 
             </View>
+            
         </SafeAreaView>
+
+        
             
     )
 }
@@ -608,6 +739,45 @@ export default Dm;
         //     })
             
         // });
+
+    //    
+
+
+    // for(let doc in querySnapshot.docs){
+    //     console.log("size",querySnapshot.size)
+    //     //console.log('doc',doc.data())
+    //     //let data = snapshot.data()
+
+    //     let timeSent = new Date((doc.TimeSent.nanoseconds / 1000000) + doc.TimeSent.seconds * 1000)
+    //     let hours = timeSent.getHours()
+    //     let hoursString = ('0' + hours).slice(-2)
+    //     let mins = timeSent.getMinutes().toString()
+    //     let minsString = ('0' + mins).slice(-2)
+    //     let displayTime = hoursString.concat(":",minsString)
+    //     let timeInSeconds = timeSent/1000
+    //     let obj = {
+    //         Sender: doc.Sender,
+    //         Text: doc.Text, 
+    //         DisplayTime: displayTime,
+    //         TimeInSeconds: timeInSeconds
+    //     }
+    //     //console.log(obj)
+    //     messagesArr.push(obj)
+    // }
+    // setMessages(messages)
+
+    // <GestureHandlerRootView style={{backgroundColor: 'red', width: '100%', height: '100%'}}>
+    //                 <GestureDetector gesture={handlerTest}>
+    //                     <Animated.View style={[{backgroundColor: 'green', width: '100%', flexDirection: 'row', justifyContent: 'space-between'}, animatedThing]}>
+    //                         <Text>
+    //                             hello
+    //                         </Text>
+    //                         <Text>
+    //                             hello2
+    //                         </Text>
+    //                     </Animated.View>
+    //                 </GestureDetector>         
+    //             </GestureHandlerRootView>
 
 
         
