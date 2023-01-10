@@ -149,8 +149,10 @@ function OwnPosts({ownPost, setOwnPost, selectedChannelID}) {
 
     // if the ownposts becomes empty, close the modal using useeffect
     useEffect(() => { 
-        if (ownPosts.length == 0) {
-            setOwnPost(false) 
+        if (ownPosts) {
+            if (ownPosts.length == 0) {
+                setOwnPost(false) 
+            }
         }
     }, [ownPosts, ownPost])
 

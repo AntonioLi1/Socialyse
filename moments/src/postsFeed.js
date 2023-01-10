@@ -152,7 +152,7 @@ async function LikePost(UserID, PostID, selectedChannelID, postOwner) {
     // get the like count on the post
     await firestore()
         .collection('PostLikes')
-        .doc(PostID)  
+        .doc(PostID) 
         .get()
         .then(docSnapshot => {
             if (docSnapshot.exists) {
@@ -623,7 +623,7 @@ function PostsFeed({ navigation, route }) {
                                                     <ImageBackground source={{ uri: item.ImageURL }} style={styles.postPhoto}>
                                                         {
                                                             item.UserLiked == true ?
-                                                            <Pressable style={{position: 'absolute', bottom: scale(5), left: scale(5)}} onPress={() => {UnlikePost(user.uid, selectedPost.PostID, item.PostOwner); setUnlikePost(true)}}>
+                                                            <Pressable style={{position: 'absolute', bottom: scale(5), left: scale(5)}}>
                                                                 <IIcon name='ios-heart' color='red' size={scale(14)}
                                                             />
                                                             </Pressable>
