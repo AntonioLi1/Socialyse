@@ -70,13 +70,14 @@ async function UnlikePost(UserID, selectedChannelID, PostID, PostOwner) {
     .delete();
 }
 
-async function LikePost(UserID, PostID, selectedChannelID, postOwner) {
+
+async function LikePost(UserID, PostID, ImageURL, selectedChannelID, postOwner) {
     let PostLikeCount = 0;
 
     // get the like count on the post
     await firestore()
         .collection('PostLikes')
-        .doc(PostID)
+        .doc(PostID) 
         .get()
         .then(docSnapshot => {
             if (docSnapshot.exists) {
@@ -122,29 +123,29 @@ async function LikePost(UserID, PostID, selectedChannelID, postOwner) {
                 UserID: postOwner
             });
     }
-    // else {
-    //   await firestore()
-    //   .collection('PeopleLiked')
-    //   .doc(UserID)
-    //   .collection('Users')
-    //   .doc(PostOwner)
-    //   .set({
-    //     TimeLiked: time,
-    //     UserID: PostOwner
-    //   });
-    // }
+    else {
+      await firestore()
+      .collection('PeopleLiked')
+      .doc(UserID)
+      .collection('Users')
+      .doc(postOwner)
+      .set({
+        TimeLiked: time,
+        UserID: postOwner
+      });
+    }
 
     // add user to the posts likedby collection
     await firestore()
-        .collection('Channels')
-        .doc(selectedChannelID)
-        .collection('Posts')
-        .doc(PostID)
-        .collection('Likedby')
-        .doc(UserID)
-        .set({
-            UserID: UserID
-        })
+    .collection('Channels')
+    .doc(selectedChannelID)
+    .collection('Posts')
+    .doc(PostID)
+    .collection('Likedby')
+    .doc(UserID)
+    .set({
+        UserID: UserID
+    })
 
     await firestore()
     .collection('UserLikedPosts')
@@ -184,6 +185,167 @@ async function LikePost(UserID, PostID, selectedChannelID, postOwner) {
         .set({
             PostsLikedCount: postLikedCount
         }) 
+    }
+
+    // check if it is match, if so, create notif for match and add to new friends
+    // if not, add to postowner notifications
+    let userLikedPostOwner = false
+    let postOwnerLikedUser = false
+
+    await firestore()
+    .collection('PeopleLiked')
+    .doc(UserID)
+    .collection('Users')
+    .get()
+    .then((querySnapshot) => {
+        for (const doc of querySnapshot) {
+            if (doc.data().UserID == postOwner) {
+                userLikedPostOwner = true
+                break;
+            }
+        }
+    })
+
+    await firestore()
+    .collection('PeopleLiked')
+    .doc(postOwner)
+    .collection('Users')
+    .get()
+    .then((querySnapshot) => {
+        for (const doc of querySnapshot) {
+            if (doc.data().UserID == UserID) {
+                postOwnerLikedUser = true
+                break;
+            }
+        }
+    })
+
+    if (userLikedPostOwner == true && postOwnerLikedUser == true) {
+        // get postOwner username
+        let postOwnerUsername = ''
+        let postOwnerProfilePic = ''
+        await firestore()
+        .collection('Users')
+        .doc(postOwner)
+        .get()
+        .then(docSnapshot => {
+            postOwnerUsername = docSnapshot.data().Username
+            postOwnerProfilePic = docSnapshot.data().ProfilePic
+        })
+        // get UserID username
+        let userIDUsername = ''
+        let userIDProfilePic = ''
+        await firestore()
+        .collection('Users')
+        .doc(UserID)
+        .get()
+        .then(docSnapshot => {
+            userIDUsername = docSnapshot.data().Username
+            userIDProfilePic = docSnapshot.data().ProfilePic
+        })
+
+        // match notif for UserID
+        await firestore()
+        .collection('Notifications')
+        .doc(UserID)
+        .collection('Notifs')
+        .add({
+            MatchedWith: postOwnerUsername,
+            ProfilePic: postOwnerProfilePic,
+            TimeNotified: time
+        })
+        // new friends for UserID
+        await firestore()
+        .collection('Friends')
+        .doc(UserID)
+        .collection('FriendsWith')
+        .add({
+            Messaged: false,
+            ProfilePic: postOwnerProfilePic,
+            Uid: postOwner,
+            Username: postOwnerUsername
+        })
+        // increment notif count for UserID
+        let userIDNotifCount = 0
+        await firestore()
+        .collection('Notifications')
+        .doc(UserID)
+        .get()
+        .then(docSnapshot => {
+            userIDNotifCount = docSnapshot.data().NotificationCount
+        })
+        userIDNotifCount += 1
+        await firestore()
+        .collection('Notifications')
+        .doc(UserID)
+        .update({
+            NotificationCount: userIDNotifCount
+        })
+
+        // match notif for postOwner
+        await firestore()
+        .collection('Notifications')
+        .doc(postOwner)
+        .collection('Notifs')
+        .add({
+            MatchedWith: userIDUsername,
+            ProfilePic: userIDProfilePic,
+            TimeNotified: time
+        })
+        // new friends for postOwner
+        await firestore()
+        .collection('Friends')
+        .doc(postOwner)
+        .collection('FriendsWith')
+        .add({
+            Messaged: false,
+            ProfilePic: userIDProfilePic,
+            Uid: UserID,
+            Username: userIDUsername
+        })
+        // increment notif count for UserID
+        let postOwnerNotifCount = 0
+        await firestore()
+        .collection('Notifications')
+        .doc(postOwner)
+        .get()
+        .then(docSnapshot => {
+            postOwnerNotifCount = docSnapshot.data().NotificationCount
+        })
+        userIDNotifCount += 1
+        await firestore()
+        .collection('Notifications')
+        .doc(postOwner)
+        .update({
+            NotificationCount: postOwnerNotifCount
+        })
+
+    } else {
+        // add to postowners notifications
+        await firestore()
+        .collection('Notifications')
+        .doc(postOwner)
+        .collection('Notifs')
+        .add({
+            PostURL: ImageURL,
+            TimeNotified: time
+        })
+        // increment postowners notif count
+        let postOwnerNotifCount = 0
+        await firestore()
+        .collection('Notifications')
+        .doc(postOwner)
+        .get()
+        .then(docSnapshot => {
+            postOwnerNotifCount = docSnapshot.data().NotificationCount
+        })
+        userIDNotifCount += 1
+        await firestore()
+        .collection('Notifications')
+        .doc(postOwner)
+        .update({
+            NotificationCount: postOwnerNotifCount
+        })
     }
 }
 
@@ -248,7 +410,7 @@ function PostModal ({openPost, setOpenPost, selectedChannelID, selectPostIndex})
     .onEnd(() => {
         console.log('hello2')
         setJustLiked(true)
-        LikePost(user.uid, selectedPost.PostID, selectedChannelID, postOwner) 
+        LikePost(user.uid, selectedPost.PostID, selectedPost.ImageURL, selectedChannelID, postOwner) 
     })
     .runOnJS(true)
 
@@ -300,3 +462,120 @@ function PostModal ({openPost, setOpenPost, selectedChannelID, selectPostIndex})
 }
 
 export default PostModal;
+
+// async function LikePost(UserID, PostID, selectedChannelID, postOwner) {
+//     let PostLikeCount = 0;
+
+//     // get the like count on the post
+//     await firestore()
+//         .collection('PostLikes')
+//         .doc(PostID)
+//         .get()
+//         .then(docSnapshot => {
+//             if (docSnapshot.exists) {
+//                 PostLikeCount = docSnapshot.data().LikeCount;
+//             }
+//         });
+
+//     // add 1 to the like count and update
+//     PostLikeCount += 1;
+
+//     await firestore()
+//         .collection('PostLikes')
+//         .doc(PostID)
+//         .update({
+//             LikeCount: PostLikeCount
+//         });
+
+//     // check if person is added to user's liked people already
+//     let alreadyLiked = false;
+//     await firestore()
+//         .collection('PeopleLiked')  
+//         .doc(UserID)
+//         .collection('Users')
+//         .doc(postOwner)
+//         .get()
+//         .then(docSnapshot => {
+//             if (docSnapshot.exists) {
+//                 alreadyLiked = true;
+//             }
+//         });
+//     const time = new Date();
+
+//     // add user to liked people if not liked already
+//     // else just update the time they were liked
+//     if (alreadyLiked == false) {
+//         await firestore()
+//             .collection('PeopleLiked')
+//             .doc(UserID)
+//             .collection('Users')
+//             .doc(postOwner)
+//             .set({
+//                 TimeLiked: time,
+//                 UserID: postOwner
+//             });
+//     }
+//     // else {
+//     //   await firestore()
+//     //   .collection('PeopleLiked')
+//     //   .doc(UserID)
+//     //   .collection('Users')
+//     //   .doc(PostOwner)
+//     //   .set({
+//     //     TimeLiked: time,
+//     //     UserID: PostOwner
+//     //   });
+//     // }
+
+//     // add user to the posts likedby collection
+//     await firestore()
+//         .collection('Channels')
+//         .doc(selectedChannelID)
+//         .collection('Posts')
+//         .doc(PostID)
+//         .collection('Likedby')
+//         .doc(UserID)
+//         .set({
+//             UserID: UserID
+//         })
+
+//     await firestore()
+//     .collection('UserLikedPosts')
+//     .doc(UserID)
+//     .collection('Posts')
+//     .doc(PostID)
+//     .set({
+//         Channel: selectedChannelID,
+//         PostID: PostID,
+//         TimeLiked: time
+//     })
+
+//     let postLikedCount = 0
+//     let postsLikedCountExists = false
+//     await firestore()
+//     .collection('UserLikedPosts')
+//     .doc(UserID)
+//     .get()
+//     .then(docSnapshot => {
+//         if (docSnapshot.exists) {
+//             postLikedCount = docSnapshot.data().PostsLikedCount
+//             postsLikedCountExists = true
+//         }
+//     })
+//     postLikedCount += 1
+//     if (postsLikedCountExists == true) {
+//         await firestore()
+//         .collection('UserLikedPosts')
+//         .doc(UserID)
+//         .update({
+//             PostsLikedCount: postLikedCount
+//         }) 
+//     } else {
+//         await firestore()
+//         .collection('UserLikedPosts')
+//         .doc(UserID)
+//         .set({
+//             PostsLikedCount: postLikedCount
+//         }) 
+//     }
+// }

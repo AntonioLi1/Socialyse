@@ -6,10 +6,41 @@ import MIIcon from 'react-native-vector-icons/MaterialIcons';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ADIcon from 'react-native-vector-icons/AntDesign'
 import FIcon from 'react-native-vector-icons/Fontisto';
-import { GettingStartedContext } from '../App'
+import { LoggedInContext } from '../App'
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
-
 import { Camera, CameraPermissionStatus, useCameraDevices } from 'react-native-vision-camera';
+import storage from '@react-native-firebase/storage';
+import firestore from '@react-native-firebase/firestore';
+
+async function UploadProfilePic(ProfilePicDownloadedURL, uid) {
+
+    let profilePicExists = false
+    await firestore()
+    .collection('Users')
+    .doc(uid)
+    .get()
+    .then (docSnapshot => {
+        if (docSnapshot.exists) {
+            profilePicExists = true
+        }
+    })
+    // update
+    if (profilePicExists === true) {
+        await firestore()
+        .collection('Users')
+        .doc(uid)
+        .update({
+            ProfilePic: ProfilePicDownloadedURL
+        })
+    } else {
+        await firestore()
+        .collection('Users')
+        .doc(uid)
+        .set({
+            ProfilePic: ProfilePicDownloadedURL
+        })
+    }
+}
 
 function TakePhotoForDP ({navigation}) {
     const devices = useCameraDevices();
@@ -24,7 +55,27 @@ function TakePhotoForDP ({navigation}) {
     const cameraref = useRef();
     const [photoTaken, setPhotoTaken] = useState(false);
 
-    const { editProfileModal, setEditProfileModal } = useContext(GettingStartedContext);
+	//const [showFooter, setShowFooter] = useState(false)
+
+    const { editProfileModal, setEditProfileModal, setEditProfileModaldpURL, dpURL, setDpURL, user} = useContext(LoggedInContext);
+
+	const reference = storage().ref(`/ProfilePics/${user.uid}`)
+
+	async function uploadImage() {
+        // uploads file to storage
+		const pathToFile = imageURL
+		// const reference = storage().ref(`/ProfilePics/${user.uid}`)
+		await reference.putFile(pathToFile);
+
+        //console.log(user.uid)
+        // assign DPURL to context state
+        const downloadedURL = await storage().ref(`/ProfilePics/${user.uid}`).getDownloadURL();
+        setDpURL(downloadedURL)
+		// upload dp to firestore
+        await UploadProfilePic(downloadedURL, user.uid)
+    }
+
+
 
     const takePhoto = async () => {
 		const photo = await cameraref.current.takeSnapshot({
@@ -66,6 +117,8 @@ function TakePhotoForDP ({navigation}) {
 	}
 
 
+
+
     return (
         <SafeAreaView style={styles.takePhotoforDPBackground}>
             {
@@ -73,7 +126,8 @@ function TakePhotoForDP ({navigation}) {
 					<View>
 						<View style={styles.justTakenPhotoContainer}>
 							<ImageBackground style={styles.justTakenPhoto} source={{uri:'file://' + imageURL}}>
-								<FIcon name='close' style={styles.justTakenPhotoClose} size={scale(25)} color='black'
+								
+								<MCIcon name='camera-retake' style={styles.justTakenPhotoClose} size={scale(25)} color='white'
 								onPress={() => {closePhoto(); setPhotoTaken(false)}}
 								/>
 							</ImageBackground>	 
@@ -121,41 +175,19 @@ function TakePhotoForDP ({navigation}) {
 					</View>
 				</Pressable> 
 				:
-				null
+				<Pressable onPress={() => {uploadImage()}}>
+					<View style={styles.takePhotoButton}>
+						<IIcon name="ios-checkmark" size={scale(36)} color='white'/>
+					</View>
+				</Pressable> 
 			}
-            {
-                photoTaken ?
-                <View style={{flex: 1}}>
-                    <View style={styles.profilePageUsernameAndNameContainer}>
-                        <Text style={styles.profilePageName}>
-                            Dababy
-                        </Text>
-                        <Text style={styles.profilePageUsername}>
-                            dababy_leshgo
-                        </Text>
-                    </View> 
-                    <View style={{marginTop: '20%', alignItems: 'center'}}>
-                        <Pressable onPress={() => {navigation.navigate('profile'); setEditProfileModal(false)}}>
-                            <View style={{backgroundColor: '#CFCFCF', paddingVertical: '3%', paddingHorizontal: '10%', borderRadius: 20}}>
-                                <Text style={styles.done}>
-                                    Done
-                                </Text>
-                            </View>          
-                        </Pressable>              
-                    </View>
-                </View>
-                
-                :
-                null
-            }
-			{   
-				imageURL ? 
-				null
-				:
-				<Pressable style={styles.takeAPhotoBackButton} onPress={() => {navigation.goBack(); setEditProfileModal(true)}}>
-				    <MIIcon name='arrow-forward-ios' size={scale(30)} color='white'/>
-			    </Pressable>
-			}
+            
+
+			<Pressable style={styles.takeAPhotoDPBackButton} onPress={() => {navigation.goBack(); setEditProfileModal(false)}}>
+				<MIIcon name='arrow-forward-ios' size={scale(30)} color='white'/>
+			</Pressable>
+			
+			
 			
 			
         </SafeAreaView>

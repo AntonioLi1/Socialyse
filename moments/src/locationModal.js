@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Modal, Text, Pressable, TouchableNativeFeedbackBase, Keyboard, SafeAreaView, KeyboardAvoidingView, TouchableWithoutFeedback } from 'react-native';
+import { View, Modal, Text, Pressable, TouchableNativeFeedbackBase, Keyboard, SafeAreaView, KeyboardAvoidingView, TouchableWithoutFeedback, Alert } from 'react-native';
 import styles from './styles';
 import IIcon from 'react-native-vector-icons/Ionicons';
 import MIIcon from 'react-native-vector-icons/MaterialIcons';
@@ -11,37 +11,6 @@ import { LoggedInContext } from '../App'
 import firestore from '@react-native-firebase/firestore';
 import Geolocation from 'react-native-geolocation-service';
 
-async function ViewPinChannelsMultiple(PinID) {
-	let Channels = [];
-
-	console.log('pinid',PinID)
-  
-	await firestore()
-	.collection('Pins')
-	.doc(PinID)
-	.collection('Channels')
-	.orderBy('ActiveUsers', 'desc')
-	.get()
-	.then((querySnapshot) => {
-		//console.log('querySnapshot', querySnapshot)
-		querySnapshot.forEach(snapshot => {
-			let channel = {
-			  ChannelName: '',
-			  ActiveUsers: 0,
-			  ChannelID: '',
-			  selected: false 
-			};
-			//console.log('snapshots', snapshot)
-			channel.ChannelName = snapshot.data().Name;
-			channel.ActiveUsers = snapshot.data().ActiveUsers;
-			channel.ChannelID = snapshot.data().ChannelID;
-			Channels.push(channel)
-			//console.log('lol')
-		})
-	})
-	//console.log(Channels)
-	return Channels;
-}
 
 async function checkIfUserCanCreateChannel(uid, selectedPinId, userLatitude, userLongtitude) {
 	
@@ -56,35 +25,43 @@ async function checkIfUserCanCreateChannel(uid, selectedPinId, userLatitude, use
 	.get()
 	.then (docSnapshot => {
 		if(docSnapshot.exists) {
-		  ChannelLongitude = docSnapshot.data().Location.latitude;
-		  ChannelLatitude = docSnapshot.data().Location.longitude;
+			ChannelLatitude = docSnapshot.data().Location.latitude;
+			ChannelLongitude = docSnapshot.data().Location.longitude;
 		}
 	})
-	ChannelLongitude =  ChannelLongitude * Math.PI / 180;
-	ChannelLatitude =  ChannelLatitude * Math.PI / 180;
-	userLatitude =  userLatitude * Math.PI / 180;
-	userLongtitude =  userLongtitude * Math.PI / 180;
-  
-	// Haversine formula
-	let dlon = userLongtitude - ChannelLongitude;
-	let dlat = userLatitude - ChannelLatitude;
-	let a = Math.pow(Math.sin(dlat / 2), 2)
-			+ Math.cos(ChannelLatitude) * Math.cos(userLatitude)
-			* Math.pow(Math.sin(dlon / 2),2);
-		   
-	let c = 2 * Math.asin(Math.sqrt(a));
-	let r = 6371;
-  
-	// calculate the result
-	let distance = c * r;
-  
-	// Check user is within range
-	distance = distance/1000;
-	if (distance > 50) {
-	  canCreate = false
-	  return canCreate
-	}
+	// console.log('ChannelLongitude', ChannelLongitude)
+	// console.log('ChannelLatitude', ChannelLatitude)
+	// console.log('userLatitude', userLatitude)
+	// console.log('userLongtitude', userLongtitude)
+	
+	const API_KEY = "AIzaSyA1T4rNRR2NoCUglLkTZOtdCExn392_mZE"
+	const userLocation = `${userLatitude},${userLongtitude}`
+	const pinLocation = `${ChannelLatitude},${ChannelLongitude}`
 
+	const url = `https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&mode=walking&origins=${userLocation}&destinations=${pinLocation}&key=${API_KEY}`
+	let distance = 0
+	// await fetch(url)
+	// .then((response) => response.json())
+	// .then((data) => {
+	// 	distance = parseFloat(data.rows[0].elements[0].distance.text.match(/\d+/)[0]);
+	// 	console.log('the distance', distance)
+	// 	let unit = data.rows[0].elements[0].distance.text.match(/[a-zA-Z]+/g)[0];
+	// 	if (unit == 'km') {
+	// 		distance *= 1000
+	// 		console.log('distanceif', distance)
+	// 	}
+	// })
+	// .catch((error) => {
+	// 	console.log('ggbaited', error)
+	// })
+
+
+	if (distance > 50) {
+		console.log('too far')
+		canCreate = false
+		return canCreate
+	}
+	
 	// check if user has already created a channel in this pin 
 	await firestore()
 	.collection('ChannelCreations')
@@ -104,7 +81,7 @@ async function checkIfUserCanCreateChannel(uid, selectedPinId, userLatitude, use
 	//over an hour ago
 	let LastTime = 0;
 	await firestore()
-	.collection('ChannelCreations')
+	.collection('ChannelCreations') 
 	.doc(uid)
 	.collection('Pins')
 	.doc(selectedPinId)
@@ -128,6 +105,7 @@ async function checkIfUserCanCreateChannel(uid, selectedPinId, userLatitude, use
 	//console.log(canCreate)
 	return canCreate
 }
+
 // for when a user is checked into the channel already, they can 'view' instead of 'join
 async function checkIfUserCanViewButton(uid, channelID) {
 	let returnBool = false;
@@ -155,7 +133,7 @@ async function checkIfUserCanViewButton(uid, channelID) {
 
 // error with pin far away??
 async function getPinName(selectedPinId) {
-	console.log(selectedPinId)
+	//console.log(selectedPinId)
 	let channelName = ''
 	await firestore()
 	.collection('Pins')
@@ -164,9 +142,9 @@ async function getPinName(selectedPinId) {
 	.then(docSnapshot => { 
 		//console.log(docSnapshot)
 		let data = docSnapshot.data()
-		console.log('size',docSnapshot.size)
+		//console.log('size',docSnapshot.size)
 
-		console.log('data',data)
+		//console.log('data',data)
 		channelName = data.Name
 	})
 
@@ -192,12 +170,18 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 	const [createChannelName, setCreateChannelName] = useState('')
 	const [userLongitude, setLongitude] = useState(0)
 	const [userLatitude, setLatitude] = useState(0)
-	const [canCreateChannel, setCanCreateChannel] = useState(false)
+	const [channelsLoaded, setChannelsLoaded] = useState(false)
+	
+	const [canCreateJoinChannel, setCanCreateJoinChannel] = useState(false)
+	const [error, setError] = useState(null)
+	const [showErrorMessage, setShowErrorMessage] = useState(false)
 
 	const {selectedPinId, user} = useContext(LoggedInContext)
 
 	const GetmyLocation = async () => {
 		await Geolocation.getCurrentPosition(info => {
+			console.log('geolocation latitude', info.coords.latitude)
+			console.log('geolocation longitude', info.coords.longitude)
 			setLatitude(info.coords.latitude)
 			setLongitude(info.coords.longitude)
 		})
@@ -206,19 +190,31 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 	async function CreateChannel(UserID, PinID, ChannelName) {
   
 		const currTime = new Date();
+		
+
+        function subtractHours(numOfHours, date = new Date()) {
+            date.setHours(date.getHours() - numOfHours);
+
+            return date;
+        }
+
+        let test = subtractHours(24, currTime)
 	  
 		// Check channel of same name doesn't exist 
-		// YOU NEED TO DIFFERENTIATE ERROR FOR USER AND CHANNEL NAME EXISTING ALREADY
 		await firestore()
 		.collection('Pins')
 		.doc(PinID)
 		.collection('Channels')
-		.where('ChannelName', '==', ChannelName)
+		.where('LastActive', '>', test)
 		.get()
-		.then(docSnapshot => {
-		  if (docSnapshot.exists) {
-			throw error;
-		  }
+		.then((querySnapshot) => {
+			querySnapshot.forEach(snapshot => {
+				let data = snapshot.data()
+				if (ChannelName == data.Name) {
+					//console.log('infunction error')
+					throw error
+				}
+			})
 		})
 		// Create channel
 		// Get location of pin
@@ -245,7 +241,7 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 		  ChannelID = docRef.id;
 		});
 
-		console.log('ChannelID',ChannelID)
+		//console.log('ChannelID',ChannelID)
 		setSelectedChannelID(ChannelID)
 	  
 		// add under pins
@@ -257,6 +253,7 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 		.set({
 		  ActiveUsers: 0,
 		  ChannelID: ChannelID, 
+		  LastActive: null,
 		  Name: ChannelName
 		});
 	  
@@ -323,18 +320,58 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 		}
 	  
 	}
+
+	useEffect(() => {
+
+		
+		let start = new Date();
+
+		function subtractHours(numOfHours, date = new Date()) {
+			date.setHours(date.getHours() - numOfHours);
+
+			return date;
+		}
+
+		let test = subtractHours(24, start)
+		
+		const subscriber = firestore()
+		.collection('Pins')
+		.doc(selectedPinId)
+		.collection('Channels')
+		.where('LastActive', '>', test)
+		.onSnapshot((querySnapshot) => {
+			let channels = []
+			querySnapshot.forEach(snapshot => {
+				let channel = {
+					ChannelName: '',
+					ActiveUsers: 0,
+					ChannelID: '',
+					selected: false 
+				};
+				//console.log('snapshots', snapshot)
+				channel.ChannelName = snapshot.data().Name;
+				channel.ActiveUsers = snapshot.data().ActiveUsers;
+				channel.ChannelID = snapshot.data().ChannelID;
+				channels.push(channel)
+			})
+			
+			//console.log('channels', channels)
+			
+			setChannels(channels)
+			setChannelsLoaded(true)
+		})
+		return () => subscriber()
+		
+	}, [])
 	
 
 	async function getData() {
-		const data = await ViewPinChannelsMultiple(selectedPinId)
-		setChannels(data)
-		GetmyLocation();
+		await GetmyLocation();
 		if(selectedPinId) {
 			const pinName = await getPinName(selectedPinId)
 			setPinName(pinName)
 			const canCreateCheck = await checkIfUserCanCreateChannel(user.uid, selectedPinId, userLatitude, userLongitude)
-			setCanCreateChannel(canCreateCheck)
-			
+			setCanCreateJoinChannel(canCreateCheck)
 		}
 		
 		setDataLoaded(true)
@@ -367,7 +404,7 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 	}, [channelSelected])
 
 	//console.log("channelstatus", channelStatus)
-	if (dataLoaded === false) return null;
+	if (dataLoaded === false && channelsLoaded === false) return null;
 
 	// console.log('channelstatus',channelStatus)
 	// console.log('channelselected', channelSelected)
@@ -378,9 +415,31 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 		try {
 			await CreateChannel(user.uid, selectedPinId, createChannelName)
 			navigation.navigate('MakeAPost', {selectedChannelID: selectedChannelID})
-		} catch {
-			console.log('error createchannelandjoin')
+		} catch(err) {
+			//console.log('error createchannelandjoin')
+			setError(err)
+			setShowErrorMessage(true)
 		}
+	}
+
+	function CantCreateChannelAlert() {
+		Alert.alert(
+			"Cannot Create Channel",
+			"You need to be within 50m of the pin to create a channel xo",
+			[
+				{text: "Got it!"}
+			]
+		)
+	}
+
+	function CantJoinChannelAlert() {
+		Alert.alert(
+			"Cannot Join Channel",
+			"You need to be within 50m of the pin to join a channel xo",
+			[
+				{text: "Got it!"}
+			]
+		)
 	}
 
 
@@ -390,18 +449,26 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 				
 				<SafeAreaView style={styles.createChannelModelFullScreen}>
 					
-					<View style={styles.locationModal}>
+					<View style={styles.createChannelModal}>
 						<View style={styles.locationImagePlaceholderSingle}/>
 					
 						<View style={styles.locationNameActiveAndJoinButtonContainerCreate}>
+							
 							<Text style={styles.locationNameModal}>
 								{pinName}
 							</Text> 
 							
-							<TextInput style={styles.newChannelModelPLaceholder} placeholderTextColor='#585858' placeholder="New channel name..." autoFocus={true}
-							onChangeText={(text) => setCreateChannelName(text)} multiline={true} maxLength={15}
-							/>
-
+							{
+								showErrorMessage ?
+								<Text>
+									error
+								</Text>:
+								<TextInput style={styles.newChannelModelPLaceholder} placeholderTextColor='#585858' placeholder="New channel name..." autoFocus={true}
+								onChangeText={(text) => setCreateChannelName(text)} multiline={true} maxLength={15}
+								/>
+							}
+							
+							
 							<Pressable style={styles.createChannelButton} 
 							onPress={() => {setMultipleModalDisplay(false); setCreateChannelModel(false);createChannelAndJoin();
 								}}
@@ -419,95 +486,123 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 			</Modal>
 		)
 
-
-
-	return (
-		<Modal visible={multipleModalDisplay} transparent={true}>
-			<View style={styles.multipleLocationModal}>
-				<View style={styles.multiLocationModalHeader}>
-					<View style={styles.locationImagePlaceholderMulti}/>
-					
-					<View style={styles.locationNameActiveAndJoinButtonContainer2}>
-						<Text style={styles.locationNameModal}>
-							{pinName}
-							
-						</Text> 
+	if (channelsLoaded == true && channels) {
+		return (
+			<Modal visible={multipleModalDisplay} transparent={true}>
+				<View style={styles.multipleLocationModal}>
+					<View style={styles.multiLocationModalHeader}>
+						<View style={styles.locationImagePlaceholderMulti}/>
+						
+						<View style={styles.locationNameActiveAndJoinButtonContainer2}>
+							<Text style={styles.locationNameModal}>
+								{pinName}
+								 
+							</Text> 
+						</View>
+						
+						<IIcon style={styles.locationModalClose} name='close-outline' size={scale(30)}
+						onPress={() => {setMultipleModalDisplay(false); setMessageDisplay(true); setNotifDisplay(true);}}/>
 					</View>
-					
-					<IIcon style={styles.locationModalClose} name='close-outline' size={scale(30)}
-					onPress={() => {setMultipleModalDisplay(false); setMessageDisplay(true); setNotifDisplay(true);}}/>
-				</View>
-
-				<View style={{flex: 5}}>
-					<FlatList
-					numColumns={1} 
-                	data={channels} 
-					renderItem={({item, index}) => 
-					{
-						return (
-							<Pressable onPress={() => {setChannelSelected(!channelSelected); item.selected = !item.selected;
-								//setViewCheck(checkIfUserCanViewButton(user.uid, channels.ChannelID));
-								console.log('press channelID', channels[index].ChannelID)
-								viewCheckFunc(channels[index].ChannelID)
-								{
-								// make all other channels unselected
-								let counter = 0
-								while (counter < channels.length) {
-									if (counter !== index) {
-										channels[counter].selected = false
-									}
-									counter++
-								}
-							}}}>
-								<View style={[{backgroundColor: item.selected ? '#729BEB':'#96B9FE'}, styles.multiLocationModalChannelContainer]}>
-									<Text style={{color: 'white', fontWeight: '600'}}>
-										{item.ChannelName}
-									</Text>
-
-									<View style={{flexDirection: 'row'}}>
-										<Text style={styles.multipleChannelLocationActiverUsers}>
-											{item.ActiveUsers}
-										</Text>
-										<IIcon style={styles.locationModalDot} name='person' size={scale(14)} color='black'/>
-									</View>
-								</View>
-							</Pressable>
+	
+					<View style={{flex: 5}}>		
+						{/* {console.log('flatlist channels', channels)}			 */}
+						<FlatList
+						numColumns={1} 
+						extraData={channels.sort((a,b) => b.ActiveUsers - a.ActiveUsers)}
+						data={channels.sort((a,b) => b.ActiveUsers - a.ActiveUsers)} 
+						renderItem={({item, index}) => 
+						{
+							
+							return (
 								
-						)
-					}}>
+								<Pressable onPress={() => {setChannelSelected(!channelSelected); item.selected = !item.selected;
+									//setViewCheck(checkIfUserCanViewButton(user.uid, channels.ChannelID));
+									console.log('press channelID', channels[index].ChannelID)
+									viewCheckFunc(channels[index].ChannelID)
+									{
+									// make all other channels unselected
+									let counter = 0
+									while (counter < channels.length) {
+										if (counter !== index) {
+											channels[counter].selected = false
+										}
+										counter++
+									}
+								}}}>
+									<View style={[{backgroundColor: item.selected ? '#729BEB':'#96B9FE'}, styles.multiLocationModalChannelContainer]}>
+										<Text style={{color: 'white', fontWeight: '600'}}>
+											{item.ChannelName}
+										</Text>
+	
+										<View style={{flexDirection: 'row'}}>
+											<Text style={styles.multipleChannelLocationActiverUsers}>
+												{item.ActiveUsers}
+											</Text>
+											<IIcon style={styles.locationModalDot} name='person' size={scale(14)} color='black'/>
+										</View>
+									</View>
+								</Pressable>
+									
+							)
+						}}>
+						</FlatList>
+					</View>
+	
+					{
+						canCreateJoinChannel ?
+						<View style={styles.locationModalFooter}>
+	
+							{/* create channel button */}
+							<Pressable style={styles.multiCreateChannelButton}
+							onPress={() => {setMultipleModalDisplay(false); setCreateChannelModel(true)}}
+							> 
+							
+								<Text style={[{color: 'white'},styles.multiCheckInText]}>Create new</Text> 			
+							</Pressable> 
+	
+	
+							<Pressable disabled={joinEnable} style={[{ backgroundColor: isPressed ? 'white' : 'black' }, styles.multiCheckInButton ]} 
+							onPress={() => {setIsPressed(!isPressed); setChannelStatus(!channelStatus); {channelStatus ? navigation.navigate('MakeAPost', {selectedChannelID: selectedChannelID}) : setMultipleModalDisplay(false)}; setMultipleModalDisplay(false)
+							{viewCheck ? navigation.navigate('PostsFeed', {selectedChannelID: selectedChannelID}) : null}
+							}}>
+							{viewCheck ? 
+							
+								<Text style={[{color: channelSelected ? 'white' : 'white'},styles.multiCheckInText]}>View</Text> 
+								: 
+								<Text style={[{color: channelSelected ? 'white' : '#727272'}, styles.checkedInText]}>Join</Text>}					
+							</Pressable> 
+						</View>
+						:
+						// cant join or create
+						<View style={styles.locationModalFooter}>
+	
+							{/* create channel button */}
+							<Pressable style={styles.multiCreateChannelButton}
+							onPress={() => {CantCreateChannelAlert()}}
+							> 
+							
+								<Text style={[{color: canCreateJoinChannel ? 'white' : '#727272' },styles.multiCheckInText]}>Create new</Text> 			
+							</Pressable> 
+	
+	
+							<Pressable style={[{ backgroundColor: isPressed ? 'white' : 'black' }, styles.multiCheckInButton ]} 
+							onPress={() => {CantJoinChannelAlert()}}>
+								<Text style={[{color: '#727272'}, styles.checkedInText]}>Join</Text>				
+							</Pressable> 
+						</View>
+						
+	
+					}
+	
 					
-					</FlatList>
-				</View>
-				<View style={styles.locationModalFooter}>
-
-					{/* create channel button */}
-					<Pressable disabled={false} style={styles.multiCreateChannelButton}
-					onPress={() => {setMultipleModalDisplay(false); setCreateChannelModel(true)}}
-					> 
+						
+	
 					
-						<Text style={[{color: canCreateChannel ? 'white' : '#727272' },styles.multiCheckInText]}>Create new</Text> 			
-					</Pressable> 
-
-
-					<Pressable disabled={joinEnable} style={[{ backgroundColor: isPressed ? 'white' : 'black' }, styles.multiCheckInButton ]} 
-					onPress={() => {setIsPressed(!isPressed); setChannelStatus(!channelStatus); {channelStatus ? navigation.navigate('MakeAPost', {selectedChannelID: selectedChannelID}) : setMultipleModalDisplay(false)}; setMultipleModalDisplay(false)
-					{viewCheck ? navigation.navigate('PostsFeed', {selectedChannelID: selectedChannelID}) : null}
-					}}>
-					{viewCheck ? 
-					
-						<Text style={[{color: channelSelected ? 'white' : 'white'},styles.multiCheckInText]}>View</Text> 
-						: 
-						<Text style={[{color: channelSelected ? 'white' : '#727272'}, styles.checkedInText]}>Join</Text>}					
-					</Pressable> 
-					
-					
-				</View>
-					
-
-				
-			</View>	
-		</Modal>
-	)
+				</View>	
+			</Modal>
+		)
+	}
+	
 }
 
 

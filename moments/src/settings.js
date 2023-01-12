@@ -87,23 +87,8 @@ function Settings ({navigation}) {
                     </View>
                 </Pressable>
 
-
-                
-                <Pressable onPress={() => setSendFeedbackModal(true)}>
-                    <View style={styles.settingsProfile}>
-                        <Text style={styles.settingsText}>
-                            Make a new location suggestion!
-                        </Text>
-                        <Pressable onPress={() => navigation.navigate('ChangePassword')}>
-                            <MIIcon name='arrow-forward-ios' size={25} color='white'/>
-                        </Pressable>
-                    </View>
-                </Pressable>
-
-                
-
                 <Pressable onPress={() => {}}>
-                    <View style={styles.settingsProfile}>
+                    <View style={styles.settingsDeleteProfile}>
                         <Text style={styles.settingsText}>
                             Delete Account
                         </Text>
@@ -128,12 +113,6 @@ function Settings ({navigation}) {
                     </View>	
                 </Pressable>
             </View>
-
-            <SendFeedbackModal sendFeedbackModal={sendFeedbackModal} setSendFeedbackModal={setSendFeedbackModal}/>
-               
-                
-                
-            
         </SafeAreaView>
     )
 }

@@ -20,10 +20,13 @@ const styles = ScaledSheet.create({
 	},
 	messageIconContainer: {
 		position: 'absolute',
-		//marginTop: screenHeight * 0.88,
-		//marginLeft: screenWidth * 0.05
-		left: '15@s',
-		bottom: '40@s'
+		// marginTop: screenHeight * 0.88,
+		// marginRight: screenWidth * 0.82,
+		// left: '15@s',
+		// bottom: '40@s',
+		//alignSelf: 'flex-end'
+		bottom: screenHeight * 0.06,
+		left: screenWidth * 0.05
 	},
 	messageButton: {
 		width: '50@s',
@@ -73,13 +76,6 @@ const styles = ScaledSheet.create({
 		position: 'absolute'
 		//justifyContent: 'center',
 		//alignSelf: 'center'
-	},
-	createPinButton: {
-		position: 'absolute',
-		//marginTop: screenHeight * 0.88,
-		//marginRight: screenWidth * 0.05
-		right: '15@s',
-		bottom: '40@s'
 	},
 	DMScreen: {
 		height: screenHeight,
@@ -213,8 +209,8 @@ const styles = ScaledSheet.create({
 	notificationContainerMap: {
 		position: 'absolute',
 		alignItems: 'flex-end',
-		marginLeft: screenWidth * 0.82,
-		marginTop: screenHeight * 0.04
+		top: screenHeight * 0.03,
+		right: screenWidth * 0.05
 	},
 	notificationButton: {
 		width: '50@s',
@@ -294,8 +290,10 @@ const styles = ScaledSheet.create({
 		shadowRadius: 6.27,
 		elevation: 10,
 		position: 'absolute',
-		marginTop: screenHeight * 0.88,
-		marginLeft: screenWidth * 0.82,
+		//marginTop: screenHeight * 0.88,
+		bottom: screenHeight * 0.06,
+		right: screenWidth * 0.05
+		//marginLeft: screenWidth * 0.82,
 		
 	},
 
@@ -303,6 +301,26 @@ const styles = ScaledSheet.create({
 		marginRight: '5%'
 	},
 	locationModal: {
+		backgroundColor: '#96B9FE',
+		width: screenWidth * 0.96,
+		alignSelf: 'center',
+		//marginTop: screenHeight,
+		borderRadius: 10,
+		shadowColor: "#000",
+		shadowOffset: {
+			width: 0,
+			height: 5,
+		},
+		shadowOpacity: 0.34,
+		shadowRadius: 6.27,
+		elevation: 10,
+		alignItems:'center',
+		flexDirection: 'row',
+		justifyContent: 'space-evenly',
+		height: '15%',
+		marginTop: screenHeight * 0.5
+	},
+	createChannelModal: {
 		backgroundColor: '#96B9FE',
 		width: screenWidth * 0.96,
 		alignSelf: 'center',
@@ -340,10 +358,10 @@ const styles = ScaledSheet.create({
 	},
 	locationNameActiveAndJoinButtonContainerCreate: {
 		height: '80%',
-		//backgroundColor: 'red',
+		backgroundColor: 'red',
 		flexDirection: 'column',
 		justifyContent: 'space-evenly',
-		alignItems: 'center',
+		//alignItems: 'center',
 		width: '40%'
 	},
 	locationModalClose: {
@@ -410,7 +428,7 @@ const styles = ScaledSheet.create({
 	},
 	locationNameModal: {
 		color: 'black',
-		fontSize: RFValue(17.5),
+		fontSize: RFValue(16),
 		fontWeight: '600',
 		alignSelf: 'flex-start'
 	}, 
@@ -639,11 +657,14 @@ const styles = ScaledSheet.create({
 		height: '45@s',
 		borderRadius: 100,
 		backgroundColor: 'grey',
-		flexDirection: 'row',
-		justifyContent: 'center',
-		alignItems: 'center',
-		marginTop: '3%',
-		marginBottom: '3%',
+		//flexDirection: 'row',
+		//justifyContent: 'center',
+		//alignItems: 'center',
+		//marginTop: '3%',
+		//marginBottom: '3%',
+		position: 'absolute',
+		right: '70@s',
+
 	},
 	notif1: {
 		borderTopColor: '#C8C8C8',
@@ -651,6 +672,7 @@ const styles = ScaledSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
+		height: '65@s'
 	},
 	profileTopContainer: {
 		marginLeft: 30,
@@ -721,7 +743,7 @@ const styles = ScaledSheet.create({
 		marginTop: screenHeight * 0.05,
 		justifyContent: 'flex-end',
 		alignItems: 'center',
-		backgroundColor: 'green',
+		//backgroundColor: 'green',
 		overflow: 'hidden'
 	},
 	profilePageDP: {
@@ -857,7 +879,13 @@ const styles = ScaledSheet.create({
 		// alignSelf: 'flex-start',
 		// marginTop: screenHeight * 0.85,
 		// marginLeft: screenWidth * 0.07
-		 
+	},
+	takeAPhotoDPBackButton: {
+		transform: [{rotateY: '180deg'}],
+		position: 'absolute',
+		alignSelf: 'flex-start',
+		marginTop: screenHeight * 0.85,
+		marginLeft: screenWidth * 0.07
 	},
 	takeAPhotoText: {
 		fontWeight: '900',
@@ -1362,8 +1390,9 @@ const styles = ScaledSheet.create({
 		//backgroundColor: 'aqua'
 	},
 	settingsBody: {
-		//backgroundColor: 'red',
-		flex: 10
+		
+		flex: 10,
+		
 	},
 	settingsBackButton: {
 		position: 'absolute',
@@ -1388,6 +1417,18 @@ const styles = ScaledSheet.create({
 		alignItems: 'center',
 		flexDirection: 'row',
 		paddingHorizontal: '5%'
+	},
+	settingsDeleteProfile: {
+		backgroundColor: '#464646',
+		height: screenHeight * 0.08,
+		width: screenWidth * 0.85,
+		borderRadius: 10,
+		marginTop: screenHeight * 0.03,
+		justifyContent: 'space-between',
+		alignItems: 'center',
+		flexDirection: 'row',
+		paddingHorizontal: '5%',
+
 	},
 	messageInput: {
 		borderWidth: 1,
@@ -1469,7 +1510,7 @@ const styles = ScaledSheet.create({
 		width: screenWidth * 0.9,
 		backgroundColor: 'rgba(0, 0, 0, 0.5)',
 		alignSelf: 'center',
-		
+		flexDirection: 'row',
 		borderTopRightRadius: 20,
 		borderTopLeftRadius: 20,
 	},
@@ -1491,10 +1532,12 @@ const styles = ScaledSheet.create({
 		height: screenHeight * 0.3,
 		width: screenWidth * 0.9,
 		backgroundColor: 'black',
-		alignSelf: 'center',
-		marginTop: screenHeight * 0.67,
+		alignSelf: 'flex-end',
+		//marginTop: screenHeight * 0.7,
 		borderTopRightRadius: 20,
 		borderTopLeftRadius: 20,
+		//position: 'absolute',
+		//bottom: 20
 	},
 	removePhoto: {
 		alignItems: 'center',
@@ -1513,7 +1556,9 @@ const styles = ScaledSheet.create({
 		height: '50@s',
 		justifyContent: 'center',
 		borderBottomColor: 'grey',
-		borderBottomWidth: 1
+		borderBottomWidth: 1,
+		borderTopLeftRadius: 20,
+		borderTopRightRadius: 20
 	},
 	chooseFromLibrary: {
 		alignItems: 'center',
@@ -1757,7 +1802,7 @@ const styles = ScaledSheet.create({
 	ChangeNameAndUsernameDP: {
 		height: '100@s',
 		width: '100@s',
-		backgroundColor: 'pink',
+		//backgroundColor: 'pink',
 		borderRadius: 100
 	},
 	ChangeNameAndUsernameBodyInput: {
@@ -1925,6 +1970,7 @@ const styles = ScaledSheet.create({
 		//backgroundColor: 'aqua',
 		height: '40%',
 		fontWeight: '700',
+		//alignSelf: 'flex-start'
 		
 	},
 	createPinModalPlaceholder: {

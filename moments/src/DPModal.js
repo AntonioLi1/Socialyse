@@ -32,13 +32,6 @@ function DPModal () {
         <Modal visible={editProfileModal} transparent={true}>
             <View style={styles.dpEditModalFullScreen}>
                 <View style={styles.dpEditModal}>
-                    <Pressable onPress={() => {setEditProfileModal(false); setEditProfileModal(false)}}>
-                        <View style={styles.removePhoto}>
-                                <Text style={styles.editDPText}>
-                                Remove current photo
-                            </Text>
-                        </View>
-                    </Pressable>
                     <Pressable onPress={() => {navigation.navigate('TakePhotoForDP'); setEditProfileModal(false)}}>
                         <View style={styles.takePhotoForDP}>
                             <Text style={styles.editDPText}>

@@ -18,7 +18,7 @@ import storage from '@react-native-firebase/storage';
 import Geolocation from 'react-native-geolocation-service';
 
 
-async function CreatePost(UserID, Caption, Image, ChannelID) {
+async function CreatePost(UserID, Caption, Image, ChannelID, selectedPinId) {
 
 	// store image into storage
 	const reference = storage().ref(`/Posts/${UserID}/${Image}`)
@@ -89,6 +89,24 @@ async function CreatePost(UserID, Caption, Image, ChannelID) {
 	.set({
 	  LikeCount: 0
 	});
+
+	// update channels lastActive
+	await firestore()
+	.collection('Pins')
+	.doc(selectedPinId)
+	.collection('Channels')
+	.doc(ChannelID)
+	.update({
+		LastActive: messageSendTime
+	})
+
+	// update pins lastActive
+	await firestore()
+	.collection('Pins')
+	.doc(selectedPinId) 
+	.update({
+		LastActive: messageSendTime
+	})
 }
 
 async function JoinChannel(UserID, ChannelID, Longitude, Latitude, PinID) {
@@ -252,7 +270,7 @@ function MakeAPost({route}) {
 	async function JoinAndPost(UserID, Caption, Image, ChannelID) {
 		try {
 			await JoinChannel(UserID, ChannelID, currLongitude, currLatitude, selectedPinId)
-			await CreatePost(UserID, Caption, Image, ChannelID)
+			await CreatePost(UserID, Caption, Image, ChannelID, selectedPinId)
 			callback();
 		} catch (error) {
 			console.log('errro', error)

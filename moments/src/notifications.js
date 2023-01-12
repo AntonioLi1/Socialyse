@@ -6,58 +6,19 @@ import firestore from '@react-native-firebase/firestore';
 // STYLES
 import styles from './styles';
 
-// SUPABASE
-import supabase from "../supabase";
-
 // ICONS
 import MIIcon from 'react-native-vector-icons/MaterialIcons';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ADIcon from 'react-native-vector-icons/AntDesign'
+import { sub } from 'react-native-reanimated';
 
-async function getNotifs(uid) {
-	//console.log(uid)
-	
-	let returnArray = [];
+async function ReduceNotifCount(UserID) {
 	await firestore()
 	.collection('Notifications')
-	.doc(uid) 
-	.collection('Matches')
-	.orderBy('TimeMatched', 'desc')
-	.get()
-	.then((querySnapshot) => {
-		querySnapshot.forEach(snapshot => {
-			let data = snapshot.data()
-			console.log(data)
-			let notifObj = {
-				username: '',
-				timeNotif: '',
-				profilePic: ''
-			}
-			notifObj.username = data.MatchedWith
-			let timeDiff = ((Math.round(Date.now() / 1000)) - Math.round((data.TimeMatched.nanoseconds / 1000000000) + data.TimeMatched.seconds))
-			// under a day
-			if (timeDiff < 86400) {
-				let hours = Math.ceil(timeDiff / 3600)
-				notifObj.timeNotif = `${hours}h`
-			} 
-			// under a week
-			else if (timeDiff >= 86400 && timeDiff < 604800) {
-				// how many days
-				let days = Math.ceil(timeDiff / 86400)
-				notifObj.timeNotif = `${days}d`
-			} 
-			// more than a week
-			else {
-				let weeks = Math.ceil(timeDiff / 604800)
-				notifObj.timeNotif = `${weeks}w`
-			}
-			notifObj.profilePic = data.ProfilePic
-			returnArray.push(notifObj)
-			
-		})
+	.doc(UserID)
+	.update({
+		NotificationCount: 0
 	})
-	//console.log('returned array',returnArray)
-	return returnArray;
 }
 
 const NotificationDisplay = ({navigation}) => {
@@ -67,44 +28,87 @@ const NotificationDisplay = ({navigation}) => {
 	const [loading, setLoading] = useState(false)
 
 	useEffect(() => {
-		firestore()
+		const subscriber = firestore()
 		.collection('Notifications')
 		.doc(user.uid) 
-		.collection('Matches')
-		.orderBy('TimeMatched', 'desc')
+		.collection('Notifs')
+		.orderBy('TimeNotified', 'desc')
 		.onSnapshot((querySnapshot) => {
 			let returnArray = [];
 			querySnapshot.forEach(snapshot => {
 				let data = snapshot.data()
 				console.log(data)
-				let notifObj = {
+				let matchObj = {
 					username: '',
 					timeNotif: '',
 					profilePic: ''
 				}
-				notifObj.username = data.MatchedWith
-				let timeDiff = ((Math.round(Date.now() / 1000)) - Math.round((data.TimeMatched.nanoseconds / 1000000000) + data.TimeMatched.seconds))
-				// under a day
-				if (timeDiff < 86400) {
-					let hours = Math.ceil(timeDiff / 3600)
-					notifObj.timeNotif = `${hours}h`
-				} 
-				// under a week
-				else if (timeDiff >= 86400 && timeDiff < 604800) {
-					// how many days
-					let days = Math.ceil(timeDiff / 86400)
-					notifObj.timeNotif = `${days}d`
-				} 
-				// more than a week
-				else {
-					let weeks = Math.ceil(timeDiff / 604800)
-					notifObj.timeNotif = `${weeks}w`
+				let likeObj = {
+					postURL: '',
+					timeLiked: ''
 				}
-				notifObj.profilePic = data.ProfilePic
-				returnArray.push(notifObj)
+				// if current doc is a liked notif
+				if (data.PostURL) {
+					likeObj.postURL = data.PostURL
+					let timeDiff = ((Math.round(Date.now() / 1000)) - Math.round((data.TimeNotified.nanoseconds / 1000000000) + data.TimeNotified.seconds))
+					// under an hour
+					if (timeDiff < 3600) {
+						let minutes = Math.ceil(timeDiff / 60)
+						likeObj.timeLiked = `${minutes}m`
+					}
+					// under a day
+					else if (timeDiff < 86400 && timeDiff >= 3600) {
+						let hours = Math.ceil(timeDiff / 3600)
+						likeObj.timeLiked = `${hours}h`
+					} 
+					// under a week
+					else if (timeDiff >= 86400 && timeDiff < 604800) {
+						// how many days
+						let days = Math.ceil(timeDiff / 86400)
+						likeObj.timeLiked = `${days}d`
+					} 
+					// more than a week
+					else {
+						let weeks = Math.ceil(timeDiff / 604800)
+						likeObj.timeLiked = `${weeks}w`
+					}
+					returnArray.push(likeObj)
+				} 
+				// if current doc is a match notif
+				else {
+					matchObj.username = data.MatchedWith
+					let timeDiff = ((Math.round(Date.now() / 1000)) - Math.round((data.TimeNotified.nanoseconds / 1000000000) + data.TimeNotified.seconds))
+					if (timeDiff < 3600) {
+						let minutes = Math.ceil(timeDiff / 60)
+						matchObj.timeLiked = `${minutes}m`
+					}
+					// under a day
+					else if (timeDiff < 86400) {
+						let hours = Math.ceil(timeDiff / 3600)
+						matchObj.timeNotif = `${hours}h`
+					} 
+					// under a week
+					else if (timeDiff >= 86400 && timeDiff < 604800) {
+						// how many days
+						let days = Math.ceil(timeDiff / 86400)
+						matchObj.timeNotif = `${days}d`
+					} 
+					// more than a week
+					else {
+						let weeks = Math.ceil(timeDiff / 604800)
+						matchObj.timeNotif = `${weeks}w`
+					}
+					matchObj.profilePic = data.ProfilePic
+					returnArray.push(matchObj)
+				}
 			})
 			setnotifData(returnArray)
 		})
+		return () => subscriber()
+	}, [])
+
+	useEffect(() => {
+		ReduceNotifCount(user.uid)
 	}, [])
 
 	if (!notifData) return null;
@@ -127,20 +131,37 @@ const NotificationDisplay = ({navigation}) => {
 				<ScrollView>
 					{notifData.map((notif) =>
 						{
-							
-						return (
-							<View style={styles.notif1}>
-								<Text style={styles.notifMessage}> 
-									<Text style={{fontWeight: 'bold'}}>{notif.username} </Text>
-									caught a glimpse of you
-								</Text>
-
-								<Image source={{uri: notif.profilePic}} style={styles.notifProfile}/>
-								
-								<Text style={styles.notifTime}>
-								{notif.timeNotif}
-								</Text> 
-							</View>)							
+						if (notif.username) {
+							return (
+								<View style={styles.notif1}>
+									<Text style={styles.notifMessage}> 
+										<Text style={{fontWeight: 'bold'}}>{notif.username} </Text>
+										caught a glimpse of you
+									</Text>
+	
+									<Image source={{uri: notif.profilePic}} style={styles.notifProfile}/>
+									
+									<Text style={styles.notifTime}>
+									{notif.timeNotif}
+									</Text> 
+								</View>)
+						} 
+						else {
+							return (
+								<View style={styles.notif1}>
+									<Text style={styles.notifMessage}> 
+										Someone liked your post!
+									</Text>
+	
+									<Image source={{uri: notif.postURL}} style={styles.notifProfile}/>
+									
+									<Text style={styles.notifTime}>
+										{notif.timeLiked}
+									</Text> 
+								</View>
+							)
+						}
+													
 					})}
 				</ScrollView>	
 			</View>	

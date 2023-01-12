@@ -58,30 +58,8 @@ async function ViewOwnPosts(uid) {
 }
 
 async function DeletePost(UserID, PostID, selectedChannelID) {
-    // ASSUMPTION MADE
-    // USER CAN ONLY DELETE POST WITHIN CHANNEL THEY'RE IN
-    
-    // let ownerCheck = false;
-    // // check userid is owner of postid
-    // await firestore()
-    // .collection('Channels')
-    // .doc(selectedChannelID)
-    // .collection('Posts')
-    // .doc(PostID)
-    // .get()
-    // .then (docSnapshot => {
-    //   if(docSnapshot.exists) {
-    //     if (docSnapshot.data().PostOwner == UserID) {
-    //       ownerCheck = true;
-    //     }
-    //   }
-    // });
-    // // if not owner throw error
-    // if (ownerCheck == false) {
-    //   throw error;
-    // }
 
-    // otherwise delete from channel posts, user posts and posts liked
+    // Delete from channel posts, user posts and posts liked
     console.log('selectedChannelID', selectedChannelID)
     console.log('PostID',PostID)
     console.log('UserID', UserID)
@@ -102,12 +80,6 @@ async function DeletePost(UserID, PostID, selectedChannelID) {
     .update({
         TimeUploaded: 0
     });
-  
-    // await firestore()
-    // .collection('PostLikes')
-    // .doc(PostID)
-    // .delete();
-  
 }
 
 function OwnPosts({ownPost, setOwnPost, selectedChannelID}) { 

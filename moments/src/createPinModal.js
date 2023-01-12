@@ -38,7 +38,7 @@ function CreatePinModal({createPinModalDisplay, setCreatePinModalDisplay, multip
 
 
         const geopoint = new GeoPoint(userLatitude, userLongitude)
-
+        const currTime = new Date(); 
         //console.log('geopoint', geopoint)
 
         let docID = ''
@@ -46,6 +46,7 @@ function CreatePinModal({createPinModalDisplay, setCreatePinModalDisplay, multip
         .collection('Pins')
         .add({
             ChannelCount: 0,
+            LastActive: currTime,
             Location: geopoint,
             Name: newPinName,
             PinID: '',
@@ -60,10 +61,7 @@ function CreatePinModal({createPinModalDisplay, setCreatePinModalDisplay, multip
         .update({
             PinID: docID
         })
-
         setSelectedPinId(docID)
-    
-    
     }
 
     async function getData() {
