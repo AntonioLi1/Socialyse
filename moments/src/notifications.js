@@ -150,7 +150,7 @@ const NotificationDisplay = ({navigation}) => {
 							return (
 								<View style={styles.notif1}>
 									<Text style={styles.notifMessage}> 
-										Someone liked your post!
+										Someone liked your post! Get liking to see who it is.
 									</Text>
 	
 									<Image source={{uri: notif.postURL}} style={styles.notifProfile}/>

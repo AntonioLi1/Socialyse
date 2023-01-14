@@ -109,7 +109,9 @@ async function getChannelName(selectedChannelID) {
         .doc(selectedChannelID)
         .get()
         .then(docSnapshot => {
+            
             let data = docSnapshot.data()
+            console.log('gerge', data)
             channelName = data.ChannelName
         })
 

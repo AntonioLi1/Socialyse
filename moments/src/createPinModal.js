@@ -4,7 +4,7 @@ import styles from './styles';
 import IIcon from 'react-native-vector-icons/Ionicons';
 import MIIcon from 'react-native-vector-icons/MaterialIcons';
 import EIcon from 'react-native-vector-icons/Entypo';
-import { getPathFromState, useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 import { FlatList } from 'react-native-gesture-handler';
 import { LoggedInContext } from '../App'
@@ -20,6 +20,7 @@ function CreatePinModal({createPinModalDisplay, setCreatePinModalDisplay, multip
     const [longitude, setLongitude] = useState(0)
 	const [latitude, setLatitude] = useState(0)
     const [newPinName, setNewPinName] = useState('')
+    const [showErrorMessage, setShowErrorMessage] = useState(false)
     const [showNewPinModal, setShowNewPinModal] = useState(false)
     const [showNewPinModalCreateChannel, setShowNewPinModalCreateChannel] = useState(false)
 
@@ -39,7 +40,49 @@ function CreatePinModal({createPinModalDisplay, setCreatePinModalDisplay, multip
 
         const geopoint = new GeoPoint(userLatitude, userLongitude)
         const currTime = new Date(); 
+        const userLocation = `${userLatitude},${userLongitude}`
         //console.log('geopoint', geopoint)
+
+        let start = new Date();
+
+        function subtractHours(numOfHours, date = new Date()) {
+            date.setHours(date.getHours() - numOfHours);
+
+            return date;
+        }
+
+        let test = subtractHours(24, start)
+
+        const API_KEY = "AIzaSyA1T4rNRR2NoCUglLkTZOtdCExn392_mZE"
+        // check if there is another pin within 25m
+        // await firestore()
+        // .collection('Pins')
+        // .where('LastActive', '>', test)
+        // .get()
+        // .then(async (querySnapshot) => {
+        //     //console.log('querySnapshot.docs', querySnapshot.docs)
+        //     for (const snapshot of querySnapshot.docs) {
+        //         let data = snapshot.data()
+        //         const pinLocation = `${data.Location.latitude},${data.Location.longitude}`
+        //         // console.log('pinlocations', pinLocation)
+        //         // console.log('userlocation', userLocation)
+        //         const url = `https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&mode=walking&origins=${userLocation}&destinations=${pinLocation}&key=${API_KEY}`
+        //         await fetch(url)
+        //         .then((response) => response.json())
+        //         .then((data) => {
+        //             let distance = parseFloat(data.rows[0].elements[0].distance.text.match(/\d+/)[0]);
+        //             //console.log('the distance', distance)
+        //             let unit = data.rows[0].elements[0].distance.text.match(/[a-zA-Z]+/g)[0];
+        //             if (unit == 'km') {
+        //                 distance *= 1000
+        //                 //console.log('distanceif', distance)
+        //             }
+        //             if (distance < 25) {
+        //                 throw Error("ERRRORRRRR");
+        //             }
+        //         })
+        //     }
+        // })
 
         let docID = ''
         await firestore()
@@ -65,8 +108,6 @@ function CreatePinModal({createPinModalDisplay, setCreatePinModalDisplay, multip
     }
 
     async function getData() {
-		//const data = await ViewPinChannelsMultiple(selectedPinId)
-		//setChannels(data)
 		GetmyLocation();
 		setDataLoaded(true)
 	}
@@ -77,14 +118,19 @@ function CreatePinModal({createPinModalDisplay, setCreatePinModalDisplay, multip
 
     if (dataLoaded === false) return null;
 
-    // if (showNewPinModal == true && showNewPinModalCreateChannel == false) {
-    //     return (
-
-    //     )
-    // }
-
-
-
+    async function createPinPress() {
+        try {
+            await CreatePin(newPinName, longitude, latitude)
+            setCreatePinModalDisplay(false)
+            setMultipleModalDisplay(true)
+        } catch (err){
+            console.log('error createpinhehe', err)
+            setShowErrorMessage(true)
+            setTimeout(() => {
+				setShowErrorMessage(false)
+			}, 1000)
+        }
+    }
 
     return (
         <Modal visible={createPinModalDisplay} transparent={true}>
@@ -93,15 +139,23 @@ function CreatePinModal({createPinModalDisplay, setCreatePinModalDisplay, multip
                 
                 <View style={styles.createPinModal}>
                     <View style={styles.locationNameActiveAndJoinButtonContainer}>
-                        <TextInput style={styles.createPinModalPlaceholder} placeholderTextColor='#585858' placeholder="New pin name..." autoFocus={true}
-                        onChangeText={(text) => setNewPinName(text)} multiline={false} maxLength={20}
-                        />
+                        
+                        {
+                            showErrorMessage ?
+                                <Text style={{color: 'red', marginTop: '5%', textAlign: 'center'}}>
+                                    There is a pin nearby, please join that one!
+                                </Text>
+                            :
+                            <TextInput style={styles.createPinModalPlaceholder} placeholderTextColor='#585858' placeholder="New pin name..." autoFocus={true}
+                            onChangeText={(text) => setNewPinName(text)} multiline={false} maxLength={20}
+                            />
+                        }
+                        
 
-                        <Pressable style={styles.createPinModalButton} 
-                            onPress={() => {CreatePin(newPinName, longitude, latitude); 
-                            setCreatePinModalDisplay(false)}}
+                        <Pressable style={styles.createPinModalButton} disabled={showErrorMessage}
+                            onPress={() => {createPinPress()}}
                         >
-                            <Text style={styles.createChannelText}>Create</Text>				
+                            <Text style={[styles.createChannelText, {color: showErrorMessage ? 'grey' : 'white'}]}>Create</Text>				
                         </Pressable>
                     </View>
                     

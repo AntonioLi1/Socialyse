@@ -43,6 +43,20 @@ async function ChangeName(newName, UserUID) {
 }
 
 async function ChangeUsername(newUsername, UserUID) {
+    // check if the username is alreay taken
+    //console.log('newUsername', newUsername)
+    await firestore()
+    .collection('Users')
+    .get()
+    .then((querySnapshot) => {
+        querySnapshot.forEach(snapshot => {
+            let data = snapshot.data()
+            if (data.Username == newUsername) {
+                throw Error("infunction error");
+            }
+        })
+    })
+
     await firestore()
     .collection('Users')
     .doc(UserUID)
@@ -59,7 +73,7 @@ function ChangeNameAndUsername ({navigation}) {
     const [inputUsername, setinputUsername] = useState('');
     const [placeholderName, setPlaceholderName] = useState('')
     const [placeholderUsername, setPlaceholderUsername] = useState('')
-
+    const [showErrorMessage, setShowErrorMessage] = useState(false)
     const [doneEnabled, setDoneEnabled] = useState(false);
     const [userDetails, setUserDetails] = useState()
     const [dataLoaded, setDataLoaded] = useState(false)
@@ -87,16 +101,22 @@ function ChangeNameAndUsername ({navigation}) {
     async function updateDetails() {
         try {
             if (placeholderName != inputName) {
+                console.log('name', inputName)
                 await ChangeName(inputName, user.uid)
                 navigation.navigate('profile'); 
             }
             if (placeholderUsername != inputUsername) {
+                //console.log('inputUsername', inputUsername)
                 await ChangeUsername(inputUsername, user.uid)
                 navigation.navigate('profile'); 
             }
             
         } catch {
-
+            console.log('username is already taken')
+            setShowErrorMessage(true)
+            setTimeout(() => {
+				setShowErrorMessage(false)
+			}, 1000)
         }
     }
 
@@ -127,33 +147,47 @@ function ChangeNameAndUsername ({navigation}) {
                     <Image source={{uri: userDetails.ProfilePic}} style={styles.ChangeNameAndUsernameDP}/>
                 </View>
                 <View style={styles.ChangeNameAndUsernameBodyInput}>
-                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <View style={styles.editProfileNameContainer }>
                         <View style={{width: '20%'}}>
                             <Text style={{marginLeft: '5%', color: 'white', fontWeight: '500'}}>
                                 Name
                             </Text>
                         </View>
+                        <View style={styles.editProfileTextInputArea}>
+                            <TextInput
+                            style={styles.inputsEditProfile}
+                            placeholder={placeholderName}
+                            placeholderTextColor="#BDBDBD"
+                            onChangeText={(text) => {setinputName(text);}}
+                            />
+                        </View>
                         
-                        <TextInput
-                        style={styles.inputsEditProfile}
-                        placeholder={placeholderName}
-                        placeholderTextColor="#BDBDBD"
-                        onChangeText={(text) => {setinputName(text);}}
-                        />
                     </View>
                     
-                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <View style={styles.editProfileUsernameContainer}>
                         <View style={{width: '20%'}}>
                             <Text style={{marginLeft: '5%', color: 'white', fontWeight: '500'}}>
                                 Username
                             </Text>
                         </View>
-                        <TextInput
-                        style={styles.inputsEditProfile}
-                        placeholder={placeholderUsername}
-                        placeholderTextColor="#BDBDBD"
-                        onChangeText={(text) => {setinputUsername(text);}}
-                        />
+                        {
+                            showErrorMessage ?
+                            <View style={styles.editProfileTextInputArea}>
+                                <Text style={{color: 'red'}}>
+                                    Username is already taken!
+                                </Text>
+                            </View>
+                            :
+                            <View style={styles.editProfileTextInputArea}>
+                                <TextInput
+                                style={styles.inputsEditProfile}
+                                placeholder={placeholderUsername}
+                                placeholderTextColor="#BDBDBD"
+                                onChangeText={(text) => {setinputUsername(text);}}
+                                />
+                            </View>
+                        }
+                        
                     </View>
                 </View>
                 

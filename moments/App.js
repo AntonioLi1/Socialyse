@@ -54,7 +54,7 @@ function App () {
 	const [selectedPost, setSelectedPost] = useState()
 	const [channelPosts, setChannelPosts] = useState()
 	const [justUnliked, setJustUnliked] = useState(false)
-	
+	const [dataAdded, setDataAdded] = useState(false)
 	const { signUpName, signUpUsername, signUpPhoneNumber} = useContext(LoggedOutContext)
 
 
@@ -68,16 +68,16 @@ function App () {
 	//console.log('app name2', signUpName)
 	//console.log('app username2', signUpUsername)
 
-	async function AddUserToDB (uid, signUpName, signUpUsername, phoneNumber) {
-		console.log('app name', signUpName)
-		console.log('app username', signUpUsername)
-		console.log('app phonenumber',phoneNumber)
+	async function AddUserToDB (uid, signUpName, signUpUsername, signUpPhoneNumber) {
+		// console.log('app name', signUpName)
+		// console.log('app username', signUpUsername)
+		// console.log('app phonenumber',phoneNumber)
 		await firestore()
 		.collection('Users')
 		.doc(uid)
 		.set({
-			Username: signUpUsername, // fix this
-            Name: signUpName, // fix this
+			Username: signUpUsername, 
+            Name: signUpName, 
             ProfilePic: '/ProfilePics/16a2066d261a38a5ba3bff2e101acb93.jpg',
             CurrentChannel: 0,
 			ChannelJoined: null,
@@ -129,13 +129,15 @@ function App () {
 		//adding user to phoneNumbers
 		await firestore()
 		.collection('PhoneNumbers')
-		.doc(uid)
+		.doc(signUpPhoneNumber)
 		.set({
 			PhoneNumber: signUpPhoneNumber
 		})
 		.then(() => {
 			console.log('uidofotherperson Added for phoneNumber!');
 		});
+
+		setDataAdded(true)
 		
 		
     }
@@ -197,6 +199,19 @@ function App () {
 	// currUser.providerData.forEach((userInfo) => {
 	// 	console.log('User info for provider: ', userInfo);
 	// });
+	if (dataAdded === true) {
+		return (
+			<LoggedInContext.Provider 
+			value={{messageDisplay, setMessageDisplay, notifDisplay, setNotifDisplay, 
+				editProfileModal, setEditProfileModal, dpURL, setDpURL, 
+				user, setUser, selectedPinId, setSelectedPinId, 
+				selectedPost, setSelectedPost, channelPosts, setChannelPosts,
+				justUnliked, setJustUnliked}}>
+				<LoggedInNavigator></LoggedInNavigator>
+			</LoggedInContext.Provider>
+			
+		);
+	}
 
 	return (
 		<LoggedInContext.Provider 
@@ -209,6 +224,7 @@ function App () {
 		</LoggedInContext.Provider>
 		
 	);
+	
 
 	
 };

@@ -43,7 +43,7 @@ function LoginAndSignup ({navigation}) {
             <View style={styles.signUpInfoContainer}>
                 <Text style={styles.signUpInfo}>
                     Sign up to see what's happening 
-                    {'\n'} around you
+                    {'\n'} around you.
                 </Text>
             </View>
             <View style={styles.loginInput}>

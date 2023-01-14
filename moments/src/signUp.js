@@ -6,16 +6,51 @@ import IIcon from 'react-native-vector-icons/Ionicons'
 import MIIcon from 'react-native-vector-icons/MaterialIcons';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ADIcon from 'react-native-vector-icons/AntDesign'
-//import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 import OTPInputView from '@twotalltotems/react-native-otp-input';
 import {LoggedOutContext} from '../App'
 
-//import supabase from "../supabase";
+class PhoneNumberError extends Error {
+    constructor(message) {
+        super(message)
+        this.name = "PhoneNumberError"
+    }
+}
 
+class UsernameError extends Error {
+    constructor(message) {
+        super(message)
+        this.name = "UsernameError"
+    }
+}
 
+async function CheckUsernameTaken(signUpUsername) {
+    await firestore()
+    .collection('Users')
+    .get()
+    .then((querySnapshot) => {
+        querySnapshot.forEach(snapshot => {
+            let data = snapshot.data()
+            if (data.Username == signUpUsername) {
+                throw new UsernameError("username taken error")
+            }
+        })
+    })
+}
+
+async function checkPhoneNumberExists(signUpPhoneNumber) {
+    await firestore()
+    .collection('PhoneNumbers')
+    .doc(signUpPhoneNumber)
+    .get()
+    .then(docSnapshot => {
+        if (docSnapshot.exists) {
+            throw new PhoneNumberError('phone number already exists error')
+        }
+    })
+}
 
 function SignUp ({navigation}) {
 
@@ -27,7 +62,8 @@ function SignUp ({navigation}) {
     const [phoneInputCheck, setphoneInputCheck] = useState(false);
     const [nameInputCheck, setNameInputCheck] = useState(false);
     const [usernameInputCheck, setUsernameInputCheck] = useState(false);
-
+    const [showPhoneNumberErrorMessage, setShowPhoneNumberErrorMessage] = useState(false)
+    const [showUsernameErrorMessage, setShowUsernameErrorMessage] = useState(false)
     //const {user, setUser} = useContext(LoggedInContext);
     const {signUpName, setSignUpName, signUpUsername, setSignUpUsername, signUpPhoneNumber, setSignUpPhoneNumber} = useContext(LoggedOutContext)
 
@@ -41,9 +77,32 @@ function SignUp ({navigation}) {
 
     // FIREBASE
     // Handle the button press
-    async function signInWithPhoneNumber(phoneNumber) {
-        const confirmation = await auth().signInWithPhoneNumber(phoneNumber);
+    async function signInWithPhoneNumber(signUpPhoneNumber) {
+        //const newNumber = '+61' + signUpPhoneNumber.substring(1);
+        //const confirmation = await auth().signInWithPhoneNumber(newNumber);
+        const confirmation = await auth().signInWithPhoneNumber(signUpPhoneNumber);
         setConfirm(confirmation);
+    }
+
+    async function SignUpPress() {
+        try {
+            await checkPhoneNumberExists(signUpPhoneNumber)
+            await CheckUsernameTaken(signUpUsername)
+            await signInWithPhoneNumber(signUpPhoneNumber)
+        } catch (error){
+            console.log('error', error)
+            if (error.name === "PhoneNumberError") {
+                setShowPhoneNumberErrorMessage(true)
+            }
+            if (error.name === "UsernameError") {
+                setShowUsernameErrorMessage(true)
+            }
+            setTimeout(() => {
+				setShowPhoneNumberErrorMessage(false)
+                setShowUsernameErrorMessage(false)
+			}, 1500)
+
+        }
     }
 
     async function confirmCode() {
@@ -55,8 +114,6 @@ function SignUp ({navigation}) {
     }
     /////////////////////////////////////////
 
-    console.log('signup name',signUpName)
-    console.log('sign up username',signUpUsername)
     //console.log(signUpBlur)
     if (!confirm) {
         return (
@@ -88,14 +145,29 @@ function SignUp ({navigation}) {
                 
                 <Pressable style={[{ backgroundColor: signUpBlur ? '#DCDCDC' : 'white'}, styles.signUpButton]} 
                 disabled={signUpBlur}
-                onPress={() => {signInWithPhoneNumber(signUpPhoneNumber)}}
+                onPress={() => {SignUpPress()}}
                 >
                     <Text style={{fontSize: 16, fontWeight: '700', color: signUpBlur ? '#999999' : 'black'}}>
                         Sign Up
                     </Text>
                 </Pressable>  
-
-                <View style={{marginTop: '5%'}}>
+                {
+                    showPhoneNumberErrorMessage ?
+                    <Text style={{color: '#FF0000', marginTop: '1%'}}>
+                        Phone Number taken. Please log in instead!
+                    </Text>
+                    :
+                    null
+                }
+                {
+                    showUsernameErrorMessage ?
+                    <Text style={{color: '#FF0000', marginTop: '1%'}}>
+                    Username taken. Please try another one!
+                    </Text>
+                    :
+                    null
+                }
+                <View style={styles.HaveAccountLogin}>
                     <Text style={{color: 'black', textAlign: 'center'}}>
                         Have an account? {'\n'}
                         <Pressable onPress={() => {navigation.goBack()}}>

@@ -38,7 +38,7 @@ async function checkIfUserCanCreateChannel(uid, selectedPinId, userLatitude, use
 	const userLocation = `${userLatitude},${userLongtitude}`
 	const pinLocation = `${ChannelLatitude},${ChannelLongitude}`
 
-	const url = `https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&mode=walking&origins=${userLocation}&destinations=${pinLocation}&key=${API_KEY}`
+	// const url = `https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&mode=walking&origins=${userLocation}&destinations=${pinLocation}&key=${API_KEY}`
 	let distance = 0
 	// await fetch(url)
 	// .then((response) => response.json())
@@ -131,9 +131,8 @@ async function checkIfUserCanViewButton(uid, channelID) {
 
 }
 
-// error with pin far away??
 async function getPinName(selectedPinId) {
-	//console.log(selectedPinId)
+	//console.log('selectedPinId',selectedPinId)
 	let channelName = ''
 	await firestore()
 	.collection('Pins')
@@ -141,6 +140,8 @@ async function getPinName(selectedPinId) {
 	.get()
 	.then(docSnapshot => { 
 		//console.log(docSnapshot)
+		// console.log('selectedPinId2',selectedPinId)
+		// console.log('docSnapshot',docSnapshot)
 		let data = docSnapshot.data()
 		//console.log('size',docSnapshot.size)
 
@@ -150,9 +151,6 @@ async function getPinName(selectedPinId) {
 
 	return channelName
 }
-
-
-
 
 export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDisplay, setMessageDisplay, setNotifDisplay}) {
 	
@@ -171,17 +169,18 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 	const [userLongitude, setLongitude] = useState(0)
 	const [userLatitude, setLatitude] = useState(0)
 	const [channelsLoaded, setChannelsLoaded] = useState(false)
+	const [sortedChannels, setSortedChannels] = useState([]);
 	
-	const [canCreateJoinChannel, setCanCreateJoinChannel] = useState(false)
+	const [canCreateJoinChannel, setCanCreateJoinChannel] = useState()
 	const [error, setError] = useState(null)
 	const [showErrorMessage, setShowErrorMessage] = useState(false)
 
 	const {selectedPinId, user} = useContext(LoggedInContext)
-
+	
 	const GetmyLocation = async () => {
 		await Geolocation.getCurrentPosition(info => {
-			console.log('geolocation latitude', info.coords.latitude)
-			console.log('geolocation longitude', info.coords.longitude)
+			// console.log('geolocation latitude', info.coords.latitude)
+			// console.log('geolocation longitude', info.coords.longitude)
 			setLatitude(info.coords.latitude)
 			setLongitude(info.coords.longitude)
 		})
@@ -210,12 +209,18 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 		.then((querySnapshot) => {
 			querySnapshot.forEach(snapshot => {
 				let data = snapshot.data()
+				//console.log('data', data)
 				if (ChannelName == data.Name) {
 					//console.log('infunction error')
-					throw error
+					throw Error("infunction error");
 				}
 			})
 		})
+	
+		// .catch(err=>{
+		// 	console.log(err);
+		// 	throw Error(err.message);
+		// })
 		// Create channel
 		// Get location of pin
 		let Location = {};
@@ -322,8 +327,7 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 	}
 
 	useEffect(() => {
-
-		
+		if(!selectedPinId) return;
 		let start = new Date();
 
 		function subtractHours(numOfHours, date = new Date()) {
@@ -340,29 +344,32 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 		.collection('Channels')
 		.where('LastActive', '>', test)
 		.onSnapshot((querySnapshot) => {
+			//console.log('selectedPinId', selectedPinId)
 			let channels = []
-			querySnapshot.forEach(snapshot => {
-				let channel = {
-					ChannelName: '',
-					ActiveUsers: 0,
-					ChannelID: '',
-					selected: false 
-				};
-				//console.log('snapshots', snapshot)
-				channel.ChannelName = snapshot.data().Name;
-				channel.ActiveUsers = snapshot.data().ActiveUsers;
-				channel.ChannelID = snapshot.data().ChannelID;
-				channels.push(channel)
-			})
+			//console.log('uerySnapshot.size',querySnapshot.size)
+			for(let i=0; i< querySnapshot.size; i++){
+				const snapshot = querySnapshot.docs[i];
+					let channel = {
+						ChannelName: '',
+						ActiveUsers: 0,
+						ChannelID: '',
+						selected: false 
+					};
+					//console.log('snapshots', snapshot)
+					channel.ChannelName = snapshot.data().Name;
+					channel.ActiveUsers = snapshot.data().ActiveUsers;
+					channel.ChannelID = snapshot.data().ChannelID;
+					channels.push(channel)
 			
-			//console.log('channels', channels)
-			
-			setChannels(channels)
-			setChannelsLoaded(true)
+				//console.log('channels', channels)
+				setSortedChannels(channels.sort((a,b) => b.ActiveUsers - a.ActiveUsers))
+				setChannels(channels)
+				setChannelsLoaded(true) 
+			}	
 		})
 		return () => subscriber()
 		
-	}, [])
+	}, [selectedPinId])
 	
 
 	async function getData() {
@@ -372,9 +379,10 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 			setPinName(pinName)
 			const canCreateCheck = await checkIfUserCanCreateChannel(user.uid, selectedPinId, userLatitude, userLongitude)
 			setCanCreateJoinChannel(canCreateCheck)
+			setDataLoaded(true)
 		}
 		
-		setDataLoaded(true)
+		
 	}
 
 	async function viewCheckFunc (channelID) {
@@ -414,35 +422,20 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 	async function createChannelAndJoin() {
 		try {
 			await CreateChannel(user.uid, selectedPinId, createChannelName)
+			setMultipleModalDisplay(false); 
+			setCreateChannelModel(false);
 			navigation.navigate('MakeAPost', {selectedChannelID: selectedChannelID})
 		} catch(err) {
-			//console.log('error createchannelandjoin')
+			console.log('error createchannelandjoin', err)
+			//setCreateChannelModel(true)
 			setError(err)
 			setShowErrorMessage(true)
+			setTimeout(() => {
+				setShowErrorMessage(false)
+			}, 1000)
 		}
 	}
-
-	function CantCreateChannelAlert() {
-		Alert.alert(
-			"Cannot Create Channel",
-			"You need to be within 50m of the pin to create a channel xo",
-			[
-				{text: "Got it!"}
-			]
-		)
-	}
-
-	function CantJoinChannelAlert() {
-		Alert.alert(
-			"Cannot Join Channel",
-			"You need to be within 50m of the pin to join a channel xo",
-			[
-				{text: "Got it!"}
-			]
-		)
-	}
-
-
+ 
 	if (createChannelModel == true) 
 		return (
 			<Modal visible={createChannelModel} transparent={true}>
@@ -460,21 +453,28 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 							
 							{
 								showErrorMessage ?
-								<Text>
-									error
-								</Text>:
+								<Text style={{color: 'red'}}>
+									Channel name is already taken!
+								</Text>
+								:
 								<TextInput style={styles.newChannelModelPLaceholder} placeholderTextColor='#585858' placeholder="New channel name..." autoFocus={true}
 								onChangeText={(text) => setCreateChannelName(text)} multiline={true} maxLength={15}
 								/>
+								
 							}
 							
+							{
+								showErrorMessage ?
+								null
+								:
+								<Pressable style={styles.createChannelButton} 
+								onPress={() => {createChannelAndJoin();
+									}}
+								>
+									<Text style={styles.createChannelText}>Create</Text>				
+								</Pressable>
+							}
 							
-							<Pressable style={styles.createChannelButton} 
-							onPress={() => {setMultipleModalDisplay(false); setCreateChannelModel(false);createChannelAndJoin();
-								}}
-							>
-								<Text style={styles.createChannelText}>Create</Text>				
-							</Pressable>
 						</View>
 						
 						<IIcon style={styles.locationModalClose} name='close-outline' size={scale(30)}
@@ -485,8 +485,10 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 					
 			</Modal>
 		)
-
-	if (channelsLoaded == true && channels) {
+     
+	
+		//console.log('channelsLoaded',channelsLoaded)
+		//console.log('sortedChannels',sortedChannels)
 		return (
 			<Modal visible={multipleModalDisplay} transparent={true}>
 				<View style={styles.multipleLocationModal}>
@@ -508,11 +510,11 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 						{/* {console.log('flatlist channels', channels)}			 */}
 						<FlatList
 						numColumns={1} 
-						extraData={channels.sort((a,b) => b.ActiveUsers - a.ActiveUsers)}
-						data={channels.sort((a,b) => b.ActiveUsers - a.ActiveUsers)} 
+						//extraData={channels.sort((a,b) => b.ActiveUsers - a.ActiveUsers)}
+						data={sortedChannels} 
 						renderItem={({item, index}) => 
 						{
-							
+	 						
 							return (
 								
 								<Pressable onPress={() => {setChannelSelected(!channelSelected); item.selected = !item.selected;
@@ -574,21 +576,11 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 						</View>
 						:
 						// cant join or create
-						<View style={styles.locationModalFooter}>
-	
-							{/* create channel button */}
-							<Pressable style={styles.multiCreateChannelButton}
-							onPress={() => {CantCreateChannelAlert()}}
-							> 
-							
-								<Text style={[{color: canCreateJoinChannel ? 'white' : '#727272' },styles.multiCheckInText]}>Create new</Text> 			
-							</Pressable> 
-	
-	
-							<Pressable style={[{ backgroundColor: isPressed ? 'white' : 'black' }, styles.multiCheckInButton ]} 
-							onPress={() => {CantJoinChannelAlert()}}>
-								<Text style={[{color: '#727272'}, styles.checkedInText]}>Join</Text>				
-							</Pressable> 
+						<View style={[styles.locationModalFooter, {justifyContent: 'center'}]}>
+							<Text style={styles.noJoinCreateChannelText}>
+								You're too far to join or create a channel at this pin!
+							</Text>
+
 						</View>
 						
 	
@@ -597,11 +589,11 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 					
 						
 	
-					
+					 
 				</View>	
 			</Modal>
 		)
-	}
+	
 	
 }
 

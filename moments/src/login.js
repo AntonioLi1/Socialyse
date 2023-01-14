@@ -10,6 +10,7 @@ import OTPInputView from '@twotalltotems/react-native-otp-input';
 import firestore from '@react-native-firebase/firestore';
 
 async function checkPhoneNumberExists(phoneNumber) {
+    // phonenumber excludes area codes
     await firestore()
     .collection('PhoneNumbers')
     .doc(phoneNumber)
@@ -17,7 +18,7 @@ async function checkPhoneNumberExists(phoneNumber) {
     .then(docSnapshot => {
         if (!docSnapshot.exists) {
             // logging into non-existent acc
-            throw error;
+            throw Error;
         } 
     })
 }
@@ -30,6 +31,8 @@ function Login({navigation}) {
     const [phoneNumber, setPhoneNumber] = useState()
     const [confirm, setConfirm] = useState(null);
     const [code, setCode] = useState('');
+    const [showErrorMessage, setShowErrorMessage] = useState(false)
+    const [confirmCodeErrorMessage, setConfirmCodeErrorMessage] = useState(false)
 
     // Handle the button press
     async function signInWithPhoneNumber(phoneNumber) {
@@ -37,14 +40,19 @@ function Login({navigation}) {
         const newNumber = '+61' + phoneNumber.substring(1);
         try {
             // check if number already exists in DB
-            checkPhoneNumberExists(phoneNumber)
+            await checkPhoneNumberExists(phoneNumber)
 
             const confirmation = await auth().signInWithPhoneNumber(newNumber);
+            //const confirmation = await auth().signInWithPhoneNumber(phoneNumber);
             setConfirm(confirmation);
-        } catch {
-            console.log('error')
+        } catch(error) {
+            console.log('errorwdwdww', error)
+            setShowErrorMessage(true)
+            setTimeout(() => {
+				setShowErrorMessage(false)
+			}, 1500)
+            
         }
-        
     }
 
     async function confirmCode() {
@@ -52,6 +60,10 @@ function Login({navigation}) {
           await confirm.confirm(code);
         } catch (error) {
           console.log('Invalid code.');
+          setConfirmCodeErrorMessage(true)
+          setTimeout(() => {
+            setConfirmCodeErrorMessage(false)
+        }, 1500)
         }
     }
 
@@ -92,7 +104,15 @@ function Login({navigation}) {
                         Log In
                     </Text>
                 </Pressable>
-                <View style={{marginTop: '5%'}}>
+                {
+                    showErrorMessage ?
+                    <Text style={{maxWidth: '80%', textAlign: 'center', color: 'red'}}>
+                        This phone number does not have an account! Try signing up!
+                    </Text>
+                    :
+                    null
+                }
+                <View style={styles.DontHaveAccountSignUp}>
                     <Text style={{color: 'black', textAlign: 'center'}}>
                         Don't have an account? {'\n'}
                         <Pressable onPress={() => {navigation.navigate('SignUp')}}>
@@ -135,7 +155,15 @@ function Login({navigation}) {
                 codeInputHighlightStyle={{backgroundColor: 'white'}}
                 onCodeChanged = {(text) => {setCode(text)}}
                 autoFocusOnLoad={true}
-                />    
+                /> 
+                {
+                    confirmCodeErrorMessage ?
+                    <Text style={{color: 'red'}}>
+                        Incorrect Code
+                    </Text>
+                    :
+                    null
+                }   
                 
                 <Pressable onPress={() => confirmCode()} style={styles.confirmCodeButton}>
                     <Text style={styles.confirmCodeText}>

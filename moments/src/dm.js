@@ -11,6 +11,7 @@ import firestore from '@react-native-firebase/firestore';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { ComposedGesture } from 'react-native-gesture-handler/lib/typescript/handlers/gestures/gestureComposition';
 import { get } from 'react-native/Libraries/Utilities/PixelRatio';
+import { PROVIDER_DEFAULT } from 'react-native-maps';
 //import { GestureHandlerRootView, GestureDetector, Gesture } from 'react-native-gesture-handler';
 //import { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 
@@ -235,45 +236,62 @@ async function reduceUnopenedMessageCount(UserID, OtherUid) {
 	
 	// check if dm is already opened before opening
 	//console.log('OtherUid', OtherUid)
-	let dmAlreadyOpenedCheck = false
+
+	// check if this is a new friend first
+	let newFriendCheck = false
 	await firestore()
-	.collection('Messages')
+	.collection('Friends')
 	.doc(UserID)
-	.collection('Chats')
+	.collection('FriendsWith')
 	.doc(OtherUid)
-	.get()
+	.get() 
 	.then(docSnapshot => {
-		//console.log('docSnapshot.data().Opened', docSnapshot.data().Opened)
-		dmAlreadyOpenedCheck = docSnapshot.data().Opened
+		let data = docSnapshot.data()
+		newFriendCheck = data.Messaged
 	})
 
-	if (dmAlreadyOpenedCheck == false) {
-		let unopenedMessagesCount = 0
-		await firestore()
-		.collection('Messages')
-		.doc(UserID)
-		.get()
-		.then(docSnapshot => {
-			unopenedMessagesCount = docSnapshot.data().UnopenedMessages
-		})
-		// decrement count
-		unopenedMessagesCount -= 1
-		await firestore()
-		.collection('Messages')
-		.doc(UserID)
-		.update({
-			UnopenedMessages: unopenedMessagesCount
-		})
-		// make true
+	if (newFriendCheck == true) {
+		let dmAlreadyOpenedCheck = false
 		await firestore()
 		.collection('Messages')
 		.doc(UserID)
 		.collection('Chats')
 		.doc(OtherUid)
-		.update({
-			Opened: true
+		.get()
+		.then(docSnapshot => {
+			//console.log('docSnapshot.data().Opened', docSnapshot.data().Opened)
+			dmAlreadyOpenedCheck = docSnapshot.data().Opened
 		})
+
+		if (dmAlreadyOpenedCheck == false) {
+			let unopenedMessagesCount = 0
+			await firestore()
+			.collection('Messages')
+			.doc(UserID)
+			.get()
+			.then(docSnapshot => {
+				unopenedMessagesCount = docSnapshot.data().UnopenedMessages
+			})
+			// decrement count
+			unopenedMessagesCount -= 1
+			await firestore()
+			.collection('Messages')
+			.doc(UserID)
+			.update({
+				UnopenedMessages: unopenedMessagesCount
+			})
+			// make true
+			await firestore()
+			.collection('Messages')
+			.doc(UserID)
+			.collection('Chats')
+			.doc(OtherUid)
+			.update({
+				Opened: true
+			})
+		}
 	}
+	
 }
 
 function Dm ({route, navigation}) {
@@ -335,9 +353,11 @@ function Dm ({route, navigation}) {
     return (
       <SafeAreaView style={styles.messagesScreen}>
         <View style={styles.messagesHeader}>
-			<Text style={styles.messagesHeaderUsername}>
-				{OtherUsername}
-			</Text>  
+			<Pressable onPress={() => {navigation.navigate('OtherProfile', {FriendID: OtherUid})}}>
+				<Text style={styles.messagesHeaderUsername}>
+					{OtherUsername}
+				</Text> 
+			</Pressable>
 			<Pressable style={styles.messagesBackButton} onPress={() => {setMessageDisplay(true); navigation.goBack(); setNotifDisplay(true) }}>
 				<MIIcon name='arrow-forward-ios' size={scale(30)} color='white'/>
 			</Pressable>     

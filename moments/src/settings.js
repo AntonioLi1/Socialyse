@@ -12,6 +12,9 @@ import firestore from '@react-native-firebase/firestore';
 import SendFeedbackModal from './sendFeedbackModal';
 import { LoggedInContext } from '../App'
 import { useFocusEffect } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const displayPhotoKey = '@app:displayPhoto'
 
 
 async function getUserDetails(uid) {
@@ -33,6 +36,11 @@ async function getUserDetails(uid) {
     })
 
     return returnObj
+}
+
+async function LogOutAsyncStorage () {
+    // upload to firestore and context state
+    await AsyncStorage.removeItem(displayPhotoKey)
 }
 
 function Settings ({navigation}) {
@@ -103,9 +111,9 @@ function Settings ({navigation}) {
             
             <View style={{flex: 1}}>
                 <Pressable onPress={() => { 
-                auth()
+                {LogOutAsyncStorage(); auth()
                 .signOut()
-                .then(() => console.log('User signed out!'));}}>
+                .then(() => console.log('User signed out!'));}}}>
                     <View style={styles.settingsLogout}>
                         <Text style={styles.logOutText}>
                             Log Out

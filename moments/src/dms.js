@@ -150,13 +150,7 @@ function DmDisplay({navigation}) {
                     return (
 						<Pressable onPress={() => {navigation.navigate('Dm', {OtherUid: item.Uid, OtherUsername: item.Username, OtherUserDP: item.ProfilePic})}}>
 							<View style={styles.newConnectionProfile}>
-								
-								<Pressable onPress={() => {navigation.navigate('OtherProfile', {FriendID: item.Uid})}}>
-									<Image source={{uri: item.ProfilePic}} style={styles.newConnectionProfilePic}/>
-								</Pressable>
-									
-								
-								
+								<Image source={{uri: item.ProfilePic}} style={styles.newConnectionProfilePic}/>
 								<Text style={styles.newConnectionUsername} numberOfLines={1}>
 									{item.Username}
 								</Text>

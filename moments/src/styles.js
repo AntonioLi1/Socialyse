@@ -352,13 +352,13 @@ const styles = ScaledSheet.create({
 		height: '80%',
 		//backgroundColor: 'red',
 		flexDirection: 'column',
-		justifyContent: 'space-evenly',
+		//justifyContent: 'space-evenly',
 		alignItems: 'center',
 		width: '60%'
 	},
 	locationNameActiveAndJoinButtonContainerCreate: {
 		height: '80%',
-		backgroundColor: 'red',
+		//backgroundColor: 'red',
 		flexDirection: 'column',
 		justifyContent: 'space-evenly',
 		//alignItems: 'center',
@@ -430,7 +430,9 @@ const styles = ScaledSheet.create({
 		color: 'black',
 		fontSize: RFValue(16),
 		fontWeight: '600',
-		alignSelf: 'flex-start'
+		alignSelf: 'flex-start',
+		position: 'absolute',
+		top: 0
 	}, 
 	locationModalActive: {
 		color: 'black', 
@@ -1309,7 +1311,8 @@ const styles = ScaledSheet.create({
 	signUpInfo: {
 		textAlign: 'center',
 		fontSize: 15,
-		fontWeight: '600'
+		fontWeight: '600',
+		maxWidth: screenWidth * 0.8
 	},
 	signUpInfoContainer: {
 		marginTop: screenHeight * 0.1
@@ -1336,8 +1339,9 @@ const styles = ScaledSheet.create({
 		alignItems: 'center'
 		
 	},
-	loginInput: {
-
+	initialDPBody: {
+		alignItems: 'center',
+		//backgroundColor: 'red'
 	},
 	or: {
 		marginTop: screenHeight * 0.01,
@@ -1812,10 +1816,10 @@ const styles = ScaledSheet.create({
 		
 	},
 	inputsEditProfile: {
-		flex: 1,
+		// flex: 1,
 		color: 'white',
-		borderBottomColor: '#666666',
-		borderBottomWidth: 0.7,
+		// borderBottomColor: '#666666',
+		// borderBottomWidth: 0.7,
 		fontWeight: '500'
 	},
 	verifyPhoneNumHeader: {
@@ -1832,6 +1836,7 @@ const styles = ScaledSheet.create({
 		width: screenWidth,
 		alignItems: 'center',
 		backgroundColor: 'white'
+		//backgroundColor: 'green'
 	},
 	verifyPhoneNumBodyTextContainer: {
 		//backgroundColor: 'grey',
@@ -1877,8 +1882,12 @@ const styles = ScaledSheet.create({
   		backgroundColor: '#96B9FE', 
   		width: screenWidth * 0.3,
   		alignItems: 'center',
+  		justifyContent: 'center',
   		padding: '3%',
-  		borderRadius: 30
+  		borderRadius: 30,
+  		position: 'absolute',
+  		marginTop: screenHeight * 0.4,
+  		height: screenHeight * 0.05
   	},
   	verificationBackground: {
   		backgroundColor: 'white',
@@ -1970,6 +1979,7 @@ const styles = ScaledSheet.create({
 		//backgroundColor: 'aqua',
 		height: '40%',
 		fontWeight: '700',
+		marginTop: '10%'
 		//alignSelf: 'flex-start'
 		
 	},
@@ -1978,8 +1988,8 @@ const styles = ScaledSheet.create({
 		//height: '40%',
 		fontWeight: '700',
 		fontSize: RFValue(15),
-		width: '100%',
-		textAlign: 'center'
+		marginTop: '5%'
+		//width: '100%',
 	},
 	createChannelButton: {
 		height: '25%',
@@ -2004,7 +2014,6 @@ const styles = ScaledSheet.create({
 	createPinModalButton: {
 		height: '25%',
 		width: '50%', 
-		//alignSelf: 'flex-end',
 		flexDirection: 'row',
 		justifyContent: 'center',
 		alignItems: 'center',
@@ -2017,9 +2026,9 @@ const styles = ScaledSheet.create({
 		shadowOpacity: 0.34,
 		shadowRadius: 6.27,
 		elevation: 10,
-		backgroundColor: 'black'
-		//marginBottom: '10%'
-		//marginTop: '5%'
+		backgroundColor: 'black',
+		position: 'absolute',
+		bottom: 5
 	},
 
 	locationNameActiveAndJoinButtonContainer2: {
@@ -2075,9 +2084,78 @@ const styles = ScaledSheet.create({
 		paddingHorizontal: '5%',
 		position: 'absolute',
 		bottom: '40@s',
+	},
+	noJoinCreateChannelText: {
+		//textAlign: 'center',
+		alignSelf: 'center',
+		color: 'black',
+		fontWeight: '700'
+	},
+	loadingScreen: {
+		height: screenHeight,
+		width: screenWidth,
+		backgroundColor: '#96B9FE',
+		flexDirection: 'row',
+		justifyContent: 'center',
+	},
+	loadingSocialyseText: {
+		marginTop: screenHeight * 0.4,
+		fontSize: RFValue(30),
+		color: 'black',
+		fontWeight: '900',
+		fontStyle: 'italic'
+	},
+	editProfileNameContainer: {
+		flexDirection: 'row', 
+		alignItems: 'center', 
+		//backgroundColor: 'red',
+		height: '10%'
+	},
+	editProfileUsernameContainer: {
+		flexDirection: 'row', 
+		alignItems: 'center', 
+		height: '10%',
+		//backgroundColor: 'green'
+	},
+	editProfileTextInputArea: {
+		flex: 1,
+		color: 'white',
+		borderBottomColor: '#666666',
+		borderBottomWidth: 0.7,
+		//backgroundColor: 'blue',
+	},
+	HaveAccountLogin: {
+		marginTop: '5%', 
+		//backgroundColor: 'red', 
+		position: 'absolute',
+		marginTop: screenHeight * 0.55
+	},
+	DontHaveAccountSignUp: {
+		//marginTop: '5%',
+		position: 'absolute',
+		marginTop: screenHeight * 0.45
+	},
+	initialDPFullScreen: {
+		height: screenHeight,
+		width: screenWidth,
+		backgroundColor: '#96B9FE',
+		alignItems: 'center'
+	},
+	chooseADisplayPicText: {
+		marginTop: screenHeight * 0.3,
+		fontSize: RFValue(18),
+		fontWeight: '900',
+		fontStyle: 'italic',
+		color: 'black',
+		textAlign: 'center'
+	},
+	initialTakePhotoforDPBackground: {
+		flex: 1,
+		width: screenWidth,
+		backgroundColor: '#96B9FE',
+		alignItems: 'center',
+	},
 
-
-	}
 	
 
 
