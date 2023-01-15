@@ -264,6 +264,8 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
 
     // new
+    //implementation project(':@react-native-firebase_storage')
+    /////////////////
     // // Import the BoM for the Firebase platform
     implementation platform('com.google.firebase:firebase-bom:31.1.1')
     implementation 'com.google.firebase:firebase-analytics'

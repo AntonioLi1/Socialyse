@@ -1,3 +1,4 @@
+#import <Firebase.h>
 #import "AppDelegate.h"
 
 #import <React/RCTBridge.h>
@@ -36,6 +37,10 @@ static NSString *const kRNConcurrentRoot = @"concurrentRoot";
   RCTAppSetupPrepareApp(application);
 
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
+
+  if ([FIRApp defaultApp] == nil) {
+    [FIRApp configure];
+  }
 
 #if RCT_NEW_ARCH_ENABLED
   _contextContainer = std::make_shared<facebook::react::ContextContainer const>();
