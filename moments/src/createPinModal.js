@@ -93,6 +93,7 @@ function CreatePinModal({createPinModalDisplay, setCreatePinModalDisplay, multip
             Location: geopoint,
             Name: newPinName,
             PinID: '',
+            PinPic: null
         })
         .then(function (docRef) {
             docID = docRef.id

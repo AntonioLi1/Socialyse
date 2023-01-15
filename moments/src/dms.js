@@ -11,33 +11,6 @@ import firestore from '@react-native-firebase/firestore';
 import { LoggedInContext } from '../App'
 import storage from '@react-native-firebase/storage';
 
-
-async function ViewNewFriends(UserID) {
-	let unmessagedFriends = [];
-  
-	await firestore()
-	.collection('Friends')
-	.doc(UserID)
-	.collection('FriendsWith')
-	.where('Messaged', '==', false)
-	.get()
-	.then(querySnapshot => {
-	  querySnapshot.forEach(snapshot => {
-		let friend = {
-		  ProfilePic: '',
-		  Username: '',
-		  Uid: '',
-		};
-		friend.ProfilePic = snapshot.data().ProfilePic
-		friend.Username = snapshot.data().Username;
-		friend.Uid = snapshot.data().Uid
-		unmessagedFriends.push(friend)
-		})
-	});
-	//console.log('unmessagedFriends', unmessagedFriends)
-	return unmessagedFriends;
-}
-
 // async function ViewDMs(UserID) {
 // 	// seeing your list of messages to view
 // 	let DMs = [];

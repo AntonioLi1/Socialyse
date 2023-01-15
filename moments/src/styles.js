@@ -341,7 +341,7 @@ const styles = ScaledSheet.create({
 		marginTop: screenHeight * 0.5
 	},
 	locationImagePlaceholderSingle: {
-		backgroundColor: 'grey',
+		//backgroundColor: 'grey',
 		//width: '35%',
 		//height: '80%',
 		height: '80@s',
@@ -2154,6 +2154,10 @@ const styles = ScaledSheet.create({
 		width: screenWidth,
 		backgroundColor: '#96B9FE',
 		alignItems: 'center',
+	},
+	createPinIcon: {
+		//color: 'white',
+		justifyContent: 'center',
 	},
 
 	

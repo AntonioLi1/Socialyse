@@ -111,43 +111,6 @@ async function CreatePost(UserID, Caption, Image, ChannelID, selectedPinId) {
 
 async function JoinChannel(UserID, ChannelID, Longitude, Latitude, PinID) {
 
-	// let ChannelLongitude = 0;
-	// let ChannelLatitude = 0;
-  
-	// await firestore()
-	// .collection('Channels')
-	// .doc(ChannelID)
-	// .get()
-	// .then (docSnapshot => {
-	// 	if(docSnapshot.exists) {
-	// 	  ChannelLongitude = docSnapshot.data().Location.latitude;
-	// 	  ChannelLatitude = docSnapshot.data().Location.longitude;
-	// 	}
-	// })
-	// ChannelLongitude =  ChannelLongitude * Math.PI / 180;
-	// ChannelLatitude =  ChannelLatitude * Math.PI / 180;
-	// Latitude =  Latitude * Math.PI / 180;
-	// Longitude =  Longitude * Math.PI / 180;
-  
-	// // Haversine formula
-	// let dlon = Longitude - ChannelLongitude;
-	// let dlat = Latitude - ChannelLatitude;
-	// let a = Math.pow(Math.sin(dlat / 2), 2)
-	// 		+ Math.cos(ChannelLatitude) * Math.cos(Latitude)
-	// 		* Math.pow(Math.sin(dlon / 2),2);
-		   
-	// let c = 2 * Math.asin(Math.sqrt(a));
-	// let r = 6371;
-  
-	// // calculate the result
-	// let distance = c * r;
-  
-	// // Check user is within range
-	// distance = distance/1000;
-	// if (distance > 50) {
-	//   throw error;
-	// }
-
 	const messageSendTime = new Date();
 
 	await firestore()
@@ -255,7 +218,10 @@ function MakeAPost({route}) {
 	// }
 	const getCameraPermission = useCallback(async () => {
 		const permission = await Camera.requestCameraPermission()
-		if (permission === 'denied') await Linking.openSettings()
+		if (permission === 'denied') {
+			await Linking.openSettings()
+			navigation.navigate('Map')
+		}
 	}, []) 
 	
 	// if (cameraPermission == null || microphonePermission == null) {

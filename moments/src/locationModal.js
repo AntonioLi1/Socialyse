@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Modal, Text, Pressable, TouchableNativeFeedbackBase, Keyboard, SafeAreaView, KeyboardAvoidingView, TouchableWithoutFeedback, Alert } from 'react-native';
+import { View, Modal, Text, Pressable, Keyboard, SafeAreaView, Image } from 'react-native';
 import styles from './styles';
 import IIcon from 'react-native-vector-icons/Ionicons';
 import MIIcon from 'react-native-vector-icons/MaterialIcons';
@@ -88,8 +88,11 @@ async function checkIfUserCanCreateChannel(uid, selectedPinId, userLatitude, use
 	.get()
 	.then( docSnapshot => {
 		if (docSnapshot.exists) {
-			// convert firebase storage time into seconds
 			let data = docSnapshot.data()
+			// check if it a brand new user
+			// let newUserCheck = false
+			// if (data.)
+			// convert firebase storage time into seconds
 			LastTime = (data.LastCreated.nanoseconds / 1000000000) + data.LastCreated.seconds
 		}
 	})
@@ -116,6 +119,10 @@ async function checkIfUserCanViewButton(uid, channelID) {
 	.get()
 	.then(docSnapshot => {
 		let data = docSnapshot.data()
+		// check if it is a brand new user
+		if (data.ChannelJoined ===  null) {
+			return returnBool
+		}
 		
 		let currTimeInSeconds = new Date().getTime() / 1000;
 		// get last time joined channel x in seconds
@@ -152,6 +159,20 @@ async function getPinName(selectedPinId) {
 	return channelName
 }
 
+async function getPinPicURL (selectedPinId) {
+	let pinPicURL = ''
+	await firestore()
+	.collection('Pins')
+	.doc(selectedPinId)
+	.get()
+	.then(docSnapshot => { 
+		let data = docSnapshot.data()
+		pinPicURL = data.PinPic
+	})
+
+	return pinPicURL
+}
+
 export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDisplay, setMessageDisplay, setNotifDisplay}) {
 	
 	const [isPressed, setIsPressed] = useState(false);
@@ -170,7 +191,7 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 	const [userLatitude, setLatitude] = useState(0)
 	const [channelsLoaded, setChannelsLoaded] = useState(false)
 	const [sortedChannels, setSortedChannels] = useState([]);
-	
+	const [pinPicURL, setPinPicURL] = useState('')
 	const [canCreateJoinChannel, setCanCreateJoinChannel] = useState()
 	const [error, setError] = useState(null)
 	const [showErrorMessage, setShowErrorMessage] = useState(false)
@@ -377,6 +398,8 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 		if(selectedPinId) {
 			const pinName = await getPinName(selectedPinId)
 			setPinName(pinName)
+			const pinPic = await getPinPicURL(selectedPinId)
+			setPinPicURL(pinPic)
 			const canCreateCheck = await checkIfUserCanCreateChannel(user.uid, selectedPinId, userLatitude, userLongitude)
 			setCanCreateJoinChannel(canCreateCheck)
 			setDataLoaded(true)
@@ -443,7 +466,8 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 				<SafeAreaView style={styles.createChannelModelFullScreen}>
 					
 					<View style={styles.createChannelModal}>
-						<View style={styles.locationImagePlaceholderSingle}/>
+						{/* <View style={styles.locationImagePlaceholderSingle}/> */}
+						<Image source={{uri: pinPicURL}} style={styles.locationImagePlaceholderSingle}/>
 					
 						<View style={styles.locationNameActiveAndJoinButtonContainerCreate}>
 							
@@ -485,15 +509,17 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 					
 			</Modal>
 		)
-     
-	
-		//console.log('channelsLoaded',channelsLoaded)
-		//console.log('sortedChannels',sortedChannels)
+		
+	if (dataLoaded === true) {
 		return (
 			<Modal visible={multipleModalDisplay} transparent={true}>
 				<View style={styles.multipleLocationModal}>
 					<View style={styles.multiLocationModalHeader}>
-						<View style={styles.locationImagePlaceholderMulti}/>
+						
+						{
+
+							<Image source={{uri: pinPicURL}} style={styles.locationImagePlaceholderSingle}/>
+						}
 						
 						<View style={styles.locationNameActiveAndJoinButtonContainer2}>
 							<Text style={styles.locationNameModal}>
@@ -565,7 +591,7 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 	
 							<Pressable disabled={joinEnable} style={[{ backgroundColor: isPressed ? 'white' : 'black' }, styles.multiCheckInButton ]} 
 							onPress={() => {setIsPressed(!isPressed); setChannelStatus(!channelStatus); {channelStatus ? navigation.navigate('MakeAPost', {selectedChannelID: selectedChannelID}) : setMultipleModalDisplay(false)}; setMultipleModalDisplay(false)
-							{viewCheck ? navigation.navigate('PostsFeed', {selectedChannelID: selectedChannelID}) : null}
+							{viewCheck ? navigation.navigate('PostsFeed', {selectedChannelID: selectedChannelID}) : navigation.navigate('MakeAPost', {selectedChannelID: selectedChannelID})}
 							}}>
 							{viewCheck ? 
 							
@@ -593,6 +619,8 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 				</View>	
 			</Modal>
 		)
+	}
+		
 	
 	
 }

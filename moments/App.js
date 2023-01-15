@@ -78,7 +78,7 @@ function App () {
 		.set({
 			Username: signUpUsername, 
             Name: signUpName, 
-            ProfilePic: '/ProfilePics/16a2066d261a38a5ba3bff2e101acb93.jpg',
+            ProfilePic: '',
             CurrentChannel: 0,
 			ChannelJoined: null,
 			LastPosted: null,
