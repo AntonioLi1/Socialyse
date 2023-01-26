@@ -2,14 +2,11 @@ import React, { useState } from 'react';
 import { View, Text, Pressable, Modal } from 'react-native';
 import styles from './styles';
 import IIcon from 'react-native-vector-icons/Ionicons'
-import MIIcon from 'react-native-vector-icons/MaterialIcons';
-import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import ADIcon from 'react-native-vector-icons/AntDesign'
 import { TextInput } from 'react-native-gesture-handler';
-import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
+import { scale } from 'react-native-size-matters';
 
 
-function CaptionModal({captionModal, setCaptionModal, setCaption, setAddedCaption, showFooter, setShowFooter}) {
+function CaptionModal({captionModal, setCaptionModal, caption, setCaption, setAddedCaption, setShowFooter}) {
     const [inputCount, setInputCount] = useState(0); 
     const [input, setInput] = useState(null);
     return (
@@ -26,7 +23,7 @@ function CaptionModal({captionModal, setCaptionModal, setCaption, setAddedCaptio
                         
                 </View>
               
-                <TextInput style={styles.captionModalPlaceholder} placeholder="caption..." autoFocus={true}
+                <TextInput style={styles.captionModalPlaceholder} defaultValue={caption} placeholder={caption} autoFocus={true}
                 onChangeText={(text) => {setInputCount(text.length); setInput(text)}} maxLength={100} multiline={true}
                 />
 
@@ -42,11 +39,3 @@ function CaptionModal({captionModal, setCaptionModal, setCaption, setAddedCaptio
 }
 
 export default CaptionModal;
-/*
-<View style={styles.inputRemainingAndSendContainer}>
-                    <Text style={styles.inputRemaining}>
-                        {inputCount}/150
-                    </Text>
-                    
-                </View>
-*/

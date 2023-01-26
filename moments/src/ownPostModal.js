@@ -1,15 +1,12 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View, Image, Text, Pressable, FlatList, Modal, Dimensions, ImageBackground, TextComponent } from 'react-native';
+import { View, Text, Pressable, FlatList, Modal, Dimensions, ImageBackground } from 'react-native';
 import styles from './styles';
 import IIcon from 'react-native-vector-icons/Ionicons';
-import MIIcon from 'react-native-vector-icons/MaterialIcons';
-import ADIcon from 'react-native-vector-icons/AntDesign';
-import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import PostModal from './postModal';
-import { ScrollView } from 'react-native-gesture-handler';
-import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
+import { scale } from 'react-native-size-matters';
 import firestore from '@react-native-firebase/firestore';
 import { LoggedInContext } from '../App';
+import { useNavigation } from '@react-navigation/native';
+
 
 async function ViewOwnPosts(uid) {
     
@@ -19,17 +16,16 @@ async function ViewOwnPosts(uid) {
 
     function subtractHours(numOfHours, date = new Date()) {
         date.setHours(date.getHours() - numOfHours);
-      
         return date;
     }
 
     let test = subtractHours(1, start)
 
     const querySnapshot = await firestore()
-    .collection('Users')
+    .collection('Users') 
     .doc(uid)
     .collection('UserPosts')
-    .where('TimeUploaded', '>', test )
+    .where('TimeUploaded', '>', test ) 
     .orderBy('TimeUploaded', 'desc')
     .get()
 
@@ -45,24 +41,20 @@ async function ViewOwnPosts(uid) {
         const docID = snapshot.id
         const likeCountQuerySnapshot = await firestore()
         .collection('PostLikes').doc(docID).get()
-        
-        //console.log('likeCountQuerySnapshot', likeCountQuerySnapshot)
+        //console.log('likecount', likeCountQuerySnapshot.data().LikeCount)
+
         obj.ImageURL = snapshot.data().ImageURL
         obj.Caption = snapshot.data().Caption
         obj.PostID = snapshot.data().PostID
         obj.LikeCount = likeCountQuerySnapshot.data().LikeCount
         ownPostsArray.push(obj)
     }
-    //console.log('ownPostsArray',ownPostsArray)
     return ownPostsArray;
 }
 
 async function DeletePost(UserID, PostID, selectedChannelID) {
 
     // Delete from channel posts, user posts and posts liked
-    console.log('selectedChannelID', selectedChannelID)
-    console.log('PostID',PostID)
-    console.log('UserID', UserID)
     await firestore()
     .collection('Channels')
     .doc(selectedChannelID) 
@@ -82,15 +74,66 @@ async function DeletePost(UserID, PostID, selectedChannelID) {
     });
 }
 
+async function ChangeTimeForUserPosts(UserID) {
+    const usersPosts = await firestore().collection('Users').doc(UserID).collection('UserPosts').get()
+ 
+ 
+    const batch = firestore().batch()
+ 
+ 
+    usersPosts.forEach(docSnapshot => {
+        batch.update(docSnapshot.ref, {
+            TimeUploaded: 0
+        })
+    })
+    return batch.commit()
+ }
+ 
+
 function OwnPosts({ownPost, setOwnPost, selectedChannelID}) { 
-    const width = Dimensions.get('window').width
+    const navigation = useNavigation()
 
     const [ownPosts, setOwnPosts] = useState()
     const [dataLoaded, setDataLoaded] = useState(false)
-    const [deletedPost, setDeletePost] = useState(false)
-    //const [selectedOwnPostIndex, setSelectedOwnPostIndex] = useState()
 
-    const {user} = useContext(LoggedInContext)
+    const {user, selectedChannelId, selectedPinId} = useContext(LoggedInContext)
+
+    async function LeaveChannel(UserID, selectedChannelId) {
+        //update users own details
+        await firestore()
+            .collection('Users')
+            .doc(UserID)
+            .update({
+                CurrentChannel: 0,
+                ChannelJoined: 0,
+            });
+
+        // change time for userPosts
+        await ChangeTimeForUserPosts(UserID)
+
+        // reduce channel users count by one in the pin
+        let channelUsersCount;
+        await firestore()
+            .collection('Pins')
+            .doc(selectedPinId)
+            .collection('Channels')
+            .doc(selectedChannelId)
+            .get()
+            .then(docSnapshot => {
+                channelUsersCount = docSnapshot.data().ActiveUsers;
+            })
+        channelUsersCount -= 1;
+
+        await firestore()
+            .collection('Pins')
+            .doc(selectedPinId)
+            .collection('Channels')
+            .doc(selectedChannelId)
+            .update({
+                ActiveUsers: channelUsersCount
+            })
+
+    }
 
     async function getData() {
         const data = await ViewOwnPosts(user.uid)
@@ -100,33 +143,29 @@ function OwnPosts({ownPost, setOwnPost, selectedChannelID}) {
  
     useEffect(() => {
         getData()
-        //console.log(ownPosts) 
     },[])  
 
-    // useEffect(() => {
-    //     setDataLoaded(false)
-    //     //console.log('deletedPost', deletedPost)
-    //     //console.log('selectedOwnPostIndex', selectedOwnPostIndex)
-    //     if (deletedPost == true && selectedOwnPostIndex >= 0) {
-    //         let temp = ownPosts;
-    //         temp.splice(selectedOwnPostIndex, 1) 
-    //         setOwnPosts(temp)
-    //         console.log('ownposts new',ownPosts)
-    //         setDeletePost(false) 
-    //         console.log('deletepost', deletedPost)
-    //         setDataLoaded(true)
-    //         //setOwnPosts(ownPost.filter(item => ))
-    //     }
-    // }, [deletedPost])
+    const callback = ()=>{
+        navigation.navigate('MakeAPost')
+	};
+
+    async function LeaveChannelMakeAPost() {
+        await LeaveChannel(user.uid, selectedChannelId)
+        callback()
+    }
 
     // if the ownposts becomes empty, close the modal using useeffect
     useEffect(() => { 
         if (ownPosts) {
             if (ownPosts.length == 0) {
                 setOwnPost(false) 
+                LeaveChannelMakeAPost()
+                //LeaveChannel(user.uid, selectedChannelId)
             }
         }
     }, [ownPosts, ownPost])
+
+    
 
     function updateOwnPosts(itemID) {
         let temp = [...ownPosts]
@@ -156,10 +195,10 @@ function OwnPosts({ownPost, setOwnPost, selectedChannelID}) {
                                         />  
                                     </ImageBackground>
                                     
-                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: '1%'}}>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: '1%', alignItems: 'center'}}>
                                         <View style={{flexDirection: 'row', alignItems: 'center', flex: 1}}>
                                             <View style={{flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-start'}}>
-                                                <IIcon name='ios-heart' color='white' size={scale(14)}
+                                                <IIcon name='ios-heart' color='red' size={scale(14)}
                                                 />
                                                 <Text style={styles.ownPostLikeCount}>
                                                     {item.LikeCount}
@@ -188,17 +227,6 @@ function OwnPosts({ownPost, setOwnPost, selectedChannelID}) {
                         }}
                         >  
                     </FlatList>
-                    {/* <View>
-                        <View style={styles.ownPostModalPlaceHolder}>
-                            <IIcon style={{marginLeft: '2%', marginTop: '2%' }} name="ios-close-outline" size={scale(32)} color='white'
-                            onPress={() => {setOwnPost(false)}}
-                            />
-                        </View>
-                        
-                        <Text style={styles.postModalCaption}>
-                            hello world
-                        </Text>
-                    </View> */}
                 </View>
             </View>
                 
@@ -208,62 +236,3 @@ function OwnPosts({ownPost, setOwnPost, selectedChannelID}) {
 }
 
 export default OwnPosts;
-
-/*
-                    <View style={{backgroundColor: 'blue', flex: 10}}>
-                            <IIcon style={{marginLeft: '2%', marginTop: '2%' }} name="ios-close-outline" size={32} color='white'
-                            onPress={() => {setOwnPost(false)}}
-                            />
-                        </View>
-                        <View style={{justifyContent: 'space-evenly', flex: 1, marginTop: '1%'}}>
-                            <Text style={{color: 'white', alignSelf: 'flex-start', fontSize: 14, marginLeft: '5%', flexWrap: 'wrap'}}>
-                                hello world
-                            </Text>
-                            <View style={{alignSelf: 'flex-end', flexDirection: 'row', alignItems: 'center', marginBottom: '1%', marginRight: '3%'}}>
-                                <IIcon name='ios-heart' color='white'/>
-                                <Text style={{fontSize: 12, color: 'white'}}>
-                                    2
-                                </Text>
-                            </View>
-                        <View style={styles.postModalBottomBorder}/>   
-                    </View>
-
-                    
-
-                
-
-                
-                <ScrollView >
-                    {data.map((datas) => {
-                        <View style={{backgroundColor: 'grey', width: '100%'}}>
-                            <IIcon name="ios-close-outline" size={32} color='white'
-                            onPress={() => {setOwnPost(false)}}
-                            />
-                            <Text>
-                                {datas.caption}
-                            </Text>
-
-                        </View>
-                    })}
-                </ScrollView>
-
-                <FlatList
-                contentContainerStyle={{width: '100%'}}
-                horizontal={true}
-                data={data} 
-                renderItem={({item, index}) => {
-                    return(
-                        <View style={{backgroundColor: 'grey', width: '100%'}}>
-                            <IIcon name="ios-close-outline" size={32} color='white'
-                            onPress={() => {setOwnPost(false)}}
-                            />
-                            <Text>
-                                {item.caption}
-                            </Text>
-
-                        </View>
-                    );
-                }}
-                >  
-                </FlatList>
-*/

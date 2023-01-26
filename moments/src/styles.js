@@ -2,7 +2,6 @@ import { StyleSheet, Dimensions } from 'react-native';
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import { scale, ScaledSheet } from 'react-native-size-matters';
 
-
 const screenWidth = Dimensions.get("window").width
 const screenHeight = Dimensions.get("window").height
 
@@ -19,18 +18,19 @@ const styles = ScaledSheet.create({
 		zIndex: 0,
 	},
 	messageIconContainer: {
-		position: 'absolute',
+		//position: 'absolute',
 		// marginTop: screenHeight * 0.88,
 		// marginRight: screenWidth * 0.82,
 		// left: '15@s',
 		// bottom: '40@s',
 		//alignSelf: 'flex-end'
-		bottom: screenHeight * 0.06,
-		left: screenWidth * 0.05
+		//bottom: screenHeight * 0.06,
+		//left: screenWidth * 0.05,
+		//backgroundColor: 'green'
 	},
 	messageButton: {
-		width: '50@s',
-		height: '50@s',
+		width: '60@s',
+		height: '60@s',
 		//width: '60@s',
 		//height: '60@s',
 		justifyContent: 'center',
@@ -67,8 +67,19 @@ const styles = ScaledSheet.create({
 		alignSelf: 'flex-end',
 		top: 0
 	},
+	messageCountContainerFeedNew: {
+		backgroundColor: 'black',
+		width: '15@s',
+		height: '15@s', 
+		borderRadius: 100,
+		justifyContent: 'center',
+		alignItems: 'center',
+		position: 'absolute',
+		alignSelf: 'flex-end',
+		top: 0
+	},
 	messageIcon: {
-		color: 'white',
+		//color: 'white',
 		justifyContent: 'center',
 	},
 	messageIcon2: {
@@ -107,13 +118,14 @@ const styles = ScaledSheet.create({
 		elevation: 10,
 	},
 	newConnectionsContainer: {
-		height: screenHeight * 0.2,
+		height: screenHeight * 0.18,
 		marginTop: screenHeight * 0.015,
 		borderTopColor: 'white',
 		borderTopWidth: 1,
 		borderBottomColor: 'white',
 		borderBottomWidth: 1,
-		width: screenWidth * 0.95
+		width: screenWidth * 0.95,
+		//paddingBottom: screenHeight * 0.02
 	},
 	newFriendsText: {
 		color: 'white', 
@@ -121,28 +133,32 @@ const styles = ScaledSheet.create({
 		marginLeft: '3%', 
 		fontStyle: 'italic', 
 		fontWeight: '700',
-		fontSize: RFValue(16)
+		//fontSize: RFValue(16)
+		fontSize: screenHeight * 0.026,
+		fontFamily: 'Helvetica'
 	},
 	newConnectionProfile: {
 		marginTop: screenHeight * 0.01,
 		marginLeft: screenHeight * 0.005,
 		marginRight: screenHeight * 0.005,
-		
-		height: '80%',
+		height: '100%',
 		width: (screenWidth/5),
-		justifyContent: 'space-between',
-		alignItems: 'center'
+		//justifyContent: 'space-between',
+		alignItems: 'center',
+		//backgroundColor: 'green'
 	},
 	newConnectionProfilePic: {
 		width: '60@s',
 		height: '60@s',
 		borderRadius: 100,
 		backgroundColor: '#F2F2F2',
-		marginTop: screenHeight * 0.015
+		marginTop: screenHeight * 0.005
 	},
 	newConnectionUsername: {
 		color: 'white',
-		fontSize: RFValue(12)
+		//fontSize: RFValue(12),
+		fontSize: screenHeight * 0.018,
+
 	},
 	messagesText: {
 		color: 'white', 
@@ -152,7 +168,11 @@ const styles = ScaledSheet.create({
 		marginLeft: '5.5%',
 		fontStyle: 'italic', 
 		fontWeight: '700',
-		fontSize: RFValue(16)
+		//fontSize: RFValue(16)
+		fontSize: screenHeight * 0.026,
+		fontFamily: 'Helvetica'
+
+
 	},
 	allDmsContainer: {
 		flex: 1, 
@@ -166,7 +186,8 @@ const styles = ScaledSheet.create({
 		height: screenHeight * 0.1,
 		width: screenWidth,
 		alignItems: 'center',
-		//backgroundColor: 'red'
+		//backgroundColor: 'red',
+		marginTop: '1%'
 	},
 	messagesProfilePic: {
 		marginLeft: screenHeight * 0.005,
@@ -180,14 +201,14 @@ const styles = ScaledSheet.create({
 		//backgroundColor: 'grey'
 	},
 	username: {
-		fontWeight: '400',
-		fontSize: RFValue(14),
+		fontWeight: '800',
+		fontSize: screenHeight * 0.022,
 		color: 'white',
 		fontStyle: 'italic'
 	},
 	usernameUnread: {
 		fontWeight: '800',
-		fontSize: RFValue(15),
+		fontSize: screenHeight * 0.024,
 		color: 'white',
 		fontStyle: 'italic'
 	},
@@ -198,23 +219,25 @@ const styles = ScaledSheet.create({
 		
 	},
 	lastMessage: {
-		fontSize: RFValue(9.5),
-		color: 'white',
+		fontSize: screenHeight * 0.015,
+		color: '#AAAAAA',
+		fontWeight: '500',
+
 	},
 	lastMessageUnread: {
-		fontSize: RFValue(9.5),
+		fontSize: screenHeight * 0.016,
 		color: 'white',
 		fontWeight: '800'
 	},
 	notificationContainerMap: {
 		position: 'absolute',
 		alignItems: 'flex-end',
-		top: screenHeight * 0.03,
+		top: screenHeight * 0.05,
 		right: screenWidth * 0.05
 	},
 	notificationButton: {
-		width: '50@s',
-		height: '50@s',
+		width: '60@s',
+		height: '60@s',
 		justifyContent: 'center',
 		alignItems: 'center',
 		borderRadius: 100,
@@ -249,9 +272,26 @@ const styles = ScaledSheet.create({
 		top: 0,
 		alignSelf: 'flex-end'
 	},
+	notificationCountContainerNew: {
+		backgroundColor: 'black',
+		width: '15@s',
+		height: '15@s', 
+		borderRadius: 100,
+		justifyContent: 'center',
+		alignItems: 'center',
+		position: 'absolute',
+		top: 0,
+		alignSelf: 'flex-end'
+	},
 	notifCountText: {
-		fontSize: RFValue(9), 
+		//fontSize: RFValue(9), 
+		fontSize: screenHeight * 0.014,
 		color: 'black'
+	},
+	notifCountTextNew: {
+		//fontSize: RFValue(8), 
+		fontSize: screenHeight * 0.014,
+		color: 'white'
 	},
 	mapPinContaner: {
 		position: 'absolute',
@@ -275,8 +315,8 @@ const styles = ScaledSheet.create({
 		elevation: 10,
 	},
 	createPinButton: {
-		width: '50@s',
-		height: '50@s',
+		width: '60@s',
+		height: '60@s',
 		justifyContent: 'center',
 		alignItems: 'center',
 		borderRadius: 100,
@@ -289,10 +329,10 @@ const styles = ScaledSheet.create({
 		shadowOpacity: 0.34,
 		shadowRadius: 6.27,
 		elevation: 10,
-		position: 'absolute',
+		//position: 'absolute',
 		//marginTop: screenHeight * 0.88,
-		bottom: screenHeight * 0.06,
-		right: screenWidth * 0.05
+		//bottom: screenHeight * 0.06,
+		//right: screenWidth * 0.05
 		//marginLeft: screenWidth * 0.82,
 		
 	},
@@ -324,7 +364,6 @@ const styles = ScaledSheet.create({
 		backgroundColor: '#96B9FE',
 		width: screenWidth * 0.96,
 		alignSelf: 'center',
-		//marginTop: screenHeight,
 		borderRadius: 10,
 		shadowColor: "#000",
 		shadowOffset: {
@@ -336,17 +375,45 @@ const styles = ScaledSheet.create({
 		elevation: 10,
 		alignItems:'center',
 		flexDirection: 'row',
-		justifyContent: 'space-evenly',
+		//justifyContent: 'center',
+		height: screenHeight * 0.15,
+	},
+	createChannelModalNoPic: {
+		backgroundColor: '#96B9FE',
+		width: screenWidth * 0.96,
+		alignSelf: 'center',
+		borderRadius: 10,
+		shadowColor: "#000",
+		shadowOffset: {
+			width: 0,
+			height: 5,
+		},
+		shadowOpacity: 0.34,
+		shadowRadius: 6.27,
+		elevation: 10,
+		alignItems:'center',
+		flexDirection: 'row',
+		justifyContent: 'center',
 		height: '15%',
-		marginTop: screenHeight * 0.5
 	},
 	locationImagePlaceholderSingle: {
-		//backgroundColor: 'grey',
-		//width: '35%',
-		//height: '80%',
-		height: '80@s',
-		width: '120@s',
+		backgroundColor: 'grey',
+		width: '35%',
+		height: '80%',
+		// height: '80@s',
+		// width: '120@s',
 		borderRadius: 10,
+		position: 'absolute',
+		left: '3%'
+	},
+	locationImagePlaceholderSingleCreateChannel: {
+		backgroundColor: 'blue',
+		width: '35%',
+		height: '100%',
+		// height: '80@s',
+		// width: '120@s',
+		borderRadius: 10,
+		marginLeft: '3%'
 	},
 	locationNameActiveAndJoinButtonContainer: {
 		height: '80%',
@@ -357,17 +424,43 @@ const styles = ScaledSheet.create({
 		width: '60%'
 	},
 	locationNameActiveAndJoinButtonContainerCreate: {
-		height: '80%',
+		height: '100%',
 		//backgroundColor: 'red',
 		flexDirection: 'column',
-		justifyContent: 'space-evenly',
+		justifyContent: 'center',
 		//alignItems: 'center',
-		width: '40%'
+		width: '50%'
+	},
+	locationNameActiveAndJoinButtonContainerCreateNoPic: {
+		height: '100%',
+		//backgroundColor: 'red',
+		flexDirection: 'column',
+		justifyContent: 'center',
+		//alignItems: 'center',
+		width: '50%',
+		marginLeft: '3%'
 	},
 	locationModalClose: {
 		color: 'black',
 		alignSelf: 'flex-start',
-		
+		//position: 'absolute',
+		position: 'absolute',
+		right: '3%',
+		top: '5%'
+	},
+	locationModalCloseNoPic: {
+		color: 'black',
+		alignSelf: 'flex-start',
+		position: 'absolute',
+		right: '3%',
+		top: '5%'
+	},
+	createChannelModalClose: {
+		color: 'black',
+		position: 'absolute',
+		alignSelf: 'flex-start',
+		right: '3%'
+
 	},
 	createPinModalClose: {
 		color: 'black',
@@ -378,7 +471,7 @@ const styles = ScaledSheet.create({
 	},
 	createPinModal: {
 		backgroundColor: '#96B9FE',
-		width: screenWidth * 0.96,
+		width: screenWidth * 0.8,
 		alignSelf: 'center',
 		//marginTop: screenHeight,
 		borderRadius: 10,
@@ -393,8 +486,9 @@ const styles = ScaledSheet.create({
 		alignItems:'center',
 		flexDirection: 'row',
 		justifyContent: 'center',
-		height: '15%',
-		marginTop: screenHeight * 0.5
+		height: screenHeight * 0.15,
+		//marginBottom: screenHeight * 0.2,
+		
 	},
 	checkInButton: {
 		height: '25%',
@@ -420,7 +514,9 @@ const styles = ScaledSheet.create({
 	},
 	checkedInText: {
 		//color: 'white',
-		fontSize: RFValue(12)
+		fontFamily: 'Helvetica',
+		fontSize: screenHeight * 0.018,
+
 	},
 	createChannelText: {
 		color: 'white',
@@ -428,11 +524,34 @@ const styles = ScaledSheet.create({
 	},
 	locationNameModal: {
 		color: 'black',
+		//fontSize: RFValue(18),
+		fontSize: screenHeight * 0.028,
+		fontWeight: '600',
+		//alignSelf: 'flex-start',
+		position: 'absolute',
+		top: 0,
+		fontFamily: 'Helvetica'
+
+	}, 
+	locationNameModalCreateChannel: {
+		color: 'black',
 		fontSize: RFValue(16),
 		fontWeight: '600',
-		alignSelf: 'flex-start',
+		alignSelf: 'center',
 		position: 'absolute',
-		top: 0
+		top: 0,
+		fontFamily: 'Helvetica'
+
+	}, 
+	locationNameModalNoPic: {
+		color: 'black',
+		//fontSize: RFValue(18),
+		fontSize: screenHeight * 0.028,
+		fontWeight: '600',
+		alignSelf: 'center',
+		position: 'absolute',
+		top: '10%',
+		fontFamily: 'Helvetica'
 	}, 
 	locationModalActive: {
 		color: 'black', 
@@ -626,7 +745,7 @@ const styles = ScaledSheet.create({
 	},
 	notifInnerHeaderContainer: {
 		backgroundColor: 'white',
-		height: '70%',
+		height: '80%',
 		width: '95%',
 		flexDirection: 'row',
 		justifyContent: 'center',
@@ -635,30 +754,37 @@ const styles = ScaledSheet.create({
 	},
 	notifBackButton: {
 		transform: [{rotateY: '180deg'}],
-		right: '220%'
+		position: 'absolute',
+		left: '5%'
+		//right: '220%'
 	},
 	notificationsList: {
 		marginTop: screenHeight * 0.015,
+		//backgroundColor: 'green',
+		flex: 1
 		
 	},
 	notifMessage: {
 		marginLeft: '10%', 
 		marginTop: '2%',
 		marginBottom: '2%',
-		fontSize: RFValue(13.5),
+		fontSize: screenHeight * 0.022,
 		width: '50%',
 		color: 'white',
+		fontFamily: 'Helvetica'
 	},
 	notifTime: {
 		marginRight: '10%', 
-		fontSize: RFValue(11),
-		color: 'white'
+		fontSize: screenHeight * 0.018,
+		color: 'white',
+		fontFamily: 'Helvetica'
+
 	},
 	notifProfile: {
 		width: '45@s',
 		height: '45@s',
 		borderRadius: 100,
-		backgroundColor: 'grey',
+		//backgroundColor: 'grey',
 		//flexDirection: 'row',
 		//justifyContent: 'center',
 		//alignItems: 'center',
@@ -697,9 +823,10 @@ const styles = ScaledSheet.create({
 		alignItems: 'center'
 	},
 	captionDone: {
-		
+		fontFamily: 'Helvetica',
 		marginRight: '3%',
-		fontSize: RFValue(16),
+		//fontSize: RFValue(16),
+		fontSize: screenHeight * 0.026,
 		fontWeight: '600',
 		color: 'black'
 	},
@@ -709,7 +836,10 @@ const styles = ScaledSheet.create({
 		alignSelf: 'flex-end',
 		marginRight: '5%',
 		marginBottom: '2%',
-		fontSize: RFValue(12)
+		//fontSize: RFValue(12)
+		fontSize: screenHeight * 0.018,
+		fontFamily: 'Helvetica'
+
 	},
 	profileScreen: {
 		height: screenHeight,
@@ -719,9 +849,11 @@ const styles = ScaledSheet.create({
 		backgroundColor: 'black'
 	},
 	profilePageFooter: {
-		flex: 1,
+		//flex: 1,
+		height: screenHeight * 0.25,
 		width: screenWidth,
 		flexDirection: 'column',
+		//backgroundColor: 'red',
 		
 		justifyContent: 'space-between'
 	},
@@ -735,8 +867,9 @@ const styles = ScaledSheet.create({
 	},
 	logOutText: {
 		color: 'red', 
-		fontSize: RFValue(12),
-		fontWeight: '600'
+		fontSize: RFValue(14),
+		fontWeight: '600',
+		fontFamily: 'Helvetica'
 	},
 	profilePageDPContainer: {
 		height: screenHeight * 0.55,
@@ -759,28 +892,40 @@ const styles = ScaledSheet.create({
 		marginBottom: '5%'
 	},
 	profilePageName: {
-		
-		fontSize: RFValue(26),
+		//fontSize: RFValue(17),
+		fontSize: screenHeight * 0.03,
 		color: 'white',
 		fontWeight: 'bold',
-		fontStyle: 'italic'
+		fontStyle: 'italic',
+		//backgroundColor: 'green',
+		fontFamily: 'Helvetica'
 	},
 	profilePageUsername: {
-		
-		fontSize: RFValue(17),
+		//fontSize: RFValue(26),
+		fontSize: screenHeight * 0.04,
 		color: 'white',
 		fontWeight: 'bold',
-		fontStyle: 'italic'
+		fontStyle: 'italic',
+		//backgroundColor: 'red',
+		fontFamily: 'Helvetica'
+		
 	},
 	profilePageSettings: {
 		marginTop: '2%',
 		marginRight: screenWidth * 0.05
 	},
 	socialyseCounter: {
-		fontSize: RFValue(17.5), 
+		//fontSize: RFValue(17.5), 
+		fontSize: screenHeight * 0.03,
 		color: '#BAD0FB', 
 		fontWeight: '700', 
-		fontStyle: 'italic'
+		fontStyle: 'italic',
+		fontFamily: 'Epilogue-Regular',
+		//fontFamily: 'Helvetica',
+		//backgroundColor: 'grey',
+		//height: '100%',
+		
+
 	},
 	profilePageUsernameNameSettingsContainer: {
 		marginTop: screenHeight * 0.03,
@@ -790,13 +935,21 @@ const styles = ScaledSheet.create({
 		borderTopWidth: 1,
 		alignItems: 'center',
 		justifyContent: 'space-between',
-		//backgroundColor: 'green'
+		//backgroundColor: 'red',
+		height: screenHeight * 0.1
 	},
 	usernameAndNameContainer: {
 		marginLeft: screenWidth * 0.05,
+		//backgroundColor: 'grey',
+		flex: 1,
+		marginRight: screenWidth * 0.05
 	},
 	settingsIcon: {
-		marginRight: screenWidth * 0.05
+		//position: 'absolute',
+		//right: 10,
+		marginRight: screenWidth * 0.05,
+		alignSelf: 'center'
+		//marginRight: screenWidth * 0.05
 	},
 	activeNowProfilePlaceHolder: {
 		height: screenHeight * 0.25,
@@ -891,11 +1044,13 @@ const styles = ScaledSheet.create({
 	},
 	takeAPhotoText: {
 		fontWeight: '900',
-		fontSize: RFValue(28),
+		//fontSize: RFValue(28),
+		fontSize: screenHeight * 0.04,
 		color: 'white',
 		fontStyle: 'italic',
 		marginTop: screenHeight * 0.05, 
-		textAlign: 'center'
+		textAlign: 'center',
+		fontFamily: 'Helvetica',
 	},
 	socialTextWhite20: {
 		fontSize: 20,
@@ -913,10 +1068,12 @@ const styles = ScaledSheet.create({
 		color: '#AD00FF'
 	},
 	socialTextWhite30: {
-		fontSize: RFValue(28),
-		fontStyle: 'italic',
+		//fontSize: RFValue(28),
+		fontSize: screenHeight * 0.04,
+		//fontStyle: 'italic',
 		color: 'white',
 		fontWeight: '900',
+		fontFamily: 'Epilogue-Regular',
 	},
 	timeRemaining: {
 		fontSize: RFValue(10), 
@@ -925,14 +1082,19 @@ const styles = ScaledSheet.create({
 		bottom: '0%'
 	},
 	postCaption: {
-		fontSize: RFValue(10.5), 
+		//fontSize: RFValue(11), 
+		fontSize: screenHeight * 0.018,
 		marginHorizontal: '2%',
-		color: 'black'
+		color: 'black',
+		fontFamily: 'Epilogue-Regular',
+		marginTop: '2%'
+
 	},
 	postModalCaption: {
 		color: 'white', 
 		//alignSelf: 'flex-start', 
-		fontSize: RFValue(12.5), 
+		//fontSize: RFValue(13), 
+		fontSize: screenHeight * 0.02,
 		marginLeft: '5%',
 		flexWrap: 'wrap',
 		//marginTop: '3%',
@@ -957,7 +1119,7 @@ const styles = ScaledSheet.create({
 	},
 	
 	happySocialysingLoadingScreen: {
-		height: screenHeight * 0.99,
+		height: screenHeight,
 		width: screenWidth,
 		backgroundColor: '#96B9FE',
 		
@@ -979,7 +1141,8 @@ const styles = ScaledSheet.create({
 		fontStyle: 'italic',
 		color: 'black',
 		fontWeight: '700',
-		marginRight: 4
+		marginRight: 4,
+		fontFamily: 'Helvetica'
 	},
 	yourPostTextWhite: {
 		fontSize: RFValue(28),
@@ -987,6 +1150,7 @@ const styles = ScaledSheet.create({
 		fontStyle: 'italic',
 		color: 'white',
 		fontWeight: '700',
+		fontFamily: 'Helvetica'
 	},
 	cameraContaner: {
 		marginTop: screenHeight * 0.05,
@@ -1057,11 +1221,14 @@ const styles = ScaledSheet.create({
 	},
 	addACaptionPlaceHolder: {
 		fontStyle: 'italic',
-		fontSize: RFValue(16),
+		//fontSize: RFValue(16),
+		fontSize: screenHeight * 0.026,
 		paddingTop: 0,
 		paddingBottom: 0,
 		color: 'white',
-		marginLeft: '1%'
+		marginLeft: '1%',
+		fontFamily: 'Epilogue-Regular',
+
 	},
 	sendPhotoButton: {
 		backgroundColor: 'black',
@@ -1088,6 +1255,9 @@ const styles = ScaledSheet.create({
 	},
 	captionModalPlaceholder: {
 		marginLeft: '3%',
+		fontSize: screenHeight * 0.022,
+		fontFamily: 'Helvetica'
+
 		
 	},
 	captionModalHeader: {
@@ -1100,31 +1270,37 @@ const styles = ScaledSheet.create({
 		borderBottomWidth: 0.7,
 		width: screenWidth,
 		flex: 1,
-		
+		paddingVertical: '2%',
 		alignItems: 'center',
+		//backgroundColor: 'red'
 		
 	},
 	postsFeedHeaderBackButton: {
 		transform: [{rotateY: '180deg'}],
-		marginLeft: '3%'
+		left: '3%',
+		position: 'absolute'
 	},
 	notificationContainerPostsFeed: {
 		alignItems: 'flex-end',
-		marginRight: '3%'
+		right: '3%',
+		position: 'absolute'
 	},
 	postsFeedFooter: {
 		width: '100%',
 		flex: 1,
+		//flex: 0.8,
 		justifyContent: 'space-between',
 		flexDirection: 'row',
 		alignItems: 'center',
 		borderTopColor: '#383838',
-		borderTopWidth: 0.7
+		borderTopWidth: 0.7,
+		//backgroundColor: 'green',
+		paddingVertical: '2%'
 
 	},
 	messageButtonPostsFeed: {
-		width: '45@s',
-		height: '45@s',
+		width: '55@s',
+		height: '55@s',
 		justifyContent: 'center',
 		alignItems: 'center',
 		borderRadius: 100,
@@ -1140,8 +1316,8 @@ const styles = ScaledSheet.create({
 		marginLeft: '5%'
 	},
 	ownPostsButton: {
-		width: '45@s',
-		height: '45@s',
+		width: '55@s',
+		height: '55@s',
 		justifyContent: 'center',
 		alignItems: 'center',
 		borderRadius: 100,
@@ -1158,28 +1334,37 @@ const styles = ScaledSheet.create({
 		
 	},
 	messagesHeader: {
-		height: screenHeight * 0.07,
+		height: screenHeight * 0.1,
 		width: screenWidth,
 		backgroundColor: 'black',
-		justifyContent: 'center',
 		borderBottomColor: 'white',
 		borderBottomWidth: 1,
+		//backgroundColor: 'aqua',
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center',
+		paddingHorizontal: screenHeight * 0.02,
+		marginTop: screenHeight * 0.04
+		
 	},
 	messagesHeaderUsername: {
 		color: 'white',
-		fontSize: RFValue(17.5),
-		fontWeight: '900',
-		marginLeft: '2%'
+		fontSize: screenHeight * 0.022,
+		fontWeight: '400',
+		//marginLeft: screenWidth * 0.03,
+		//marginTop: screenHeight * 0.03
+		//backgroundColor: 'green'
 	},
 	messagesBackButton: {
-		position: 'absolute',
-		alignSelf: 'flex-end',
-		marginRight: '2%'
+		//position: 'absolute',
+		//alignSelf: 'flex-end',
+		//marginRight: screenHeight * 0.02,
+		//marginTop: screenHeight * 0.03
 	},
 	messagesScreen: {
 		flex: 1,
 		width: screenWidth,
-		backgroundColor: 'white',
+		backgroundColor: 'black',
 		alignItems: 'center'
 	},
 	messagesBody: {
@@ -1197,7 +1382,8 @@ const styles = ScaledSheet.create({
 		alignItems: 'center',
 		justifyContent: 'space-evenly',
 		borderTopColor: '#B0B0B0',
-		borderTopWidth: 0.5
+		borderTopWidth: 0.5,
+		//marginBottom: screenHeight * 0.03
 	},
 	postContainer: {
 		height: screenHeight * 0.3,
@@ -1252,40 +1438,83 @@ const styles = ScaledSheet.create({
 		alignItems: 'center'
 	},
 	signUpScreenSocialyse: {
-		
 		alignItems: 'center',
 		marginTop: screenHeight * 0.15,
-		
+		//backgroundColor: 'grey'
 	},
 	signUpInputContainer: {
-		width: screenWidth,
+		width: screenWidth * 0.8,
 		marginTop: screenHeight * 0.1,
 		alignItems: 'center',
+		backgroundColor: '#FFFFFF',
+		borderRadius: 5,
+		borderWidth: 1,
+		borderColor: '#CACACA',
+		height: screenHeight * 0.05,
+	}, 
+	loginInputContainer: {
+		width: screenWidth * 0.8,
+		marginTop: screenHeight * 0.03,
+		alignItems: 'center',
+		backgroundColor: '#FFFFFF',
+		borderRadius: 5,
+		borderWidth: 1,
+		borderColor: '#CACACA',
+		height: screenHeight * 0.05,
 	}, 
 	signUpInputContainerSignUp: {
 		width: screenWidth,
-		marginTop: screenHeight * 0.1,
+		marginTop: screenHeight * 0.02,
 		alignItems: 'center',
+		//backgroundColor: 'green',
+		//height: screenHeight * 0.5
 	}, 
-	inputs: {
+	signUpInputs: {
 		borderWidth: 1,
 		borderColor: '#CACACA',
 		marginTop: '1%',
 		width: screenWidth * 0.8,
 		backgroundColor: '#FFFFFF',
-		borderRadius: 5
+		//backgroundColor: 'red',
+		borderRadius: 5,
+		height: screenHeight * 0.05,
+		justifyContent: 'center'
+
+	},
+	signUpTextInput: {
+		fontFamily: 'Helvetica',
+		marginLeft: '3%',
+		fontSize: screenHeight * 0.02
+
+	},
+	inputs: {
+		//marginTop: '1%',
+		width: '100%',
+		height: '100%',
+		marginLeft: '3%',
+		fontSize: screenHeight * 0.02
+		//backgroundColor: 'red'
 	},
 	forgotPasswordContainer: {
 
 		width: screenWidth * 0.8,
 	},
 	signUpSocialTextYellow: {
-		fontSize: 50,
-		fontStyle: 'italic',
+		//fontSize: RFPercentage(10),
+		fontSize: screenHeight * 0.065,
+		//fontStyle: 'italic',
 		color: 'white',
 		fontWeight: '900',
-		zIndex: 1,
-		position: 'absolute'
+		fontFamily: 'Epilogue-Regular'
+	},
+	signUpMsg: {
+		fontSize: screenHeight * 0.02,
+		color: 'white',
+		fontWeight: '900',
+		fontFamily: 'Helvetica',
+		maxWidth: screenWidth * 0.6,
+		textAlign: 'center',
+		marginTop: screenHeight * 0.01
 	},
 	signUpSocialTextGradient: {
 		fontSize: 50,
@@ -1310,12 +1539,12 @@ const styles = ScaledSheet.create({
 	},
 	signUpInfo: {
 		textAlign: 'center',
-		fontSize: 15,
+		fontSize: screenHeight * 0.022,
 		fontWeight: '600',
 		maxWidth: screenWidth * 0.8
 	},
 	signUpInfoContainer: {
-		marginTop: screenHeight * 0.1
+		marginTop: screenHeight * 0.03
 	},
 	signUpButton: {
 		width: screenWidth * 0.8,
@@ -1325,14 +1554,14 @@ const styles = ScaledSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'center',
 		alignItems: 'center',
-		backgroundColor: 'white'
+		//backgroundColor: 'white'
 	},
 	loginButton: {
 		
 		width: screenWidth * 0.8,
 		height: screenHeight * 0.05,
 		marginTop: screenHeight * 0.03,
-		backgroundColor: 'white',
+		//backgroundColor: 'white',
 		borderRadius: 10,
 		flexDirection: 'row',
 		justifyContent: 'center',
@@ -1346,6 +1575,7 @@ const styles = ScaledSheet.create({
 	or: {
 		marginTop: screenHeight * 0.01,
 		fontWeight: '700',
+		fontSize: screenHeight * 0.02
 
 	},
 	ownPostModal: {
@@ -1393,6 +1623,14 @@ const styles = ScaledSheet.create({
 		justifyContent: 'center',
 		//backgroundColor: 'aqua'
 	},
+	AboutHeader: {
+		flex: 1,
+		width: screenWidth,
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'center',
+		//backgroundColor: 'aqua'
+	},
 	settingsBody: {
 		
 		flex: 10,
@@ -1413,7 +1651,7 @@ const styles = ScaledSheet.create({
 	},
 	settingsProfile: {
 		backgroundColor: '#464646',
-		height: screenHeight * 0.08,
+		height: screenHeight * 0.1,
 		width: screenWidth * 0.85,
 		borderRadius: 10,
 		marginTop: screenHeight * 0.03,
@@ -1424,7 +1662,7 @@ const styles = ScaledSheet.create({
 	},
 	settingsDeleteProfile: {
 		backgroundColor: '#464646',
-		height: screenHeight * 0.08,
+		height: screenHeight * 0.1,
 		width: screenWidth * 0.85,
 		borderRadius: 10,
 		marginTop: screenHeight * 0.03,
@@ -1441,15 +1679,36 @@ const styles = ScaledSheet.create({
 		height: '70%',
 		backgroundColor: '#FFFFFF',
 		borderRadius: 100,
-		padding: 10
+		//padding: 10,
+		paddingHorizontal: '3%',
+		fontSize: screenHeight * 0.022,
+
+		//fontSize: RFValue(14),
+		//marginBottom: screenHeight * 0.03
+		//backgroundColor: 'green'
+	},
+	messageSendButton: {
+		//marginBottom: screenHeight * 0.03
 	},
 	messageLeftContainer: {
 		backgroundColor: '#292929', 
 		alignSelf: 'flex-start', 
 		borderRadius: 15, 
 		padding: '2%',
-		marginLeft: 30, 
+		marginLeft: '2%', 
 		marginTop: '1%',
+		marginBottom: '1%',
+		maxWidth: '80%',
+		minWidth: '8%'
+	},
+	messageLeftContainerNoSpace: {
+		backgroundColor: '#292929', 
+		alignSelf: 'flex-start', 
+		borderRadius: 15, 
+		padding: '2%',
+		marginLeft: '2%', 
+		//marginTop: '0.5%',
+		marginBottom: '0.5%',
 		maxWidth: '80%',
 		minWidth: '8%'
 	},
@@ -1461,15 +1720,23 @@ const styles = ScaledSheet.create({
 		borderTopLeftRadius: 15, 
 		borderTopRightRadius: 15, 
 		padding: '2%',
-		marginLeft: '1%', 
+		marginLeft: '2%', 
 		maxWidth: '80%',
 		minWidth: '8%'
 	},
 	messageOtherDP: {
-		height: scale(23), 
-		width: scale(23), 
+		height: '25@s', 
+		width: '25@s', 
 		borderRadius: 30, 
-		alignSelf:'flex-end'
+		alignSelf: 'flex-end',
+		marginLeft: '2%'
+	},
+	DMOtherDP: {
+		height: '35@s', 
+		width: '35@s', 
+		borderRadius: 30, 
+		//alignSelf: 'flex-end',
+		//marginLeft: '2%'
 	},
 	messageRightContainer: {
 		backgroundColor: '#96B9FE', 
@@ -1481,7 +1748,7 @@ const styles = ScaledSheet.create({
 		maxWidth: '80%',
 		minWidth: '8%'
 	},
-	messageRightContainerWithSpace: {
+	rightSpeech: {
 		backgroundColor: '#96B9FE', 
 		//backgroundColor: 'red',
 		alignSelf: 'flex-end', 
@@ -1491,23 +1758,24 @@ const styles = ScaledSheet.create({
 		borderTopRightRadius: 15, 
 		padding: '2%',
 		marginRight: '1%', 
-		// marginBottom: '2%',
+		marginBottom: '2%',
 		maxWidth: '80%',
 		minWidth: '8%'
 	},
 	messageText: {
-		fontSize: RFValue(12),
+		fontSize: RFValue(16),
 		color: 'white',
+		fontFamily: 'Helvetica'
 	},
 	messageTime: {
 		fontSize: RFValue(10), 
 		alignSelf: 'flex-end'
 	},
 	otherProfileBackButton: {
-		transform: [{rotateY: '180deg'}],
-		alignSelf: 'flex-start',
-		marginLeft: '5%',
-		marginTop: '35%'
+		//transform: [{rotateX: '0deg'}],
+		// alignSelf: 'flex-start',
+		// marginLeft: '5%',
+		marginTop: screenHeight * 0.15
 	},
 	dpEditModalFullScreen: {
 		height: screenHeight,
@@ -1584,7 +1852,9 @@ const styles = ScaledSheet.create({
 	},
 	editDPText: {
 		color: 'white', 
-		fontSize: RFValue(14)
+		//fontSize: RFValue(14),
+		fontSize: screenHeight * 0.022,
+		fontFamily: 'Helvetica'
 	},
 	takePhotoforDPBackground: {
 		flex: 1,
@@ -1622,13 +1892,16 @@ const styles = ScaledSheet.create({
 		marginTop: screenHeight * 0.1
 	},
 	openCameraRollText: {
-		fontSize: RFValue(12),
-		color: 'white'
+		//fontSize: RFValue(12),
+		fontSize: screenHeight * 0.018,
+		//color: 'white'
 	},
 	notificationText: {
 		color: 'black', 
-		fontSize: RFValue(17.5),
-		fontWeight: '500'
+		//fontSize: RFValue(17.5),
+		fontSize: screenHeight * 0.026,
+		fontWeight: '500',
+		fontFamily: 'Helvetica'
 	},
 	done: {
 		color: 'black', 
@@ -1638,7 +1911,9 @@ const styles = ScaledSheet.create({
 	settingsText: {
 		color: 'white',
 		fontWeight: '600',
-		fontSize: RFValue(12)
+		//fontSize: RFValue(13),
+		fontSize: screenHeight * 0.02,
+		fontFamily: 'Helvetica'
 	},
 	changePasswordBackButton: {
 		transform: [{rotateY: '180deg'}],
@@ -1668,8 +1943,10 @@ const styles = ScaledSheet.create({
 	},
 	changePasswordDoneText: {
 		marginRight: '5%',
-		
-		fontSize: RFValue(14)
+		fontSize: screenHeight * 0.022,
+		//fontSize: RFValue(14)
+		fontWeight: '600',
+		fontFamily: 'Helvetica'
 	},
 	ownPostModalPlaceHolder: {
 		height: '400@s',
@@ -1694,7 +1971,9 @@ const styles = ScaledSheet.create({
 	},
 	ownPostLikeCount: {
 		color: 'white',
-		fontSize: RFValue(12.5)
+		//fontSize: RFValue(13)
+		fontSize: screenHeight * 0.02,
+
 	},
 	somewthing2: {
 		//marginTop: '105@s',
@@ -1706,8 +1985,10 @@ const styles = ScaledSheet.create({
 	multipleLocationModal: {
 		backgroundColor: '#96B9FE',
 		width: screenWidth * 0.96,
+		height: screenHeight * 0.5,
 		alignSelf: 'center',
-		marginTop: screenHeight * 0.5,
+		bottom: 0,
+		position: 'absolute',
 		borderRadius: 10,
 		shadowColor: "#000",
 		shadowOffset: {
@@ -1717,7 +1998,6 @@ const styles = ScaledSheet.create({
 		shadowOpacity: 0.34,
 		shadowRadius: 6.27,
 		elevation: 10,
-		flex: 1,
 		flexDirection: 'column',
 	},
 	multiLocationModalHeader: {
@@ -1725,9 +2005,22 @@ const styles = ScaledSheet.create({
 		flex: 2.3, 
 		flexDirection: 'row', 
 		alignItems: 'center', 
-		justifyContent: 'space-evenly', 
+		justifyContent: 'center', 
 		borderTopRightRadius: 10, 
-		borderTopLeftRadius: 10
+		borderTopLeftRadius: 10,
+		borderBottomWidth: 1,
+		borderBottomColor: 'black'
+	},
+	multiLocationModalHeaderNoPic: {
+		//backgroundColor: 'pink', 
+		flex: 1, 
+		flexDirection: 'row', 
+		alignItems: 'center', 
+		justifyContent: 'center', 
+		borderTopRightRadius: 10, 
+		borderTopLeftRadius: 10,
+		borderBottomWidth: 1,
+		borderBottomColor: 'black'
 	},
 
 	locationImagePlaceholderMulti: {
@@ -1740,11 +2033,11 @@ const styles = ScaledSheet.create({
 		marginTop: '1%',
 	},
 	multiCheckInText: {
-		
-		fontSize: RFValue(12)
+		fontSize: screenHeight * 0.018,
+		fontFamily: 'Helvetica'
 	},
 	multiCheckInButton: {
-		height: '50%',
+		height: '70%',
 		width: '30%', 
 		//alignSelf: 'flex-end',
 		flexDirection: 'row',
@@ -1772,9 +2065,9 @@ const styles = ScaledSheet.create({
 		alignItems: 'center'
 	},
 	initialPlaceholder: {
-		height: '35@s',
-		width: '35@s',
-		backgroundColor: 'brown',
+		height: '45@s',
+		width: '45@s',
+		backgroundColor: '#96B9FE',
 		borderRadius: 100,
 		alignItems: 'center',
 		justifyContent: 'center'
@@ -1810,7 +2103,7 @@ const styles = ScaledSheet.create({
 		borderRadius: 100
 	},
 	ChangeNameAndUsernameBodyInput: {
-		//backgroundColor: 'green', 
+		//backgroundColor: 'pink', 
 		width: '100%', 
 		flex: 3,
 		
@@ -1818,9 +2111,10 @@ const styles = ScaledSheet.create({
 	inputsEditProfile: {
 		// flex: 1,
 		color: 'white',
-		// borderBottomColor: '#666666',
-		// borderBottomWidth: 0.7,
-		fontWeight: '500'
+		fontWeight: '500',
+		fontSize: screenHeight * 0.022,
+		fontFamily: 'Helvetica'
+
 	},
 	verifyPhoneNumHeader: {
 		height: screenHeight * 0.07,
@@ -1842,14 +2136,16 @@ const styles = ScaledSheet.create({
 		//backgroundColor: 'grey',
 		height: screenHeight * 0.10,
 		justifyContent: 'flex-end',
-
 	},
 	verifyPhoneNumBodyText: {
 		color: 'black', 
 		textAlign: 'center', 
 		lineHeight: '20@s',
-		fontSize: RFValue(14),
-		fontWeight: '500'
+		//fontSize: RFValue(14),
+		fontSize: screenHeight * 0.022,
+		fontWeight: '500',
+		fontFamily: 'Helvetica',
+
 	},
 	verifyPhoneNumFooter: {
 		height: screenHeight * 0.1,
@@ -1862,8 +2158,11 @@ const styles = ScaledSheet.create({
 	},
 	verificationText: {
 		color: 'black',
-		fontSize: RFValue(20),
-		fontWeight: '700'
+		//fontSize: RFValue(20),
+		fontSize: screenHeight * 0.028,
+		fontWeight: '700',
+		fontFamily: 'Helvetica',
+
 	},
   	OTPIndividualInput: {
   		height: '40@s',
@@ -1871,7 +2170,8 @@ const styles = ScaledSheet.create({
   		backgroundColor: '#DBDBDB',
   		borderRadius: 100,
   		color: 'black',
-  		fontSize: RFValue(16)
+  		//fontSize: RFValue(16)
+		fontSize: screenHeight * 0.026
   	},
   	OTPContainer: {
   		width: '80%', 
@@ -1879,7 +2179,7 @@ const styles = ScaledSheet.create({
   		//backgroundColor: 'green'
   	},
   	confirmCodeButton: {
-  		backgroundColor: '#96B9FE', 
+  		//backgroundColor: '#96B9FE', 
   		width: screenWidth * 0.3,
   		alignItems: 'center',
   		justifyContent: 'center',
@@ -1887,7 +2187,9 @@ const styles = ScaledSheet.create({
   		borderRadius: 30,
   		position: 'absolute',
   		marginTop: screenHeight * 0.4,
-  		height: screenHeight * 0.05
+  		height: screenHeight * 0.05,
+		  fontFamily: 'Helvetica',
+
   	},
   	verificationBackground: {
   		backgroundColor: 'white',
@@ -1896,7 +2198,8 @@ const styles = ScaledSheet.create({
 		alignItems: 'center',
   	},
   	confirmCodeText: {
-  		fontSize: RFValue(12),
+  		//fontSize: RFValue(12),
+		fontSize: screenHeight * 0.018,
   		color: 'black',
   		fontWeight: '500'
   	},
@@ -1942,8 +2245,11 @@ const styles = ScaledSheet.create({
 		width: screenWidth
 	},
 	multipleChannelLocationActiverUsers: {
-		fontSize: RFValue(12),
-		color: 'black'
+		//fontSize: RFValue(12),
+		fontSize: screenHeight * 0.018,
+		color: 'black',
+		fontFamily: 'Helvetica'
+
 	},
 	locationModalFooter: {
 		flex: 1, 
@@ -1953,7 +2259,7 @@ const styles = ScaledSheet.create({
 		alignItems: 'center'
 	},
 	multiCreateChannelButton: {
-		height: '50%',
+		height: '70%',
 		width: '30%', 
 		//alignSelf: 'flex-end',
 		flexDirection: 'row',
@@ -1974,14 +2280,27 @@ const styles = ScaledSheet.create({
 	createChannelModelFullScreen: {
 		height: screenHeight,
 		width: screenWidth,
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center',
+		backgroundColor:  'pink'
 	},
 	newChannelModelPLaceholder: {
 		//backgroundColor: 'aqua',
 		height: '40%',
 		fontWeight: '700',
-		marginTop: '10%'
+		textAlign: 'center'
+		//marginTop: '10%'
 		//alignSelf: 'flex-start'
 		
+	},
+	newChannelModelPLaceholderNoPic: {
+		fontWeight: '400',
+		textAlign: 'center',
+		color: '#585858',
+		fontSize: screenHeight * 0.022,
+		fontFamily: 'Helvetica'
+
 	},
 	createPinModalPlaceholder: {
 		//backgroundColor: 'aqua',
@@ -1994,7 +2313,7 @@ const styles = ScaledSheet.create({
 	createChannelButton: {
 		height: '25%',
 		width: '80%', 
-		alignSelf: 'flex-end',
+		alignSelf: 'center',
 		flexDirection: 'row',
 		justifyContent: 'center',
 		alignItems: 'center',
@@ -2007,9 +2326,9 @@ const styles = ScaledSheet.create({
 		shadowOpacity: 0.34,
 		shadowRadius: 6.27,
 		elevation: 10,
-		backgroundColor: 'black'
-		//marginBottom: '10%'
-		//marginTop: '5%'
+		backgroundColor: 'black',
+		position: 'absolute',
+		bottom: '5%'
 	},
 	createPinModalButton: {
 		height: '25%',
@@ -2035,20 +2354,32 @@ const styles = ScaledSheet.create({
 		height: '80%',
 		//backgroundColor: 'red',
 		flexDirection: 'column',
-		
-		width: '45%'
+		alignItems: 'center',
+		width: '45%',
+		marginLeft: '30%'
+	},
+	locationNameActiveAndJoinButtonContainerNoPic: {
+		height: '80%',
+		//backgroundColor: 'red',
+		flexDirection: 'column',
+		alignItems: 'center',
+		width: '45%',
+		//marginLeft: '30%'
 	},
 	channelNameInPostFeed: {
 		position: 'absolute', 
 		bottom: 0, 
 		alignSelf: 'center',
-		fontSize: RFValue(11),
+		//fontSize: RFValue(11),
+		fontSize: screenHeight * 0.018,
 		color: 'black',
-		fontWeight: '600'
+		fontWeight: '600',
+		fontFamily: 'Epilogue-Regular',
+
 	},
 	notificationButton2: {
-		width: '45@s',
-		height: '45@s',
+		width: '55@s',
+		height: '55@s',
 		justifyContent: 'center',
 		alignItems: 'center',
 		borderRadius: 100,
@@ -2064,8 +2395,8 @@ const styles = ScaledSheet.create({
 	},
 	takePhotoButtonPostFeed: {
 		backgroundColor: 'black',
-		width: '50@s',
-		height: '50@s',
+		width: '60@s',
+		height: '60@s',
 		borderRadius: 100,
 		flexDirection: 'row',
 		justifyContent: 'center',
@@ -2086,10 +2417,14 @@ const styles = ScaledSheet.create({
 		bottom: '40@s',
 	},
 	noJoinCreateChannelText: {
-		//textAlign: 'center',
+		textAlign: 'center',
 		alignSelf: 'center',
 		color: 'black',
-		fontWeight: '700'
+		fontWeight: '700',
+		fontSize: screenHeight * 0.022,
+		fontFamily: 'Helvetica'
+
+
 	},
 	loadingScreen: {
 		height: screenHeight,
@@ -2108,7 +2443,7 @@ const styles = ScaledSheet.create({
 	editProfileNameContainer: {
 		flexDirection: 'row', 
 		alignItems: 'center', 
-		//backgroundColor: 'red',
+		//backgroundColor: 'grey',
 		height: '10%'
 	},
 	editProfileUsernameContainer: {
@@ -2122,13 +2457,15 @@ const styles = ScaledSheet.create({
 		color: 'white',
 		borderBottomColor: '#666666',
 		borderBottomWidth: 0.7,
-		//backgroundColor: 'blue',
+		//backgroundColor: 'brown',
+		height: '100%',
+		justifyContent: 'center'
 	},
 	HaveAccountLogin: {
-		marginTop: '5%', 
+		//marginTop: screenHeight * 0.05, 
 		//backgroundColor: 'red', 
-		position: 'absolute',
-		marginTop: screenHeight * 0.55
+		//position: 'absolute',
+		marginTop: screenHeight * 0.05
 	},
 	DontHaveAccountSignUp: {
 		//marginTop: '5%',
@@ -2143,7 +2480,7 @@ const styles = ScaledSheet.create({
 	},
 	chooseADisplayPicText: {
 		marginTop: screenHeight * 0.3,
-		fontSize: RFValue(18),
+		fontSize: screenHeight * 0.028,
 		fontWeight: '900',
 		fontStyle: 'italic',
 		color: 'black',
@@ -2159,6 +2496,19 @@ const styles = ScaledSheet.create({
 		//color: 'white',
 		justifyContent: 'center',
 	},
+	messageCreatePinButtonContainer: {
+		//backgroundColor: 'red', 
+		position: 'absolute', 
+		flexDirection: 'row', 
+		justifyContent: 'space-between', 
+		width: screenWidth,
+		paddingHorizontal: screenWidth * 0.05,
+		bottom: screenHeight * 0.03
+	},
+	checkBoxContainer: {
+		height: '10@s',
+		width: '10@s'
+	}
 
 	
 

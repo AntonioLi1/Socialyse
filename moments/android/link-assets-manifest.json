@@ -1,0 +1,77 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "Assets/Fonts/Epilogue-Black.ttf",
+      "sha1": "69d1ac06f47e8dc8c1df553e4fe187715192ee54"
+    },
+    {
+      "path": "Assets/Fonts/Epilogue-BlackItalic.ttf",
+      "sha1": "c5420bf2744687945ea84dd6081ae4cea29d8601"
+    },
+    {
+      "path": "Assets/Fonts/Epilogue-Bold.ttf",
+      "sha1": "0a7aed05d96cb5c3bb3c0c67da67dddd604494ee"
+    },
+    {
+      "path": "Assets/Fonts/Epilogue-BoldItalic.ttf",
+      "sha1": "7ef67d5c0896eb549dab1dfb84b96ebb53386b87"
+    },
+    {
+      "path": "Assets/Fonts/Epilogue-ExtraBold.ttf",
+      "sha1": "3eea9d817f898e39e7c22ccd00aa4c969c600aef"
+    },
+    {
+      "path": "Assets/Fonts/Epilogue-ExtraBoldItalic.ttf",
+      "sha1": "dc1595dbcc0bffe6bb6b2c6196b06621cc9a169a"
+    },
+    {
+      "path": "Assets/Fonts/Epilogue-ExtraLight.ttf",
+      "sha1": "69803c599033575b786c11d4a66ffa7c1a9d31c9"
+    },
+    {
+      "path": "Assets/Fonts/Epilogue-ExtraLightItalic.ttf",
+      "sha1": "9700fb4e2ed0edc11ef418521b893ce101c2c9cc"
+    },
+    {
+      "path": "Assets/Fonts/Epilogue-Italic.ttf",
+      "sha1": "1f53061d52e15b77c380415ee6c39a33b60a394a"
+    },
+    {
+      "path": "Assets/Fonts/Epilogue-Light.ttf",
+      "sha1": "e90f3a42c2c953d0504f44032df75d3fcc8bae3f"
+    },
+    {
+      "path": "Assets/Fonts/Epilogue-LightItalic.ttf",
+      "sha1": "ffeb5513eb5eb038e36150e8af493e234c6ba783"
+    },
+    {
+      "path": "Assets/Fonts/Epilogue-Medium.ttf",
+      "sha1": "cb7c0d77381cb70450fd622e1d6a38a18accacaa"
+    },
+    {
+      "path": "Assets/Fonts/Epilogue-MediumItalic.ttf",
+      "sha1": "576fa81fbcc59da1e6eb3ac69fb77da36ecf704a"
+    },
+    {
+      "path": "Assets/Fonts/Epilogue-Regular.ttf",
+      "sha1": "c5714e5d1e97f2591afefb082a10d93b96c37495"
+    },
+    {
+      "path": "Assets/Fonts/Epilogue-SemiBold.ttf",
+      "sha1": "0c3a80fa92b54ddf40dd8bc90446b5a67a4d5382"
+    },
+    {
+      "path": "Assets/Fonts/Epilogue-SemiBoldItalic.ttf",
+      "sha1": "8fe6c367b216ec1cb65fd58d809be5af35b8a006"
+    },
+    {
+      "path": "Assets/Fonts/Epilogue-Thin.ttf",
+      "sha1": "f871137ab3e2a30ebbdd9e190aa544ff0442dffc"
+    },
+    {
+      "path": "Assets/Fonts/Epilogue-ThinItalic.ttf",
+      "sha1": "9cc013a2eb8fef9941c814ff020b520b60784642"
+    }
+  ]
+}

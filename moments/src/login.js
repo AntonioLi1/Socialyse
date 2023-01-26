@@ -1,13 +1,14 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { View, Text, Pressable, TextInput, SafeAreaView, Button } from 'react-native';
+import React, { useEffect, useState,  } from 'react';
+import { View, Text, Pressable, TextInput, SafeAreaView, Keyboard, ActivityIndicator, Dimensions } from 'react-native';
 import styles from './styles';
 import auth from '@react-native-firebase/auth';
-import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import MIIcon from 'react-native-vector-icons/MaterialIcons';
-import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
-import {OTP} from 'react-native-otp-form';
+import { scale } from 'react-native-size-matters';
 import OTPInputView from '@twotalltotems/react-native-otp-input';
 import firestore from '@react-native-firebase/firestore';
+
+const screenHeight = Dimensions.get("window").height
+
 
 async function checkPhoneNumberExists(phoneNumber) {
     // phonenumber excludes area codes
@@ -25,14 +26,15 @@ async function checkPhoneNumberExists(phoneNumber) {
 
 function Login({navigation}) {
 
-    //const [username, setUsername] = useState(false);
-    //const [password, setPassword] = useState(false);
     const [login, setlogin] = useState(true);
     const [phoneNumber, setPhoneNumber] = useState()
     const [confirm, setConfirm] = useState(null);
     const [code, setCode] = useState('');
     const [showErrorMessage, setShowErrorMessage] = useState(false)
     const [confirmCodeErrorMessage, setConfirmCodeErrorMessage] = useState(false)
+    const [loginPressed, setLoginPressed] = useState(false)
+    const [confirmButtonPressed, setConfirmButtonPressed] = useState(false)
+    const [showLoading, setShowLoading] = useState(false)
 
     // Handle the button press
     async function signInWithPhoneNumber(phoneNumber) {
@@ -41,17 +43,15 @@ function Login({navigation}) {
         try {
             // check if number already exists in DB
             await checkPhoneNumberExists(phoneNumber)
-
+            setShowLoading(true)
             const confirmation = await auth().signInWithPhoneNumber(newNumber);
-            //const confirmation = await auth().signInWithPhoneNumber(phoneNumber);
             setConfirm(confirmation);
         } catch(error) {
-            console.log('errorwdwdww', error)
+            setShowLoading(false)
             setShowErrorMessage(true)
             setTimeout(() => {
 				setShowErrorMessage(false)
 			}, 1500)
-            
         }
     }
 
@@ -59,7 +59,6 @@ function Login({navigation}) {
         try {
           await confirm.confirm(code);
         } catch (error) {
-          console.log('Invalid code.');
           setConfirmCodeErrorMessage(true)
           setTimeout(() => {
             setConfirmCodeErrorMessage(false)
@@ -67,7 +66,17 @@ function Login({navigation}) {
         }
     }
 
-    //console.log(login)
+    useEffect(() => {
+        setTimeout(() => {
+            setLoginPressed(false)
+        }, 80)
+    }, [loginPressed])
+
+    useEffect(() => {
+        setTimeout(() => {
+            setConfirmButtonPressed(false)
+        }, 80)
+    }, [confirmButtonPressed])
 
     if (!confirm) {
         return (
@@ -77,51 +86,46 @@ function Login({navigation}) {
                         SOCIALYSE
                     </Text>
                 </View>
-                <View style={styles.signUpInputContainer}>
+                <View style={styles.loginInputContainer}>
                     <TextInput
                     style={styles.inputs}
+                    placeholderTextColor='#BDBDBD'
                     placeholder='Phone Number'
+                    keyboardType='number-pad'
                     onChangeText={(Text)=>{setlogin(false); setPhoneNumber(Text)}}
                     />
-                    {/* <TextInput
-                    style={styles.inputs}
-                    placeholder='Password'
-                    onChangeText={()=>{setPassword(true)}}
-                    /> */}
                 </View>
-                {/* <View style={styles.forgotPasswordContainer}>
-                    <Pressable onPress={() => {navigation.navigate('ForgotPassword')}}>
-                        <Text style={{alignSelf: 'flex-end', color: 'black', fontSize: 12}}>
-                            Forgot Password?
-                        </Text>
-                    </Pressable>
-                </View> */}
-
-                <Pressable style={[{ backgroundColor:  'white'}, styles.signUpButton]} 
-                onPress={() => {signInWithPhoneNumber(phoneNumber)}}
+                <Pressable style={[{ backgroundColor: loginPressed ? 'grey' :'white'}, styles.signUpButton]} 
+                onPress={() => {signInWithPhoneNumber(phoneNumber); setLoginPressed(true); Keyboard.dismiss()}}
                 disabled={login}>
-                    <Text style={{fontSize: 16, fontWeight: '700', color: 'black'}}>
-                        Log In
-                    </Text>
-                </Pressable>
-                {
+                    {
                     showErrorMessage ?
-                    <Text style={{maxWidth: '80%', textAlign: 'center', color: 'red'}}>
+                    <Text style={{maxWidth: '80%', textAlign: 'center', color: 'red', fontSize: screenHeight * 0.018}}>
                         This phone number does not have an account! Try signing up!
                     </Text>
                     :
-                    null
-                }
-                <View style={styles.DontHaveAccountSignUp}>
-                    <Text style={{color: 'black', textAlign: 'center'}}>
-                        Don't have an account? {'\n'}
-                        <Pressable onPress={() => {navigation.navigate('SignUp')}}>
-                            <Text style={{fontWeight: '700', color: 'black'}}> 
-                                Sign Up.
-                            </Text>
-                        </Pressable>
-                            
+                    <Text style={{fontSize: screenHeight * 0.022, fontWeight: '700', color: 'black'}}>
+                        Log In
                     </Text>
+                    }
+                    
+                </Pressable>
+                
+                <View style={styles.DontHaveAccountSignUp}>
+                    <Text style={{color: 'black', textAlign: 'center', fontSize: screenHeight * 0.02}}>
+                        Don't have an account? 
+                    </Text>
+                    <Pressable onPress={() => {navigation.navigate('SignUp')}}>
+                        <Text style={{fontWeight: '700', color: 'black', alignSelf: 'center', fontSize: screenHeight * 0.02}}> 
+                            Sign Up.
+                        </Text>
+                    </Pressable>
+                    {
+                        showLoading ?
+                        <ActivityIndicator size='small' style={{marginTop: '10%'}} color='white'/>
+                        :
+                        null
+                    }
                 </View>
             </SafeAreaView>
         )
@@ -144,7 +148,7 @@ function Login({navigation}) {
                     <Text style={styles.verifyPhoneNumBodyText}>
                         Please enter code sent to:
                         {'\n'}
-                        0435081321
+                        {phoneNumber}
                     </Text>
                 </View>
 
@@ -158,14 +162,15 @@ function Login({navigation}) {
                 /> 
                 {
                     confirmCodeErrorMessage ?
-                    <Text style={{color: 'red'}}>
+                    <Text style={{color: 'red',fontFamily: 'Helvetica'}}>
                         Incorrect Code
                     </Text>
                     :
                     null
                 }   
                 
-                <Pressable onPress={() => confirmCode()} style={styles.confirmCodeButton}>
+                <Pressable onPress={() => {confirmCode(); setConfirmButtonPressed(true)}} 
+                style={[styles.confirmCodeButton, {backgroundColor: confirmButtonPressed ? '#6076A1' : '#96B9FE'}]}>
                     <Text style={styles.confirmCodeText}>
                         Confirm code
                     </Text>
@@ -178,66 +183,3 @@ function Login({navigation}) {
 }
 
 export default Login;
-
-//
-//signInWithPhoneNumber('+44 7444 555666'); 
-
-    // function signInWithPhoneNumber(phoneNumber) {
-    //     return new Promise ((resolve) => {
-    //         auth().signInWithPhoneNumber(phoneNumber)
-    //         resolve(setConfirm(confirmation))
-    //     }) 
-    // }
-
-    
-    // signInWithPhoneNumber().then(() => {
-    //     console.log('here')
-    //     navigation.navigate('VerifyPhoneNumber', {confirm})
-    // })
-
-    // async function signInWithPhoneNumber(phoneNumber) {
-    //     const confirmation = new Promise ((resolve) => {
-    //         auth().signInWithPhoneNumber(phoneNumber)
-    //         resolve(setConfirm(confirmation))
-    //     }) 
-
-    //     await confirmation.then(navigation.navigate('VerifyPhoneNumber', {confirm}))
-        
-    // }
-
-//   const [code, setCode] = useState('');
-
-//   // Handle the button press
-//   async function signInWithPhoneNumber(phoneNumber) {
-//     console.log('here')
-//     const confirmation = await auth().signInWithPhoneNumber(phoneNumber);
-//     console.log('confirmation: ' + confirmation)
-//     setConfirm(confirmation);
-//   }
-
-//   async function confirmCode() {
-//     try {
-//       await confirm.confirm(code);
-//       console.log('confirm' + confirm)
-//     } catch (error) {
-//       console.log('Invalid code.');
-//     }
-//   }
-
-//   console.log(confirm)
-
-//   if (!confirm) {
-//     return (
-//       <Button
-//         title="Phone Number Sign In"
-//         onPress={() => signInWithPhoneNumber('+44 7444 555666')}
-//       />
-//     );
-//   }
-
-//   return (
-//     <>
-//       <TextInput value={code} onChangeText={text => setCode(text)} />
-//       <Button title="Confirm Code" onPress={() => confirmCode()} />
-//     </>
-//   );

@@ -5,9 +5,8 @@ import {LoggedOutNavigator, LoggedInNavigator} from './src/navigator';
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
 import Login from './src/login';
-import ForgotPassword from './src/forgotPassword';
-import supabase from "./supabase";
 import firestore from '@react-native-firebase/firestore';
+
 
 
 
@@ -30,6 +29,8 @@ export const LoggedInContext = createContext({
 	setChannelPosts: (value) => {},
 	justUnliked: null,
 	setJustUnliked: (value) => {},
+	selectedChannelId: null,
+	setSelectedChannelId: (value) => {}
 	
 });
 
@@ -40,26 +41,26 @@ export const LoggedOutContext = createContext({
 	setSignUpUsername: (value) => {},
 	signUpPhoneNumber: '',
 	setSignUpPhoneNumber: (value) => {},
+	signUpDoB: null,
+	setSignUpDoB: (value) => {}
 });
 
 function App () {
-  
  
   	const [messageDisplay, setMessageDisplay] = useState(true);
 	const [notifDisplay, setNotifDisplay] = useState(true);
   	const [editProfileModal, setEditProfileModal] = useState(false);
-	const [dpURL, setDpURL] = useState('https://firebasestorage.googleapis.com/v0/b/socialyse-8cf03.appspot.com/o/profilePics%2Fu1U1HkdfUVcNNeFD1gDr4yKlNzK2?alt=media&token=27328e55-510b-4ae8-b3de-4a1cf67a93b7');
+	const [dpURL, setDpURL] = useState();
 	const [user, setUser] = useState();
 	const [selectedPinId, setSelectedPinId] = useState('')
 	const [selectedPost, setSelectedPost] = useState()
 	const [channelPosts, setChannelPosts] = useState()
 	const [justUnliked, setJustUnliked] = useState(false)
 	const [dataAdded, setDataAdded] = useState(false)
-	const { signUpName, signUpUsername, signUpPhoneNumber} = useContext(LoggedOutContext)
+	const [selectedChannelId, setSelectedChannelId] = useState()
+	const { signUpName, signUpUsername, signUpPhoneNumber, signUpDoB, setSignUpDoB} = useContext(LoggedOutContext)
 
-
-	//console.log('signup name app',signUpName)
-    //console.log('sign up username app',signUpUsername)
+	
 
 	/////////////////////////////////////////////
 	// FIREBASE
@@ -68,7 +69,7 @@ function App () {
 	//console.log('app name2', signUpName)
 	//console.log('app username2', signUpUsername)
 
-	async function AddUserToDB (uid, signUpName, signUpUsername, signUpPhoneNumber) {
+	async function AddUserToDB (uid, signUpName, signUpUsername, signUpPhoneNumber, signUpDoB) {
 		// console.log('app name', signUpName)
 		// console.log('app username', signUpUsername)
 		// console.log('app phonenumber',phoneNumber)
@@ -82,6 +83,9 @@ function App () {
             CurrentChannel: 0,
 			ChannelJoined: null,
 			LastPosted: null,
+			DoB: signUpDoB,
+			PhoneNumber: signUpPhoneNumber,
+			UserID: uid
 		})
 		.then(() => {
 			console.log('User added!');
@@ -92,19 +96,10 @@ function App () {
 		.doc(uid)
 		.set({
 			FriendCount: 0,
+			UserID: uid
 		})
 		.then(() => {
 			console.log('uidofotherperson Added for friends!');
-		});
-		// adding users to notifs
-		await firestore()
-		.collection('Notifications')
-		.doc(uid)
-		.set({
-			NotificationCount: 0,
-		})
-		.then(() => {
-			console.log('uidofotherperson Added for notifs!');
 		});
 		// adding user to messages
 		await firestore()
@@ -112,6 +107,7 @@ function App () {
 		.doc(uid)
 		.set({
 			UnopenedMessages: 0,
+			UserID: uid
 		})
 		.then(() => {
 			console.log('uidofotherperson Added for messages!');
@@ -121,7 +117,7 @@ function App () {
 		.collection('PeopleLiked')
 		.doc(uid)
 		.set({
-			UserId: uid,
+			UserID: uid,
 		})
 		.then(() => {
 			console.log('uidofotherperson Added for peopleLiked!');
@@ -136,27 +132,64 @@ function App () {
 		.then(() => {
 			console.log('uidofotherperson Added for phoneNumber!');
 		});
-
-		setDataAdded(true)
-		
-		
+		// adding user to UsernameAndDP
+		await firestore()
+		.collection('UsernameAndDP')
+		.doc(uid)
+		.set({
+			Username: signUpUsername,
+			ProfilePic: '',
+			UserID: uid
+		})
+		// adding user to userlikedposts
+		await firestore()
+		.collection('UserLikedPosts')
+		.doc(uid)
+		.set({
+			PostsLikedCount: 0,
+			UserID: uid
+		})
+		await firestore()
+		.collection('UIDs')
+		.doc(uid)
+		.set({
+			UserID: uid
+		})
+		await firestore()
+		.collection('ChannelCreations')
+		.doc(uid)
+		.set({
+			UserID: uid
+		})
+		setDataAdded(true) 
     }
 
-	async function EnterApp(uid, signUpName, signUpUsername, signUpPhoneNumber) {
+	async function EnterApp(uid, signUpName, signUpUsername, signUpPhoneNumber, signUpDoB) {
 		console.log('enterapp name',signUpName)
    		console.log('enterapp username',signUpUsername)
+		console.log('uid', uid)
 		await firestore()
-		.collection('Users')
+		.collection('UIDs')
 		.doc(uid)
 		.get()
-		.then((querySnapshot) => {
-			if (!querySnapshot.exists) {
+		.then(async (docSnapshot) => {
+			if (!docSnapshot.exists) {
 				//console.log(querySnapshot.exists)
 				// sign up 
 				console.log('signing up')
-				AddUserToDB (uid, signUpName, signUpUsername, signUpPhoneNumber)
+				AddUserToDB (uid, signUpName, signUpUsername, signUpPhoneNumber, signUpDoB)
 			} else {
+				setDpURL(docSnapshot.data().ProfilePic)
+				await firestore()
+				.collection('UsernameAndDP')
+				.doc(uid)
+				.get()
+				.then(docSnapshot => {
+					setDpURL(docSnapshot.data().ProfilePic)
+					console.log('profilepic set')
+				})
 				console.log('login')
+
 			}
 		}) 
 	}
@@ -164,13 +197,14 @@ function App () {
 	//Handle user state changes
 	async function onAuthStateChanged(user) {
 		setUser(user);
+		setDpURL()
 		//console.log("user deets",user)
 		// console.log('app name3', signUpName)
 		// console.log('app username3', signUpUsername)
 		console.log('auth name', signUpName)
 		console.log('auth uname', signUpUsername)
 		console.log('auth Phone',signUpPhoneNumber)
-		if (user) await EnterApp(user.uid, signUpName, signUpUsername, signUpPhoneNumber);
+		if (user) await EnterApp(user.uid, signUpName, signUpUsername, signUpPhoneNumber, signUpDoB);
 		
 		if (initializing) setInitializing(false);
 	}
@@ -178,7 +212,7 @@ function App () {
 	useEffect(() => {
 		const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
 		return subscriber; // unsubscribe on unmount
-	}, [signUpName, signUpUsername, signUpPhoneNumber]);
+	}, [signUpName, signUpUsername, signUpPhoneNumber, signUpDoB]);
 
 	if (initializing) return null;
 
@@ -219,7 +253,8 @@ function App () {
 			editProfileModal, setEditProfileModal, dpURL, setDpURL, 
 			user, setUser, selectedPinId, setSelectedPinId, 
 			selectedPost, setSelectedPost, channelPosts, setChannelPosts,
-			justUnliked, setJustUnliked}}>
+			justUnliked, setJustUnliked,
+			selectedChannelId, setSelectedChannelId}}>
 			<LoggedInNavigator></LoggedInNavigator>
 		</LoggedInContext.Provider>
 		
@@ -235,8 +270,9 @@ const Root = ()=>{
 	const [signUpName, setSignUpName] = useState('')
 	const [signUpUsername, setSignUpUsername] = useState('')
 	const [signUpPhoneNumber, setSignUpPhoneNumber] = useState('')
+	const [signUpDoB, setSignUpDoB] = useState(null)
 	return(
-		<LoggedOutContext.Provider value={{signUpName, setSignUpName, signUpUsername, setSignUpUsername, signUpPhoneNumber, setSignUpPhoneNumber}}>
+		<LoggedOutContext.Provider value={{signUpName, setSignUpName, signUpUsername, setSignUpUsername, signUpPhoneNumber, setSignUpPhoneNumber, signUpDoB, setSignUpDoB}}>
 			<App/>
 		</LoggedOutContext.Provider>
 	)

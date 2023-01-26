@@ -1,22 +1,17 @@
 import React, { useState, useContext, useEffect, useRef, useCallback } from 'react';
-import { View, Text, Pressable, ScrollView, Image, ImageBackground, SafeAreaView, Linking } from 'react-native';
+import { View, Text, Pressable, ImageBackground, SafeAreaView, Alert } from 'react-native';
 import styles from './styles';
 import CaptionModal from './captionModal';
 import { useNavigation } from '@react-navigation/native';
-import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 import IIcon from 'react-native-vector-icons/Ionicons'
 import MIIcon from 'react-native-vector-icons/MaterialIcons';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import ADIcon from 'react-native-vector-icons/AntDesign'
-import FIcon from 'react-native-vector-icons/Fontisto';
 import {LoggedInContext} from '../App';
-import { Camera, CameraPermissionStatus, useCameraDevices } from 'react-native-vision-camera';
-import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
+import { Camera, useCameraDevices } from 'react-native-vision-camera';
+import { scale } from 'react-native-size-matters';
 import firestore from '@react-native-firebase/firestore';
-import PostModal from './postModal';
 import storage from '@react-native-firebase/storage';
-import Geolocation from 'react-native-geolocation-service';
-
+import { openSettings } from 'react-native-permissions';
 
 async function CreatePost(UserID, Caption, Image, ChannelID, selectedPinId) {
 
@@ -26,10 +21,6 @@ async function CreatePost(UserID, Caption, Image, ChannelID, selectedPinId) {
 	
 	// get downloadedURL from storage
 	const downloadedURL = await storage().ref(`/Posts/${UserID}/${Image}`).getDownloadURL();
-	// console.log('UserID', UserID)    
-	// console.log('caption', Caption)
-	// console.log('Image',downloadedURL)
-	// console.log('channelID', ChannelID)
 	let docID = '';
 	const messageSendTime = new Date(); 
 
@@ -47,7 +38,8 @@ async function CreatePost(UserID, Caption, Image, ChannelID, selectedPinId) {
 	})
 	.then(function(docRef) {
 	  	docID = docRef.id;
-	}); // test to see if it works
+	}); 
+	console.log('create to channels posts')
   
 	// add doc id to the post
 	await firestore()
@@ -58,6 +50,8 @@ async function CreatePost(UserID, Caption, Image, ChannelID, selectedPinId) {
 	.update({
 		PostID: docID,
 	});
+	console.log('update to channels posts')
+
   
 	// add it under users for their own reference
 	await firestore()
@@ -72,6 +66,8 @@ async function CreatePost(UserID, Caption, Image, ChannelID, selectedPinId) {
 	  UserID: UserID,
 	  PostID: docID
 	});
+	console.log('create to users userposts')
+
 
 	// added 02/01, for storing when a user last posted. Helped checking if 
 	// use can post again in the channel
@@ -81,14 +77,20 @@ async function CreatePost(UserID, Caption, Image, ChannelID, selectedPinId) {
 	.update({
 		LastPosted: messageSendTime,
 	})
+	console.log('update to user ')
+
 	
 	// add post with doc id to UserPostLikes
 	await firestore()
 	.collection('PostLikes')
 	.doc(docID)
 	.set({
-	  LikeCount: 0
+	  LikeCount: 0,
+	  PostOwnerID: UserID
+
 	});
+	console.log('create to postlikes')
+
 
 	// update channels lastActive
 	await firestore()
@@ -99,6 +101,8 @@ async function CreatePost(UserID, Caption, Image, ChannelID, selectedPinId) {
 	.update({
 		LastActive: messageSendTime
 	})
+	console.log('update to pin channels')
+
 
 	// update pins lastActive
 	await firestore()
@@ -107,9 +111,66 @@ async function CreatePost(UserID, Caption, Image, ChannelID, selectedPinId) {
 	.update({
 		LastActive: messageSendTime
 	})
+	console.log('update to pins lastactive')
+
 }
 
-async function JoinChannel(UserID, ChannelID, Longitude, Latitude, PinID) {
+async function JoinChannel(UserID, ChannelID, PinID) {
+
+	// if user is stil part of old channel, reduce old channel users count
+	let usersOldChannel = null
+	await firestore()
+	.collection('Users')
+	.doc(UserID)
+	.get()
+	.then(docSnapshot => {
+		let data = docSnapshot.data()
+		if (data.CurrentChannel !== 0) {
+			usersOldChannel = data.CurrentChannel
+		}
+	})
+	console.log('read from users')
+
+	// if user is part of old channel
+	if (usersOldChannel !== null) {
+		//find channel's parent pin
+		let parentPinID = ''
+		await firestore()
+		.collection('Channels')
+		.doc(usersOldChannel)
+		.get()
+		.then(docSnapshot => {
+			let data = docSnapshot.data()
+			parentPinID = data.PinID
+		})
+		console.log('joinchannel read from channels')
+		// decrease users count
+		let oldUserCount = null
+		await firestore()
+		.collection('Pins')
+		.doc(parentPinID)
+		.collection('Channels')
+		.doc(usersOldChannel)
+		.get()
+		.then(docSnapshot => {
+			let data = docSnapshot.data()
+			oldUserCount = data.ActiveUsers
+		})
+		console.log('joinchannel read from pins channels')
+
+		oldUserCount = oldUserCount - 1
+		// update
+		await firestore()
+		.collection('Pins')
+		.doc(parentPinID)
+		.collection('Channels')
+		.doc(usersOldChannel)
+		.update({
+			ActiveUsers: oldUserCount
+		})
+		console.log('joinchannel update pins channels')
+
+	}
 
 	const messageSendTime = new Date();
 
@@ -120,6 +181,8 @@ async function JoinChannel(UserID, ChannelID, Longitude, Latitude, PinID) {
 		ChannelJoined: messageSendTime,
 	  	CurrentChannel: ChannelID
 	});
+	console.log('joinchannel update to users')
+
   
 	let activeUserCount = 0;
   
@@ -134,6 +197,8 @@ async function JoinChannel(UserID, ChannelID, Longitude, Latitude, PinID) {
 		  activeUserCount = docSnapshot.data().ActiveUsers
 		} 
 	});
+	console.log('joinchannel read from pins channels')
+
 	activeUserCount += 1;
   
 	await firestore()
@@ -144,24 +209,21 @@ async function JoinChannel(UserID, ChannelID, Longitude, Latitude, PinID) {
 	.update({
 	  ActiveUsers: activeUserCount
 	});
+	console.log('joinchannel update to pins channels')
+
 }
 
 
-function MakeAPost({route}) {
+function MakeAPost() {
 
 	const navigation = useNavigation();
-	const {selectedChannelID} = route.params;
-
-	//console.log(selectedChannelID)
 
 	const devices = useCameraDevices()
 	const deviceBack = devices.back;
 	const deviceFront = devices.front;
 
-    const {messageDisplay, setMessageDisplay, notifDisplay, setNotifDisplay, user, selectedPinId, } = useContext(LoggedInContext);
-	
+    const {setMessageDisplay, setNotifDisplay, user, selectedPinId, selectedChannelId} = useContext(LoggedInContext);
 	const [cameraPermission, setCameraPermission] = useState();
-  	const [microphonePermission, setMicrophonePermission] = useState();
 	const [imageURL, setImageURL] = useState(null);
 	const [takePhotoButton, setTakePhotoButton] = useState(true);
 	const [backCamera, setbackCamera] = useState(true);
@@ -171,22 +233,11 @@ function MakeAPost({route}) {
 	const [showFooter, setShowFooter] = useState(true)
 	const cameraref = useRef();
 
-	const [currLatitude, setCurrLatitude] = useState(0)
-	const [currLongitude, setCurrLongitude] = useState(0)
-
-	const GetmyLocation = async () => {
-		await Geolocation.getCurrentPosition(info => {
-			setCurrLatitude(info.coords.latitude)
-			setCurrLongitude(info.coords.longitude)
-		})
-	}
-
 	const takePhoto = async () => {
-		const photo = await cameraref.current.takeSnapshot({
+		const photo = await cameraref.current.takePhoto({
 			quality: 85,
 			skipMetadata: true
 		})
-		console.log('photo', photo)
 		setImageURL(photo.path);
 	}
 
@@ -202,56 +253,57 @@ function MakeAPost({route}) {
 
 	useEffect(() => {
 		Camera.getCameraPermissionStatus().then(setCameraPermission);
-		// Camera.getMicrophonePermissionStatus().then(setMicrophonePermission);
 		getCameraPermission();
-		GetmyLocation()
 	}, [imageURL]);
 
-	// const getCameraPermission = async () => {
-	// 	try {
-	// 		const newCameraPermission = await Camera.requestCameraPermission()
-	// 		const newMicrophonePermission = await Camera.requestMicrophonePermission()
-			
-	// 	} catch (error) {
-	// 		console.log(error)
-	// 	}
-	// }
 	const getCameraPermission = useCallback(async () => {
 		const permission = await Camera.requestCameraPermission()
 		if (permission === 'denied') {
-			await Linking.openSettings()
-			navigation.navigate('Map')
+			Alert.alert(
+				'Permission required',
+				'You need to enable your camera to take a photo!',
+				[
+				  {
+					text: 'Cancel',
+					onPress: () => console.log('Cancel Pressed'),
+					style: 'cancel',
+				  },
+				  {text: 'Open Settings', onPress: () => openSettings()},
+				],
+				{cancelable: false},
+			);
 		}
 	}, []) 
-	
-	// if (cameraPermission == null || microphonePermission == null) {
-	// 	// still loading
-	// 	return null;
-	// }
 
 	const callback = ()=>{
-        navigation.navigate('PostsFeed', {selectedChannelID: selectedChannelID})
+        navigation.navigate('PostsFeed')
 	};
 
-	async function JoinAndPost(UserID, Caption, Image, ChannelID) {
+	async function JoinAndPost(UserID, Caption, Image, selectedChannelId) {
 		try {
-			await JoinChannel(UserID, ChannelID, currLongitude, currLatitude, selectedPinId)
-			await CreatePost(UserID, Caption, Image, ChannelID, selectedPinId)
+			await JoinChannel(UserID, selectedChannelId, selectedPinId)
+			await CreatePost(UserID, Caption, Image, selectedChannelId, selectedPinId)
 			callback();
 		} catch (error) {
-			console.log('errro', error)
+			console.log('idiot', error)
 		}
 	}
 
-	//console.log('picurl', imageURL)
+	useEffect(() => {
+		setTakePhotoButton(true)
+	}, [])
 	
 	return (
 		<SafeAreaView style={styles.MBBackground}>
 			<View style={{flexDirection: 'row', width: '100%', justifyContent: 'center'}}>
 				<Text style={styles.takeAPhotoText}>
-					TAKE A PHOTO TO {'\n'}
+					{/* TAKE A PHOTO TO {'\n'}
 				
-					SOCIALYSE
+					SOCIALYSE */}
+					Take a photo to 
+					{'\n'}
+					Socialyse!
+					
 				</Text>
 			</View>
 			{
@@ -279,7 +331,7 @@ function MakeAPost({route}) {
 							}
 						</Pressable>
 						<CaptionModal captionModal={captionModal} setCaptionModal={setCaptionModal} caption={caption} setCaption={setCaption} setAddedCaption={setAddedCaption}
-						showFooter={showFooter} setShowFooter={setShowFooter}/>
+						setShowFooter={setShowFooter}/>
 
 							
 					</View>
@@ -314,7 +366,7 @@ function MakeAPost({route}) {
 							onPress={() => setbackCamera(true)}/>
 						</View>
 					: 
-					<Text>You must accept camera permission</Text>
+					null
 			}
 			{
 				takePhotoButton ? 
@@ -333,7 +385,7 @@ function MakeAPost({route}) {
 						<MIIcon name='arrow-forward-ios' size={scale(30)} color='white'/>
 					</Pressable>
 				{imageURL ? 
-				<Pressable onPress={() => {navigation.navigate('SocialyseLoading', {selectedChannelID: selectedChannelID}); JoinAndPost(user.uid, caption, imageURL, selectedChannelID); 
+				<Pressable onPress={() => {navigation.navigate('SocialyseLoading'); JoinAndPost(user.uid, caption, imageURL, selectedChannelId); 
 				setCaption(''); setAddedCaption(false); setImageURL(null)
 				}}>
 					<View style={styles.sendPhotoButton}>
@@ -346,19 +398,9 @@ function MakeAPost({route}) {
 				:
 				null
 			}
-			
-			
-
-			
 		</SafeAreaView>
 	);
 }
 
 export default MakeAPost;
-/*
-<Pressable onPress={() => navigation.navigate('SocialyseLoading')}>
-				<Text>
-					go to add a loading
-				</Text>
-			</Pressable>
-*/
+

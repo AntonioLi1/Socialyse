@@ -1,32 +1,13 @@
-import React, { useState, useContext } from 'react';
-import { View, Modal, Text, Pressable, SafeAreaView } from 'react-native';
+import React, { useContext } from 'react';
+import { View, Modal, Text, Pressable } from 'react-native';
 import styles from './styles';
-import IIcon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { LoggedInContext } from '../App'
-import ImagePicker from 'react-native-image-crop-picker';
-import { Dimensions } from 'react-native';
-
-const screenWidth = Dimensions.get("window").width
-const screenHeight = Dimensions.get("window").height
 
 function DPModal () {
 
     const navigation = useNavigation();
-    const { editProfileModal, setEditProfileModal, dpURL, setDpURL } = useContext(LoggedInContext);
-
-    function PickImage() {
-        ImagePicker.openPicker({
-            width: screenWidth * 0.9,
-            height: screenHeight * 0.55,
-            cropping: true,
-
-        }).then(image => {
-            console.log("full image",image);
-            setDpURL(image.path)
-        });
-    }
+    const { editProfileModal, setEditProfileModal } = useContext(LoggedInContext);
 
     return (
         <Modal visible={editProfileModal} transparent={true}>
@@ -39,7 +20,7 @@ function DPModal () {
                             </Text>
                         </View>
                     </Pressable>
-                    <Pressable onPress={() => {navigation.navigate('ChooseFromCameraRoll'); setEditProfileModal(false); PickImage()}}>
+                    <Pressable onPress={() => {navigation.navigate('ChooseFromCameraRoll'); setEditProfileModal(false);}}>
                         <View style={styles.chooseFromLibrary}>
                             <Text style={styles.editDPText}>
                                 Choose from camera roll

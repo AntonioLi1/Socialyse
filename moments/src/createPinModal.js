@@ -1,30 +1,41 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Modal, Text, Pressable, TouchableNativeFeedbackBase, SafeAreaView, TextInput } from 'react-native';
+import { View, Text, Pressable, TextInput } from 'react-native';
 import styles from './styles';
 import IIcon from 'react-native-vector-icons/Ionicons';
-import MIIcon from 'react-native-vector-icons/MaterialIcons';
-import EIcon from 'react-native-vector-icons/Entypo';
-import { useNavigation } from '@react-navigation/native';
-import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
-import { FlatList } from 'react-native-gesture-handler';
+import { scale } from 'react-native-size-matters';
 import { LoggedInContext } from '../App'
 import firestore from '@react-native-firebase/firestore';
 import Geolocation from 'react-native-geolocation-service';
+import Modal from "react-native-modal";
+import { RFValue } from 'react-native-responsive-fontsize';
 const {GeoPoint} = firestore
 
-function CreatePinModal({createPinModalDisplay, setCreatePinModalDisplay, multipleModalDisplay, setMultipleModalDisplay}) {
+class PinNameError extends Error {
+    constructor(message) {
+        super(message)
+        this.name = "PinNameError"
+    }
+}
 
-    const navigation = useNavigation();
-    //const [pinName, setPinName] = useState('')
+class PinNearbyError extends Error {
+    constructor(message) {
+        super(message)
+        this.name = "PinNearbyError"
+    }
+}
+
+function CreatePinModal({createPinModalDisplay, setCreatePinModalDisplay, setMultipleModalDisplay}) {
+
     const [dataLoaded, setDataLoaded] = useState(false)
     const [longitude, setLongitude] = useState(0)
 	const [latitude, setLatitude] = useState(0)
     const [newPinName, setNewPinName] = useState('')
+    const [someError, setSomeError] = useState(false)
     const [showErrorMessage, setShowErrorMessage] = useState(false)
-    const [showNewPinModal, setShowNewPinModal] = useState(false)
-    const [showNewPinModalCreateChannel, setShowNewPinModalCreateChannel] = useState(false)
+    const [showPinNameErrorMessage, setShowPinNameErrorMessage] = useState(false)
+    const [showUnexpectedErrorMessage, setShowUnexpectedErrorMessage] = useState(false)
 
-    const {selectedPinId, setSelectedPinId, user} = useContext(LoggedInContext)
+    const {setSelectedPinId} = useContext(LoggedInContext)
 
 
     const GetmyLocation = async () => {
@@ -36,12 +47,15 @@ function CreatePinModal({createPinModalDisplay, setCreatePinModalDisplay, multip
 
     async function CreatePin(newPinName, userLongitude, userLatitude) {
         // create pin under Pins
+        // check name of pin isnt empty
+        if (newPinName === '') {
+            throw new PinNameError('pin name is empty')
+        }
 
 
         const geopoint = new GeoPoint(userLatitude, userLongitude)
         const currTime = new Date(); 
         const userLocation = `${userLatitude},${userLongitude}`
-        //console.log('geopoint', geopoint)
 
         let start = new Date();
 
@@ -54,35 +68,36 @@ function CreatePinModal({createPinModalDisplay, setCreatePinModalDisplay, multip
         let test = subtractHours(24, start)
 
         const API_KEY = "AIzaSyA1T4rNRR2NoCUglLkTZOtdCExn392_mZE"
-        // check if there is another pin within 25m
-        // await firestore()
-        // .collection('Pins')
-        // .where('LastActive', '>', test)
-        // .get()
-        // .then(async (querySnapshot) => {
-        //     //console.log('querySnapshot.docs', querySnapshot.docs)
-        //     for (const snapshot of querySnapshot.docs) {
-        //         let data = snapshot.data()
-        //         const pinLocation = `${data.Location.latitude},${data.Location.longitude}`
-        //         // console.log('pinlocations', pinLocation)
-        //         // console.log('userlocation', userLocation)
-        //         const url = `https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&mode=walking&origins=${userLocation}&destinations=${pinLocation}&key=${API_KEY}`
-        //         await fetch(url)
-        //         .then((response) => response.json())
-        //         .then((data) => {
-        //             let distance = parseFloat(data.rows[0].elements[0].distance.text.match(/\d+/)[0]);
-        //             //console.log('the distance', distance)
-        //             let unit = data.rows[0].elements[0].distance.text.match(/[a-zA-Z]+/g)[0];
-        //             if (unit == 'km') {
-        //                 distance *= 1000
-        //                 //console.log('distanceif', distance)
-        //             }
-        //             if (distance < 25) {
-        //                 throw Error("ERRRORRRRR");
-        //             }
-        //         })
-        //     }
-        // })
+        //check if there is another pin within 25m
+        await firestore()
+        .collection('Pins')
+        .where('LastActive', '>', test)
+        .get()
+        .then(async (querySnapshot) => {
+            for (const snapshot of querySnapshot.docs) {
+                let data = snapshot.data()
+                const pinLocation = `${data.Location.latitude},${data.Location.longitude}`
+                let pinRadius = data.Radius
+                console.log('userlocation', userLocation)
+                console.log('pinlocation', pinLocation)
+                const url = `https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&mode=walking&origins=${userLocation}&destinations=${pinLocation}&key=${API_KEY}`
+                //console.log('outside data', data)
+                await fetch(url)
+                .then((response) => response.json())
+                .then((distData) => {
+                    //console.log('data', parseFloat(distData.rows[0].elements[0]))
+                    let distance = parseFloat(distData.rows[0].elements[0].distance.text.match(/\d+/)[0]);
+                    console.log('distance', distance)
+                    let unit = distData.rows[0].elements[0].distance.text.match(/[a-zA-Z]+/g)[0];
+                    if (unit == 'km') {
+                        distance *= 1000
+                    }
+                    if (distance < pinRadius) {
+                        throw new PinNearbyError('there is a pin nearby')
+                    }
+                })
+            }
+        })
 
         let docID = ''
         await firestore()
@@ -93,7 +108,9 @@ function CreatePinModal({createPinModalDisplay, setCreatePinModalDisplay, multip
             Location: geopoint,
             Name: newPinName,
             PinID: '',
-            PinPic: null
+            PinPic: null,
+            Verified: false,
+            Radius: 80
         })
         .then(function (docRef) {
             docID = docRef.id
@@ -108,6 +125,7 @@ function CreatePinModal({createPinModalDisplay, setCreatePinModalDisplay, multip
         setSelectedPinId(docID)
     }
 
+
     async function getData() {
 		GetmyLocation();
 		setDataLoaded(true)
@@ -120,54 +138,67 @@ function CreatePinModal({createPinModalDisplay, setCreatePinModalDisplay, multip
     if (dataLoaded === false) return null;
 
     async function createPinPress() {
+        console.log('running')
         try {
             await CreatePin(newPinName, longitude, latitude)
             setCreatePinModalDisplay(false)
             setMultipleModalDisplay(true)
-        } catch (err){
-            console.log('error createpinhehe', err)
-            setShowErrorMessage(true)
-            setTimeout(() => {
-				setShowErrorMessage(false)
-			}, 1000)
+        } catch (error){
+            if (error.name === 'PinNameError') {
+                setSomeError(true)
+                setShowPinNameErrorMessage(true)
+                setTimeout(() => {                
+				    setShowPinNameErrorMessage(false)
+                    setSomeError(false)
+			    }, 1000)
+            }
+            else if (error.name === 'PinNearbyError') {
+                setSomeError(true)
+                setShowErrorMessage(true)
+                setTimeout(() => {
+				    setShowErrorMessage(false)
+                    setSomeError(false)
+			    }, 1000)
+            } else {
+                setSomeError(true)
+                setShowUnexpectedErrorMessage(true)
+                setTimeout(() => {
+                    setShowUnexpectedErrorMessage(false)
+                    setSomeError(false)
+                }, 1000 )
+            }
+            console.log('error', error)
         }
     }
 
     return (
-        <Modal visible={createPinModalDisplay} transparent={true}>
-            
-            <View style={styles.createChannelModelFullScreen}>
-                
+
+            <Modal isVisible={createPinModalDisplay}>
                 <View style={styles.createPinModal}>
                     <View style={styles.locationNameActiveAndJoinButtonContainer}>
-                        
                         {
-                            showErrorMessage ?
-                                <Text style={{color: 'red', marginTop: '5%', textAlign: 'center'}}>
-                                    There is a pin nearby, please join that one!
+                            someError ?
+                                <Text style={{color: 'red', marginTop: '5%', textAlign: 'center', fontSize: RFValue(12)}}>
+                                    {showErrorMessage ? "There is a pin nearby, please join that one!" : null}
+                                    {showPinNameErrorMessage ? "Give your pin a name!" : null}
+                                    {showUnexpectedErrorMessage ? "Unexpected Error sorry!" : null}
                                 </Text>
                             :
                             <TextInput style={styles.createPinModalPlaceholder} placeholderTextColor='#585858' placeholder="New pin name..." autoFocus={true}
                             onChangeText={(text) => setNewPinName(text)} multiline={false} maxLength={20}
                             />
                         }
-                        
-
                         <Pressable style={styles.createPinModalButton} disabled={showErrorMessage}
                             onPress={() => {createPinPress()}}
                         >
                             <Text style={[styles.createChannelText, {color: showErrorMessage ? 'grey' : 'white'}]}>Create</Text>				
                         </Pressable>
                     </View>
-                    
                     <IIcon style={styles.createPinModalClose} name='close-outline' size={scale(30)}
                     onPress={() => {setCreatePinModalDisplay(false)}}/> 
                 </View>	
-                    
-            </View>
-            
-                
-        </Modal>
+            </Modal>
+      
     )
 }
 

@@ -1,41 +1,20 @@
-import React, { useEffect, useState, useContext, useRef } from 'react';
-import { View, Image, Text, Pressable, FlatList, SafeAreaView, RefreshControl, ImageBackground } from 'react-native';
+import React, { useEffect, useState, useContext } from 'react';
+import { View, Text, Pressable, FlatList, SafeAreaView, ImageBackground, Alert } from 'react-native';
 import styles from './styles';
 import IIcon from 'react-native-vector-icons/Ionicons';
 import MIIcon from 'react-native-vector-icons/MaterialIcons';
-import ADIcon from 'react-native-vector-icons/AntDesign';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { LoggedInContext } from '../App';
-import LinearGradient from 'react-native-linear-gradient';
-import MaskedView from '@react-native-community/masked-view';
 import PostModal from './postModal';
 import OwnPosts from './ownPostModal';
-import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
+import { scale } from 'react-native-size-matters';
 import firestore from '@react-native-firebase/firestore';
-import { TapGestureHandler, Gesture, GestureDetector, GestureHandlerRootView, Directions } from 'react-native-gesture-handler';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 async function ViewChannelFeed(userUId, selectedChannelID) {
     return await new Promise(async (resolve, reject) => {
         // check if user is still checked into this channel
         // by checking the channel and time
-        let userCheckedInTime = null
-
-
-        await firestore()
-            .collection('Users')
-            .doc(userUId)
-            .get()
-            .then(docSnapshot => {
-                if (docSnapshot.exists) {
-                    let seconds = docSnapshot.data().ChannelJoined.nanoseconds / 1000000000 + docSnapshot.data().ChannelJoined.seconds
-                    userCheckedInTime = seconds
-                }
-                else {
-                    //throw error
-                    console.log('error')
-                }
-            })
-
         let start = new Date();
 
         function subtractHours(numOfHours, date = new Date()) {
@@ -55,6 +34,7 @@ async function ViewChannelFeed(userUId, selectedChannelID) {
             .orderBy('TimeUploaded', 'desc')
             .limit(100)
             .get()
+            //console.log('viewfeed channels posts')
 
         for (let i = 0; i < querySnapshot.size; i++) {
             const snapshot = querySnapshot.docs[i];
@@ -67,18 +47,21 @@ async function ViewChannelFeed(userUId, selectedChannelID) {
                 UserLiked: false,
             }
             const docID = snapshot.id
+            //console.log('docid', docID)
             const likedQuerySnapshot = await firestore()
                 .collection('Channels')
                 .doc(selectedChannelID)
                 .collection('Posts')
                 .doc(docID)
-                .collection('Likedby')
+                .collection('LikedBy')
                 .get();
+                //console.log('view posts likedby')
+
             
             for (let j = 0; j < likedQuerySnapshot.size; j++) {
                 const likedBy = likedQuerySnapshot.docs[j];
                 
-                if (likedBy.data().UserID == userUId) {
+                if (likedBy.data().LikerID == userUId) {
                     
                     obj.UserLiked = true;
                 }
@@ -92,360 +75,27 @@ async function ViewChannelFeed(userUId, selectedChannelID) {
             Posts.push(obj)
 
         } 
-        //console.log(Posts)
         resolve(Posts);
-
-
     });
 }
 
-
-
 async function getChannelName(selectedChannelID) {
     let channelName = ''
-    //console.log(selectedChannelID)
     await firestore()
         .collection('Channels')
         .doc(selectedChannelID)
         .get()
         .then(docSnapshot => {
-            
             let data = docSnapshot.data()
-            console.log('gerge', data)
             channelName = data.ChannelName
         })
-
+       // console.log('reading channel name') WORKS
     return channelName
 
 }
 
-async function ChangeTimeForUserPosts(UserID) {
-    const usersPosts = await firestore().collection('Users').doc(UserID).collection('UserPosts').get()
-
-    const batch = firestore().batch()
-
-    usersPosts.forEach(docSnapshot => {
-        batch.update(docSnapshot.ref, {
-            TimeUploaded: 0
-        })
-    })
-    return batch.commit()
-}
-
-async function ChangeTimeForChannelPosts(UserID, ChannelID) {
-    const channelPostsByUser = await firestore().collection('Channels').doc(ChannelID)
-        .collection('Posts').where('PostOwner', '==', UserID).get()
-
-    const batch = firestore().batch()
-
-    channelPostsByUser.forEach(docSnapshot => {
-        batch.update(docSnapshot.ref, {
-            TimeUploaded: 0,
-        })
-    })
-
-    return batch.commit() 
-
-}
-
-async function LikePost(UserID, PostID, ImageURL, selectedChannelID, postOwner) {
-    let PostLikeCount = 0;
-
-    // get the like count on the post
-    await firestore()
-        .collection('PostLikes')
-        .doc(PostID) 
-        .get()
-        .then(docSnapshot => {
-            if (docSnapshot.exists) {
-                PostLikeCount = docSnapshot.data().LikeCount;
-            }
-        });
-
-    // add 1 to the like count and update
-    PostLikeCount += 1;
-
-    await firestore()
-        .collection('PostLikes')
-        .doc(PostID)
-        .update({
-            LikeCount: PostLikeCount
-        });
-
-    // check if person is added to user's liked people already
-    let alreadyLiked = false;
-    await firestore()
-        .collection('PeopleLiked')  
-        .doc(UserID)
-        .collection('Users')
-        .doc(postOwner)
-        .get()
-        .then(docSnapshot => {
-            if (docSnapshot.exists) {
-                alreadyLiked = true;
-            }
-        });
-    const time = new Date();
-
-    // add user to liked people if not liked already
-    // else just update the time they were liked
-    if (alreadyLiked == false) {
-        await firestore()
-        .collection('PeopleLiked')
-        .doc(UserID)
-        .collection('Users')
-        .doc(postOwner)
-        .set({
-            TimeLiked: time,
-            UserID: postOwner
-        });
-    }
-    else {
-        await firestore()
-        .collection('PeopleLiked')
-        .doc(UserID)
-        .collection('Users')
-        .doc(postOwner)
-        .set({
-            TimeLiked: time,
-            UserID: postOwner
-        });
-    }
-
-    // check if user has already liked the post
-    let userLikedPost = false
-    await firestore()
-    .collection('Channels')
-    .doc(selectedChannelID)
-    .collection('Posts')
-    .doc(PostID)
-    .collection('Likedby')
-    .doc(UserID)
-    .get()
-    .then(docSnapshot => {
-        if (docSnapshot.exists) {
-            userLikedPost = true
-        }
-    })
-
-    // user has not liked the post
-    if (userLikedPost == false) {
-        // add user to the posts likedby collection
-        await firestore()
-        .collection('Channels')
-        .doc(selectedChannelID)
-        .collection('Posts')
-        .doc(PostID)
-        .collection('Likedby')
-        .doc(UserID)
-        .set({
-            UserID: UserID
-        })
-
-        await firestore()
-        .collection('UserLikedPosts')
-        .doc(UserID)
-        .collection('Posts')
-        .doc(PostID)
-        .set({
-            Channel: selectedChannelID,
-            PostID: PostID,
-            TimeLiked: time
-        })
-
-        let postLikedCount = 0
-        let postsLikedCountExists = false
-        await firestore()
-        .collection('UserLikedPosts')
-        .doc(UserID)
-        .get()
-        .then(docSnapshot => {
-            if (docSnapshot.exists) {
-                postLikedCount = docSnapshot.data().PostsLikedCount
-                postsLikedCountExists = true
-            }
-        })
-        postLikedCount += 1
-        if (postsLikedCountExists == true) {
-            await firestore()
-            .collection('UserLikedPosts')
-            .doc(UserID)
-            .update({
-                PostsLikedCount: postLikedCount
-            }) 
-        } else {
-            await firestore()
-            .collection('UserLikedPosts')
-            .doc(UserID)
-            .set({
-                PostsLikedCount: postLikedCount
-            }) 
-        }
-
-        // add to postowners notifications
-        await firestore()
-        .collection('Notifications')
-        .doc(postOwner)
-        .collection('Notifs')
-        .add({
-            PostURL: ImageURL,
-            TimeNotified: time
-        })
-        // increment postowners notif count
-        let postOwnerNotifCount = 0
-        await firestore()
-        .collection('Notifications')
-        .doc(postOwner)
-        .get()
-        .then(docSnapshot => {
-            postOwnerNotifCount = docSnapshot.data().NotificationCount
-        }) 
-        postOwnerNotifCount += 1
-        await firestore()
-        .collection('Notifications')
-        .doc(postOwner)
-        .update({
-            NotificationCount: postOwnerNotifCount
-        })
-    } 
-
-    // check if it is match, if so, create notif for match and add to new friends
-    // if not, add to postowner notifications
-    let userLikedPostOwner = false
-    let postOwnerLikedUser = false
-
-    await firestore()
-    .collection('PeopleLiked')
-    .doc(UserID)
-    .collection('Users')
-    .get()
-    .then((querySnapshot) => {
-        querySnapshot.forEach(docSnapshot => {
-            if (docSnapshot.data().UserID == postOwner) {
-                userLikedPostOwner = true
-            }
-        })
-    })
-
-    await firestore()
-    .collection('PeopleLiked')
-    .doc(postOwner)
-    .collection('Users')
-    .get()
-    .then((querySnapshot) => {
-        querySnapshot.forEach(docSnapshot => {
-            if (docSnapshot.data().UserID == UserID) {
-                postOwnerLikedUser = true
-            }
-        })
-    }) 
-    
-    if (userLikedPostOwner == true && postOwnerLikedUser == true) {
-        console.log('here')
-        // get postOwner username
-        let postOwnerUsername = ''
-        let postOwnerProfilePic = '' 
-        await firestore()
-        .collection('Users')
-        .doc(postOwner)
-        .get()
-        .then(docSnapshot => {
-            postOwnerUsername = docSnapshot.data().Username
-            postOwnerProfilePic = docSnapshot.data().ProfilePic
-        })
-        // get UserID username
-        let userIDUsername = ''
-        let userIDProfilePic = ''
-        await firestore()
-        .collection('Users')
-        .doc(UserID)
-        .get()
-        .then(docSnapshot => {
-            userIDUsername = docSnapshot.data().Username
-            userIDProfilePic = docSnapshot.data().ProfilePic
-        })
-
-        // match notif for UserID
-        await firestore()
-        .collection('Notifications')
-        .doc(UserID)
-        .collection('Notifs')
-        .add({
-            MatchedWith: postOwnerUsername,
-            ProfilePic: postOwnerProfilePic,
-            TimeNotified: time
-        })
-        // new friends for UserID
-        await firestore()
-        .collection('Friends')
-        .doc(UserID)
-        .collection('FriendsWith')
-        .add({
-            Messaged: false,
-            ProfilePic: postOwnerProfilePic,
-            Uid: postOwner,
-            Username: postOwnerUsername
-        })
-        // increment notif count for UserID
-        let userIDNotifCount = 0
-        await firestore()
-        .collection('Notifications')
-        .doc(UserID)
-        .get()
-        .then(docSnapshot => {
-            userIDNotifCount = docSnapshot.data().NotificationCount
-        })
-        userIDNotifCount += 1
-        await firestore()
-        .collection('Notifications')
-        .doc(UserID)
-        .update({
-            NotificationCount: userIDNotifCount
-        })
-
-        // match notif for postOwner
-        await firestore()
-        .collection('Notifications')
-        .doc(postOwner)
-        .collection('Notifs')
-        .add({
-            MatchedWith: userIDUsername,
-            ProfilePic: userIDProfilePic,
-            TimeNotified: time
-        })
-        // new friends for postOwner
-        await firestore()
-        .collection('Friends')
-        .doc(postOwner)
-        .collection('FriendsWith')
-        .add({
-            Messaged: false,
-            ProfilePic: userIDProfilePic,
-            Uid: UserID,
-            Username: userIDUsername
-        })
-        // increment notif count for UserID
-        let postOwnerNotifCount = 0
-        await firestore()
-        .collection('Notifications')
-        .doc(postOwner)
-        .get()
-        .then(docSnapshot => {
-            postOwnerNotifCount = docSnapshot.data().NotificationCount
-        })
-        userIDNotifCount += 1
-        await firestore()
-        .collection('Notifications')
-        .doc(postOwner)
-        .update({
-            NotificationCount: postOwnerNotifCount
-        })
-
-    }
-}
-
-function PostsFeed({ navigation, route }) {
-    const { messageDisplay, setMessageDisplay, notifDisplay, setNotifDisplay, user, selectedPost, setSelectedPost, selectedPinId, channelPosts, setChannelPosts, justUnliked, setJustUnliked } = useContext(LoggedInContext);
+function PostsFeed({ navigation }) {
+    const { setMessageDisplay, setNotifDisplay, user, selectedPost, setSelectedPost, selectedPinId, channelPosts, setChannelPosts, justUnliked, setJustUnliked, selectedChannelId, setSelectedChannelId } = useContext(LoggedInContext);
     const [openPost, setOpenPost] = useState(false);
     const [ownPost, setOwnPost] = useState(false);
     //const [channelPosts, setChannelPosts] = useState()
@@ -458,103 +108,30 @@ function PostsFeed({ navigation, route }) {
     const [selectPostIndex, setSelectedPostIndex] = useState()
     const [doubleTapped, setDoubleTapped] = useState(false)
     //const [unlikePost, setUnlikePost] = useState(false)
-    const [postIsLiked, setPostIsLiked] = useState(false)
     // in seconds
     const [lastPostedTime, setLastPostedTime] = useState()
     const [canPostAnother, setCanPostAnother] = useState(false)
+    const [messageButtonPressed, setMessageButtonPressed] = useState(false)
+    const [notifButtonPressed, setNotifButtonPressed] = useState(false)
+    const [ownPostsButtonPressed, setOwnPostsButtonPressed] = useState(false)
+    const [showFirstTimeMsg, setShowFirstTimeMsg] = useState(true)
 
-    const { selectedChannelID } = route.params;
-
-    async function LeaveChannel(UserID, ChannelID) {
-        //update users own details
-        await firestore()
-            .collection('Users')
-            .doc(UserID)
-            .update({
-                CurrentChannel: 0,
-                ChannelJoined: 0,
-            });
-
-        // change time for userPosts
-        ChangeTimeForUserPosts(UserID)
-
-
-        // delete posts from from user, postLikes, channels
-        ChangeTimeForChannelPosts(UserID, ChannelID)
-
-        // reduce channel users count by one in the pin
-        let channelUsersCount;
-        await firestore()
-            .collection('Pins')
-            .doc(selectedPinId)
-            .collection('Channels')
-            .doc(ChannelID)
-            .get()
-            .then(docSnapshot => {
-                channelUsersCount = docSnapshot.data().ActiveUsers;
-            })
-        channelUsersCount -= 1;
-
-        await firestore()
-            .collection('Pins')
-            .doc(selectedPinId)
-            .collection('Channels')
-            .doc(ChannelID)
-            .update({
-                ActiveUsers: channelUsersCount
-            })
-
-    }
-
-    const singleTap = Gesture.Tap()
-        .numberOfTaps(1)
-        .onStart(() => {
-            //openPostLikeCheck(selectedPost.PostID, selectedChannelID, user.uid)
-            setOpenPost(true)
-            //console.log('singletap doubletap check', doubleTapped)
-
-        })
-        .onFinalize(() => {
-        }).runOnJS(true)
-
-    const doubleTap = Gesture.Tap()
-        .numberOfTaps(2)
-        .onStart(() => {
-            //console.log(item) 
-
-            //console.log(selectedPostId)
-
-            console.log('doubles')
-            console.log('postOwner', postOwner)
-            console.log('selectedChannelID', selectedChannelID)
-            if (selectedPost) {
-                console.log('selectedPostId', selectedPost.PostID) 
-            }
-            console.log(doubleTapped)
-            setDoubleTapped(true) 
-        })
-        .onEnd(() => {
-            if (selectedPost) {
-                LikePost(user.uid, selectedPost.PostID, selectedPost.ImageURL, selectedChannelID, postOwner) 
-            }
-            
-        })
-        .onFinalize(() => {
-            
-            
-        }).runOnJS(true)
+    useEffect(() => {
+        setTimeout(() => {
+            setMessageButtonPressed(false)
+            setNotifButtonPressed(false)
+            setOwnPostsButtonPressed(false)
+        }, 100)
+    }, [messageButtonPressed, notifButtonPressed, ownPostsButtonPressed])
  
     useEffect(() => {
         //console.log('selectPostIndex', selectPostIndex)
         if (selectPostIndex >= 0 && doubleTapped == true) {
-            console.log('doubleTapped', doubleTapped)
             let trial = channelPosts 
             setDoubleTapped(false)
             //console.log('selectPostIndex', selectPostIndex)
             trial[selectPostIndex].UserLiked = true
-            setChannelPosts(trial)
-             
-            console.log('double tap end', doubleTapped)  
+            setChannelPosts(trial) 
         }
         //console.log('justUnliked',justUnliked)
         if (justUnliked == true) {
@@ -574,95 +151,95 @@ function PostsFeed({ navigation, route }) {
 
         setRefresh(true)
 
-        let userCheckedInTime = null
+        let userLastPostedTime = 0
+        let isUserCheckedIn = true
 
+        // check what time user checked in. Throw error if user is not checked in
         await firestore()
             .collection('Users')
             .doc(user.uid)
             .get()
             .then(docSnapshot => {
-                if (docSnapshot.exists) {
+                if (docSnapshot.data().LastPosted) {
                     //console.log(docSnapshot.data().ChannelJoined)
-                    let seconds = docSnapshot.data().ChannelJoined.nanoseconds / 1000000000 + docSnapshot.data().ChannelJoined.seconds
-                    userCheckedInTime = seconds
-                }
-                else {
-                    //throw error
-                    console.log('error')
+                    let seconds = docSnapshot.data().LastPosted.nanoseconds / 1000000000 + docSnapshot.data().LastPosted.seconds
+                    userLastPostedTime = seconds
                 }
             })
 
         // curr time in seconds
         let currSeconds = new Date().getTime() / 1000;
 
-        // if user is not checked in throw errors
-        if (currSeconds - userCheckedInTime >= 3600) {
+        // if user is not checked in throw errors (more than an hour since posting)
+        if (currSeconds - userLastPostedTime >= 3600) {
             // throw error
-            console.log('error')
-        }
-
-
-        let start = new Date();
-
-        function subtractHours(numOfHours, date = new Date()) {
-            date.setHours(date.getHours() - numOfHours);
-
-            return date;
-        }
-
-        let test = subtractHours(1, start)
-        let Posts = []
-        const querySnapshot = await firestore()
-            .collection('Channels')
-            .doc(selectedChannelID)
-            .collection('Posts')
-            .where('TimeUploaded', '>', test)
-            .orderBy('TimeUploaded', 'desc')
-            .limit(100)
-            .get()
-
-        for (let i = 0; i < querySnapshot.size; i++) {
-            const snapshot = querySnapshot.docs[i];
-            let obj = {
-                Caption: '',
-                ImageURL: '',
-                PostID: '',
-                PostOwner: '',
-                TimeUploaded: null,
-                UserLiked: false,
-            }
-            const docID = snapshot.id
-            const likedQuerySnapshot = await firestore()
-                .collection('Channels')
-                .doc(selectedChannelID)
-                .collection('Posts')
-                .doc(docID) 
-                .collection('Likedby')
-                .get();
+            //console.log('errorinsde')
+            isUserCheckedIn = false
             
-            for (let j = 0; j < likedQuerySnapshot.size; j++) {
-                const likedBy = likedQuerySnapshot.docs[j];
-                
-                if (likedBy.data().UserID == user.uid) {
-                    
-                    obj.UserLiked = true;
-                }
-            }
-            let data = snapshot.data()
-            obj.Caption = data.Caption
-            obj.ImageURL = data.ImageURL
-            obj.PostID = data.PostID
-            obj.PostOwner = data.PostOwner
-            obj.TimeUploaded = data.TimeUploaded  
-            Posts.push(obj) 
-
-        } 
-        //console.log(Posts) 
-        if (Posts.length % 2 !== 0) {
-            formatData(Posts);
         }
-        setChannelPosts(Posts)
 
+        if (isUserCheckedIn === true) {
+            let start = new Date();
+
+            function subtractHours(numOfHours, date = new Date()) {
+                date.setHours(date.getHours() - numOfHours);
+
+                return date;
+            }
+
+            let test = subtractHours(1, start)
+            let Posts = []
+            const querySnapshot = await firestore()
+                .collection('Channels')
+                .doc(selectedChannelId)
+                .collection('Posts')
+                .where('TimeUploaded', '>', test)
+                .orderBy('TimeUploaded', 'desc')
+                .limit(100)
+                .get()
+
+            for (let i = 0; i < querySnapshot.size; i++) {
+                const snapshot = querySnapshot.docs[i];
+                let obj = {
+                    Caption: '',
+                    ImageURL: '',
+                    PostID: '',
+                    PostOwner: '',
+                    TimeUploaded: null,
+                    UserLiked: false,
+                }
+                const docID = snapshot.id
+                const likedQuerySnapshot = await firestore()
+                    .collection('Channels')
+                    .doc(selectedChannelId)
+                    .collection('Posts')
+                    .doc(docID) 
+                    .collection('LikedBy')
+                    .get();
+                
+                for (let j = 0; j < likedQuerySnapshot.size; j++) {
+                    const likedBy = likedQuerySnapshot.docs[j];
+                    
+                    if (likedBy.data().UserID == user.uid) {
+                        
+                        obj.UserLiked = true;
+                    }
+                }
+                let data = snapshot.data()
+                obj.Caption = data.Caption
+                obj.ImageURL = data.ImageURL
+                obj.PostID = data.PostID
+                obj.PostOwner = data.PostOwner
+                obj.TimeUploaded = data.TimeUploaded  
+                Posts.push(obj) 
+
+            } 
+            //console.log(Posts) 
+            if (Posts.length % 2 !== 0) {
+                formatData(Posts);
+            }
+            setChannelPosts(Posts)
+        }
         setRefresh(false)
     }
 
@@ -676,30 +253,35 @@ function PostsFeed({ navigation, route }) {
                 let data = docSnapshot.data()
                 lastPostedTime = (data.LastPosted.nanoseconds / 1000000000) + data.LastPosted.seconds
             }) 
-        //console.log(lastPostedTime)
+        //console.log('lastpostedtime',lastPostedTime) WORKS
         return lastPostedTime
     }
 
     async function getData() {
-        const data = await ViewChannelFeed(user.uid, selectedChannelID)
+        // const lastPostedTime = await checkLastPostedTime()
+        // setLastPostedTime(lastPostedTime)
+        // console.log('lastpostedtime getdata', lastPostedTime)
+        const data = await ViewChannelFeed(user.uid, selectedChannelId)
         if (data.length % 2 !== 0) {
             formatData(data);
         }
         setChannelPosts(data)
         //console.log(channelPosts)
-        const channelNameGet = await getChannelName(selectedChannelID)
+        const channelNameGet = await getChannelName(selectedChannelId)
         setChannelName(channelNameGet)
-        const lastPostedTime = await checkLastPostedTime()
-        setLastPostedTime(lastPostedTime)
         setDataLoaded(true)
     }
 
-    function checkIfUserCanPost() {
+    async function checkIfUserCanPost() {
         // curr time in seconds
         const time = new Date().getTime() / 1000;
         //console.log('current time', time)
-        //console.log('lastpostedtime', lastPostedTime)
-        if (time - lastPostedTime >= 900) {
+
+        const lastPostedTime = await checkLastPostedTime()
+        setLastPostedTime(lastPostedTime)
+        //console.log('lastpostedtime check', lastPostedTime)
+
+        if (time - lastPostedTime >= 300) {
             setCanPostAnother(true)
             //console.log('canpostanother true')
         } else {
@@ -708,8 +290,24 @@ function PostsFeed({ navigation, route }) {
         }
     }
 
+    async function firstTimeAlert() {
+        const firstTimeCheck = await AsyncStorage.getItem('firstTime')
+        if (firstTimeCheck === null) {
+            Alert.alert(
+                'Hey Newbie!',
+                "You must wait at least 5mins before you can post again. Otherwise, we're gonna get spammed!",
+                [
+                  {text: 'Got it!', onPress: () => AsyncStorage.setItem('firstTime', 'true'), style: 'cancel'},
+                ],
+            );
+        }
+        
+    }
+
+
 
     useEffect(() => {
+        firstTimeAlert()
         getData()
         //console.log(channelPosts)
         checkIfUserCanPost()
@@ -717,19 +315,6 @@ function PostsFeed({ navigation, route }) {
         return () => {
             clearInterval(interval)
         }
-    }, [])
-
-    // get notifCount
-    useEffect(() => {
-        const subscriber = firestore()
-            .collection('Notifications')
-            .doc(user.uid)
-            .onSnapshot(docSnapshot => {
-                let notifCount = docSnapshot.data().NotificationCount;
-                setNotiCount(notifCount)
-            })
-
-        return () => subscriber()
     }, [])
 
     // get messages count
@@ -752,32 +337,20 @@ function PostsFeed({ navigation, route }) {
         <SafeAreaView style={styles.MBBackground}>
 
             <View style={styles.postsFeedHeader}>
-                <View style={{ flex: 1, width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                <View style={{ height: '100%', width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
                     <Pressable style={styles.postsFeedHeaderBackButton} onPress={() => {
                         setMessageDisplay(true); navigation.navigate('Map'); setNotifDisplay(true);
-                        LeaveChannel(user.uid, selectedChannelID); setChannelPosts()
+                        setChannelPosts(); setSelectedChannelId();
                     }}>
                         <MIIcon name='arrow-forward-ios' size={scale(30)} color='black' />
                     </Pressable>
-                    <View style={{ justifyContent: 'center', height: '100%' }}>
+                    <View style={{ justifyContent: 'center', height: '110%'}}>
                         <Text style={styles.socialTextWhite30}>
-                            SOCIALYSE
+                            Socialyse
                         </Text>
                         <Text style={styles.channelNameInPostFeed}>
-                            {channelName}
+                            @{channelName}
                         </Text>
-                    </View>
-
-
-                    <View style={styles.notificationContainerPostsFeed}>
-                        <Pressable style={styles.notificationButton2} onPress={() => navigation.navigate('notifications')}>
-                            <IIcon name='notifications-outline' size={scale(28)} color='white' />
-                            <View style={styles.notificationCountContainer}>
-                                <Text style={styles.notifCountText}>
-                                    {notiCount}
-                                </Text>
-                            </View>
-                        </Pressable>
                     </View>
                 </View>
             </View>
@@ -790,47 +363,48 @@ function PostsFeed({ navigation, route }) {
                     onRefresh={() => PullToRefresh()}
                     refreshing={refresh}
                     renderItem={({ item, index }) => {
+                        //console.log('item,', item)
                         if (item.empty === true) {
 
                             return <View style={styles.blank} /> 
                         }  
                         return (
-                            <GestureHandlerRootView>
-                                <Pressable onPress={() => { setSelectedPost(item); setPostOwner(item.PostOwner); setSelectedPostIndex(index) }}>
-                                    <GestureDetector gesture={Gesture.Exclusive(doubleTap, singleTap)}>
-                                        <View style={styles.postContainer}>
-                                            <View style={styles.fullPost}>
-                                                <View style={{height: '85%'}}>
-                                                    <ImageBackground source={{ uri: item.ImageURL }} style={styles.postPhoto}>
-                                                        {
-                                                            item.UserLiked == true ?
-                                                            <Pressable style={{position: 'absolute', bottom: scale(5), left: scale(5)}}>
-                                                                <IIcon name='ios-heart' color='red' size={scale(14)}
-                                                            />
-                                                            </Pressable>
-                                                            : 
-                                                            null
-                                                        } 
-                                                    </ImageBackground> 
-                                                </View>
-                                                
-                                                <Text numberOfLines={1} style={styles.postCaption}>
-                                                    {item.Caption}
-                                                </Text>
+                            
+                            <View>
+                                <Pressable    
+                                onPress={() => { setSelectedPost(item); setPostOwner(item.PostOwner); setSelectedPostIndex(index); console.log('tap'); console.log('selectefd', selectedPost); setOpenPost(true) }}>
+                                    <View style={styles.postContainer}>
+                                        <View style={styles.fullPost}>
+                                            <View style={{height: '85%'}}>
+                                                <ImageBackground source={{ uri: item.ImageURL }} style={styles.postPhoto}>
+                                                    {
+                                                        item.UserLiked == true ?
+                                                        <Pressable style={{position: 'absolute', bottom: scale(5), left: scale(5)}}>
+                                                            <IIcon name='ios-heart' color='red' size={scale(14)}
+                                                        />
+                                                        </Pressable>
+                                                        : 
+                                                        null
+                                                    } 
+                                                </ImageBackground> 
                                             </View>
+                                            
+                                            <Text numberOfLines={1} style={styles.postCaption}>
+                                                {item.Caption}
+                                            </Text>
                                         </View>
-                                    </GestureDetector>
+                                    </View>
                                 </Pressable>
-                            </GestureHandlerRootView>
+                            </View>
                         )
                     }}>
                 </FlatList>
-                <PostModal openPost={openPost} setOpenPost={setOpenPost} selectedChannelID={selectedChannelID} channelPosts={channelPosts} selectPostIndex={selectPostIndex}/>
+                <PostModal openPost={openPost} setOpenPost={setOpenPost} selectedChannelID={selectedChannelId} channelPosts={channelPosts} selectPostIndex={selectPostIndex}/>
             </View>
 
             <View style={styles.postsFeedFooter}>
-                <Pressable style={styles.messageButtonPostsFeed} onPress={() => navigation.navigate('Dms')}>
-                    <IIcon style={styles.messageIcon} name='ios-chatbubbles-outline' size={scale(25)} />
+                <Pressable style={styles.messageButtonPostsFeed} onPress={() => {setMessageButtonPressed(true);navigation.navigate('Dms')}}>
+                    <IIcon style={styles.messageIcon} name='ios-chatbubbles-outline' size={scale(28)} color={messageButtonPressed ? 'grey' : 'white'}/>
                     <View style={styles.messageCountContainerFeed}>
                         <Text style={styles.notifCountText}>
                             {messageCount}
@@ -838,18 +412,18 @@ function PostsFeed({ navigation, route }) {
                     </View>
                 </Pressable>
 
-                <Pressable disabled={!canPostAnother} onPress={() => navigation.navigate('MakeAPost', { selectedChannelID: selectedChannelID })}>
+                <Pressable disabled={!canPostAnother} onPress={() => navigation.navigate('MakeAPost', { selectedChannelID: selectedChannelId })}>
                     <View style={[styles.takePhotoButtonPostFeed, { borderColor: canPostAnother ? 'white' : 'grey' }]}>
-                        <IIcon name="ios-camera-outline" size={scale(25)} color={canPostAnother ? 'white' : 'grey'} />
+                        <IIcon name="ios-camera-outline" size={scale(28)} color={canPostAnother ? 'white' : 'grey'} />
                     </View>
                 </Pressable>
 
-                <Pressable style={styles.ownPostsButton} onPress={() => { setOwnPost(true) }}>
-                    <MCIcon name='account-details' size={scale(25)} color='white' />
+                <Pressable style={styles.ownPostsButton} onPress={() => { setOwnPost(true); setOwnPostsButtonPressed(true) }}>
+                    <MCIcon name='account-details' size={scale(28)} color={ownPostsButtonPressed ? 'grey' : 'white'} />
                 </Pressable>
             </View>
 
-            <OwnPosts ownPost={ownPost} setOwnPost={setOwnPost} selectedChannelID={selectedChannelID}/>
+            <OwnPosts ownPost={ownPost} setOwnPost={setOwnPost} selectedChannelID={selectedChannelId}/>
 
         </SafeAreaView>
     );
@@ -860,5 +434,26 @@ function PostsFeed({ navigation, route }) {
 export default PostsFeed;
 
 /*
-                    
+         <Pressable style={styles.postsFeedHeaderBackButton} onPress={() => {
+                        setMessageDisplay(true); navigation.navigate('Map'); setNotifDisplay(true);
+                        LeaveChannel(user.uid, selectedChannelId); setChannelPosts(); setSelectedChannelId();
+                    }}>           
 */
+{/* <Pressable style={styles.messageButtonPostsFeed} onPress={() => {setMessageButtonPressed(true);navigation.navigate('Dms')}}>
+    <IIcon style={styles.messageIcon} name='ios-chatbubbles-outline' size={scale(25)} color={messageButtonPressed ? 'grey' : 'white'}/>
+    <View style={styles.messageCountContainerFeed}>
+        <Text style={styles.notifCountText}>
+            {messageCount}
+        </Text>
+    </View>
+</Pressable>
+
+<Pressable disabled={!canPostAnother} onPress={() => navigation.navigate('MakeAPost', { selectedChannelID: selectedChannelId })}>
+    <View style={[styles.takePhotoButtonPostFeed, { borderColor: canPostAnother ? 'white' : 'grey' }]}>
+        <IIcon name="ios-camera-outline" size={scale(25)} color={canPostAnother ? 'white' : 'grey'} />
+    </View>
+</Pressable>
+
+<Pressable style={styles.ownPostsButton} onPress={() => { setOwnPost(true); setOwnPostsButtonPressed(true) }}>
+    <MCIcon name='account-details' size={scale(25)} color={ownPostsButtonPressed ? 'grey' : 'white'} />
+</Pressable> */}

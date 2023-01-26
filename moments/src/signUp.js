@@ -1,16 +1,17 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View, Text, Pressable, TextInput, SafeAreaView } from 'react-native';
+import { View, Text, Pressable, TextInput, SafeAreaView, ActivityIndicator, Keyboard, Dimensions, Linking } from 'react-native';
 import styles from './styles';
-import ActiveNowModal from './captionModal';
-import IIcon from 'react-native-vector-icons/Ionicons'
 import MIIcon from 'react-native-vector-icons/MaterialIcons';
-import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import ADIcon from 'react-native-vector-icons/AntDesign'
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
+import { scale } from 'react-native-size-matters';
 import OTPInputView from '@twotalltotems/react-native-otp-input';
+import DatePicker from 'react-native-date-picker'
 import {LoggedOutContext} from '../App'
+import moment from 'moment';
+const screenHeight = Dimensions.get("window").height
+const screenWidth = Dimensions.get("window").width
+
 
 class PhoneNumberError extends Error {
     constructor(message) {
@@ -28,7 +29,7 @@ class UsernameError extends Error {
 
 async function CheckUsernameTaken(signUpUsername) {
     await firestore()
-    .collection('Users')
+    .collection('UsernameAndDP')
     .get()
     .then((querySnapshot) => {
         querySnapshot.forEach(snapshot => {
@@ -36,7 +37,7 @@ async function CheckUsernameTaken(signUpUsername) {
             if (data.Username == signUpUsername) {
                 throw new UsernameError("username taken error")
             }
-        })
+        }) 
     })
 }
 
@@ -55,51 +56,66 @@ async function checkPhoneNumberExists(signUpPhoneNumber) {
 function SignUp ({navigation}) {
 
     const [signUpBlur, setSignUpBlur] = useState(true);
-    const [password, setPassword] = useState(false);
     const [confirm, setConfirm] = useState(null);
     const [code, setCode] = useState('');
+    const [date, setDate] = useState(new Date());
+    const [signUpPressed, setSignUpPressed] = useState(false)
+    const [confirmButtonPressed, setConfirmButtonPressed] = useState(false)
+    const [showLoading, setShowLoading] = useState(false)
 
     const [phoneInputCheck, setphoneInputCheck] = useState(false);
     const [nameInputCheck, setNameInputCheck] = useState(false);
     const [usernameInputCheck, setUsernameInputCheck] = useState(false);
     const [showPhoneNumberErrorMessage, setShowPhoneNumberErrorMessage] = useState(false)
     const [showUsernameErrorMessage, setShowUsernameErrorMessage] = useState(false)
+    const [invalidPhoneNumberError, setInvalidPhoneNumberError] = useState(false)
+    const [open, setOpen] = useState(false) 
+    const [dateIsSet, setDateIsSet] = useState(false)
+    const [confirmCodeErrorMessage, setConfirmCodeErrorMessage] = useState(false)
+
+
     //const {user, setUser} = useContext(LoggedInContext);
-    const {signUpName, setSignUpName, signUpUsername, setSignUpUsername, signUpPhoneNumber, setSignUpPhoneNumber} = useContext(LoggedOutContext)
+    const {signUpName, setSignUpName, signUpUsername, setSignUpUsername, signUpPhoneNumber, setSignUpPhoneNumber, setSignUpDoB} = useContext(LoggedOutContext)
 
 
     useEffect(() => {
-		if (phoneInputCheck === true && nameInputCheck === true && usernameInputCheck === true) {
+		if (phoneInputCheck === true && nameInputCheck === true && usernameInputCheck === true && dateIsSet === true) {
             setSignUpBlur(false);
         }
-	}, [signUpPhoneNumber, signUpName, signUpUsername, password])
+	}, [signUpPhoneNumber, signUpName, signUpUsername, dateIsSet])
 
 
     // FIREBASE
     // Handle the button press
     async function signInWithPhoneNumber(signUpPhoneNumber) {
-        //const newNumber = '+61' + signUpPhoneNumber.substring(1);
-        //const confirmation = await auth().signInWithPhoneNumber(newNumber);
-        const confirmation = await auth().signInWithPhoneNumber(signUpPhoneNumber);
+        const newNumber = '+61' + signUpPhoneNumber.substring(1);
+        const confirmation = await auth().signInWithPhoneNumber(newNumber);
         setConfirm(confirmation);
     }
 
     async function SignUpPress() {
         try {
+            setShowLoading(true)
             await checkPhoneNumberExists(signUpPhoneNumber)
             await CheckUsernameTaken(signUpUsername)
             await signInWithPhoneNumber(signUpPhoneNumber)
         } catch (error){
-            console.log('error', error)
             if (error.name === "PhoneNumberError") {
+                setShowLoading(false)
                 setShowPhoneNumberErrorMessage(true)
             }
-            if (error.name === "UsernameError") {
+            else if (error.name === "UsernameError") {
+                setShowLoading(false)
                 setShowUsernameErrorMessage(true)
+            } else {
+                console.log(error)
+                setShowLoading(false)
+                setInvalidPhoneNumberError(true)
             }
             setTimeout(() => {
 				setShowPhoneNumberErrorMessage(false)
                 setShowUsernameErrorMessage(false)
+                setInvalidPhoneNumberError(false)
 			}, 1500)
 
         }
@@ -109,9 +125,45 @@ function SignUp ({navigation}) {
         try {
             await confirm.confirm(code);
         } catch (error) {
-          console.log('Invalid code.', error);
+            setConfirmCodeErrorMessage(true)
+            setTimeout(() => {
+                setConfirmCodeErrorMessage(false)
+            }, 1500)
         }  
     }
+
+    useEffect(() => {
+        setTimeout(() => {
+            setSignUpPressed(false)
+        }, 80)
+    }, [signUpPressed])
+
+    useEffect(() => {
+        setTimeout(() => {
+            setConfirmButtonPressed(false)
+        }, 80)
+    }, [confirmButtonPressed])
+
+    async function PrivacyPolicy() {
+        const URL = 'https://app.termly.io/document/privacy-policy/1774d57e-5112-4182-824b-740c958d85e8'
+        const supported = await Linking.canOpenURL(URL)
+        if (supported) {
+            await Linking.openURL(URL)
+        } else {
+            console.log('gg didnt wokr')
+        }
+    }
+
+    async function EULA() {
+        const URL = 'https://app.termly.io/document/eula/8248d241-36ed-42a2-bd10-fd394c0701f5'
+        const supported = await Linking.canOpenURL(URL)
+        if (supported) {
+            await Linking.openURL(URL)
+        } else {
+            console.log('gg didnt wokr')
+        }
+    }
+    
     /////////////////////////////////////////
 
     //console.log(signUpBlur)
@@ -120,64 +172,138 @@ function SignUp ({navigation}) {
             <SafeAreaView style={styles.signUpScreen}>
                 <View style={styles.signUpScreenSocialyse}>
                     <Text style={styles.signUpSocialTextYellow}>
-                        SOCIALYSE
+                        Socialyse
+                    </Text>
+                    <Text style={styles.signUpMsg}>
+                        Sign up to see what's happening around you.
                     </Text>
                 </View>
 
                 <View style={styles.signUpInputContainerSignUp}>
-                    <TextInput
-                    style={styles.inputs}
-                    placeholder='Phone number'
-                    onChangeText={(Text)=>{setphoneInputCheck(true); setSignUpPhoneNumber(Text)}}
-                    />
-                    <TextInput
-                    style={styles.inputs}
-                    placeholder='Name'
-                    onChangeText={(Text)=>{setNameInputCheck(true); setSignUpName(Text)}}
-                    />
-                    <TextInput
-                    style={styles.inputs}
-                    placeholder='Username'
-                    onChangeText={(Text)=>{setUsernameInputCheck(true); setSignUpUsername(Text)}}
+                    <View style={styles.signUpInputs}>
+                    {
+                        showPhoneNumberErrorMessage ?
+                        <Text style={{color: '#FF0000', marginTop: '1%', fontFamily: 'Helvetica'}}>
+                            Phone Number taken. Please log in instead!
+                        </Text>
+                        :
+                        <TextInput
+                        style={styles.signUpTextInput}
+                        placeholderTextColor='#BDBDBD'
+                        placeholder='Phone number'
+                        keyboardType='number-pad'
+                        onChangeText={(Text)=>{setphoneInputCheck(true); setSignUpPhoneNumber(Text)}}
+                        />
+                    }
+                        
+                    </View>
+                    <View style={styles.signUpInputs}>
+                        <TextInput
+                        style={styles.signUpTextInput}
+                        placeholderTextColor='#BDBDBD'
+                        placeholder='Name'
+                        onChangeText={(Text)=>{setNameInputCheck(true); setSignUpName(Text)}}
+                        />
+                    </View>
+                    <View style={styles.signUpInputs}>
+                        {
+                            showUsernameErrorMessage ?
+                            <Text style={{color: '#FF0000', marginTop: '1%', fontFamily: 'Helvetica'}}>
+                            Username taken. Please try another one!
+                            </Text>
+                            :
+                            <TextInput
+                            style={styles.signUpTextInput}
+                            placeholderTextColor='#BDBDBD'
+                            placeholder='Username'
+                            onChangeText={(Text)=>{setUsernameInputCheck(true); setSignUpUsername(Text)}}
+                            />
+                        }
+                        
+                    </View>
+                        
+                    
+                    <Pressable style={[styles.signUpInputs, {justifyContent: 'center'}]} onPress={() => {setOpen(true)}}>
+                        {
+                            dateIsSet ?
+                            <Text style={{marginLeft: '3%', fontSize: screenHeight * 0.02, fontFamily: 'Helvetica'}}>{moment(date).format('DD/MM/YYYY')}</Text>
+                            :
+                            <Text style={{color: '#BDBDBD', marginLeft: '3%',fontSize: screenHeight * 0.02, fontFamily: 'Helvetica'}}>Date of birth</Text>
+                        }
+                    </Pressable>
+                    <DatePicker
+                        modal
+                        mode='date'
+                        open={open}
+                        date={date}
+                        onConfirm={(date) => {
+                        setOpen(false)
+                        setDate(date)
+                        setDateIsSet(true)
+                        setSignUpDoB(date)
+                        }}
+                        onCancel={() => {
+                        setOpen(false)
+                        }}
                     />
                 </View>
+               
                 
                 
-                <Pressable style={[{ backgroundColor: signUpBlur ? '#DCDCDC' : 'white'}, styles.signUpButton]} 
+                <Pressable style={[{ backgroundColor: signUpBlur ? '#DCDCDC' : signUpPressed ? 'grey' :'white'}, styles.signUpButton]} 
                 disabled={signUpBlur}
-                onPress={() => {SignUpPress()}}
+                onPress={() => {SignUpPress(); setSignUpPressed(true); Keyboard.dismiss()}}
                 >
-                    <Text style={{fontSize: 16, fontWeight: '700', color: signUpBlur ? '#999999' : 'black'}}>
-                        Sign Up
+                    {
+                        invalidPhoneNumberError ?
+                        <Text style={{color: '#FF0000', marginTop: '1%', fontFamily: 'Helvetica'}}>
+                        Invalid phone number!
+                        </Text>
+                        :
+                        <Text style={{fontSize: 16, fontWeight: '700', color: signUpBlur ? '#999999' : 'black', fontSize: screenHeight * 0.022, fontFamily: 'Helvetica'}}>
+                            Sign Up
+                        </Text>
+                    }
+                </Pressable> 
+
+                
+                
+                
+                        
+                <View style={{flexDirection: 'column', marginTop: screenHeight * 0.67, width: screenWidth, alignItems: 'center', position: 'absolute'}}>
+                    <Text style={{maxWidth: '50%', fontSize: screenHeight * 0.016, fontWeight: '300', textAlign: 'center'}}>
+                        By signing up, you agree to our 
+                        <Text style={{fontSize: screenHeight * 0.016, fontWeight: '600', fontFamily: 'Helvetica'}} onPress={() => {PrivacyPolicy()}}>
+                        {' '}EULA{' '}
+                        </Text>
+                        and 
+                        <Text style={{fontSize: screenHeight * 0.016, fontWeight: '600', fontFamily: 'Helvetica'}}  onPress={() => {EULA()}}>
+                        {' '}Privacy Policy
+                        </Text>
+                        .
                     </Text>
-                </Pressable>  
-                {
-                    showPhoneNumberErrorMessage ?
-                    <Text style={{color: '#FF0000', marginTop: '1%'}}>
-                        Phone Number taken. Please log in instead!
-                    </Text>
-                    :
-                    null
-                }
-                {
-                    showUsernameErrorMessage ?
-                    <Text style={{color: '#FF0000', marginTop: '1%'}}>
-                    Username taken. Please try another one!
-                    </Text>
-                    :
-                    null
-                }
-                <View style={styles.HaveAccountLogin}>
-                    <Text style={{color: 'black', textAlign: 'center'}}>
-                        Have an account? {'\n'}
-                        <Pressable onPress={() => {navigation.goBack()}}>
-                            <Text style={{fontWeight: '700', color: 'black'}}> 
-                               Login.
+                    <View style={styles.HaveAccountLogin}>
+                        <Text style={{color: 'black', textAlign: 'center', fontSize: screenHeight * 0.022, fontFamily: 'Helvetica', fontWeight: '400'}}>
+                            Have an account? 
+                        </Text>
+                        <Pressable onPress={() => {navigation.navigate('Login')}}>
+                            <Text style={{fontWeight: '900', color: 'black', alignSelf: 'center', fontSize: screenHeight * 0.024, fontFamily: 'Helvetica'}}> 
+                                Login.
                             </Text>
                         </Pressable>
-                            
-                    </Text>
+                        {
+                            showLoading ?
+                            <ActivityIndicator size='small' style={{marginTop: '10%'}} color='white'/>
+                            :
+                            null
+                        }
+                    </View>
                 </View>
+
+                
+                
+               
+
             </SafeAreaView>
         )
     }
@@ -211,18 +337,14 @@ function SignUp ({navigation}) {
                 autoFocusOnLoad={true}
                 />    
                 
-                <Pressable onPress={() => confirmCode()} style={styles.confirmCodeButton}>
+                <Pressable onPress={() => {confirmCode(); setConfirmButtonPressed(true)}} style={[styles.confirmCodeButton, {backgroundColor: confirmButtonPressed ? '#6076A1' : '#96B9FE'}]}>
                     <Text style={styles.confirmCodeText}>
                         Confirm code
                     </Text>
                 </Pressable>
-
-
             </View>
         </SafeAreaView>
     )     
-
-
 }
 
 export default SignUp;

@@ -1,46 +1,32 @@
 import React, { useEffect, useState, useRef, useContext } from 'react';
-import { View, Text, Pressable, TextInput, SafeAreaView, ImageBackground } from 'react-native';
+import { View, Pressable, SafeAreaView, ImageBackground, Alert } from 'react-native';
 import styles from './styles';
 import IIcon from 'react-native-vector-icons/Ionicons'
 import MIIcon from 'react-native-vector-icons/MaterialIcons';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import ADIcon from 'react-native-vector-icons/AntDesign'
-import FIcon from 'react-native-vector-icons/Fontisto';
 import { LoggedInContext } from '../App'
-import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
-import { Camera, CameraPermissionStatus, useCameraDevices } from 'react-native-vision-camera';
+import { scale } from 'react-native-size-matters';
+import { Camera, useCameraDevices } from 'react-native-vision-camera';
 import storage from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { openSettings } from 'react-native-permissions';
+
 
 async function UploadProfilePic(ProfilePicDownloadedURL, uid) {
 
-    let profilePicExists = false
-    await firestore()
-    .collection('Users')
-    .doc(uid)
-    .get()
-    .then (docSnapshot => {
-        if (docSnapshot.exists) {
-            profilePicExists = true
-        }
-    })
-    // update
-    if (profilePicExists === true) {
-        await firestore()
-        .collection('Users')
-        .doc(uid)
-        .update({
-            ProfilePic: ProfilePicDownloadedURL
-        })
-    } else {
-        await firestore()
-        .collection('Users')
-        .doc(uid)
-        .set({
-            ProfilePic: ProfilePicDownloadedURL
-        })
-    }
+	await firestore()
+	.collection('Users')
+	.doc(uid)
+	.update({
+		ProfilePic: ProfilePicDownloadedURL
+	})
+	await firestore()
+	.collection('UsernameAndDP')
+	.doc(uid)
+	.update({
+		ProfilePic: ProfilePicDownloadedURL
+	})
 }
 
 function InitialTakePhotoForDP ({navigation}) {
@@ -49,16 +35,12 @@ function InitialTakePhotoForDP ({navigation}) {
 	const deviceFront = devices.front;
 
     const [cameraPermission, setCameraPermission] = useState();
-  	const [microphonePermission, setMicrophonePermission] = useState();
 	const [imageURL, setImageURL] = useState(null);
 	const [takePhotoButton, setTakePhotoButton] = useState(true);
 	const [backCamera, setbackCamera] = useState(true);
     const cameraref = useRef();
-    const [photoTaken, setPhotoTaken] = useState(false);
 
-	//const [showFooter, setShowFooter] = useState(false)
-
-    const { editProfileModal, setEditProfileModal, setEditProfileModaldpURL, dpURL, setDpURL, user} = useContext(LoggedInContext);
+    const { setEditProfileModal, setDpURL, user} = useContext(LoggedInContext);
 
 	const reference = storage().ref(`/ProfilePics/${user.uid}`)
 
@@ -66,7 +48,6 @@ function InitialTakePhotoForDP ({navigation}) {
 
     async function setInitialDP () {
         // upload to firestore and context state
-        
         await AsyncStorage.setItem(displayPhotoKey, 'true')
         navigation.navigate('Map')
     }
@@ -87,10 +68,8 @@ function InitialTakePhotoForDP ({navigation}) {
         await UploadProfilePic(downloadedURL, user.uid)
     }
 
-
-
     const takePhoto = async () => {
-		const photo = await cameraref.current.takeSnapshot({
+		const photo = await cameraref.current.takePhoto({
 			quality: 85,
 			skipMetadata: true
 		})
@@ -109,27 +88,38 @@ function InitialTakePhotoForDP ({navigation}) {
 
 	useEffect(() => {
 		Camera.getCameraPermissionStatus().then(setCameraPermission);
-		Camera.getMicrophonePermissionStatus().then(setMicrophonePermission);
 		getCameraPermission();
 	}, []);
 
 	const getCameraPermission = async () => {
 		try {
 			const newCameraPermission = await Camera.requestCameraPermission()
-			const newMicrophonePermission = await Camera.requestMicrophonePermission()
-			
+			setCameraPermission(newCameraPermission);
+			if (newCameraPermission !== 'authorized') {
+				// pop up alert
+				Alert.alert(
+					'Permission required',
+					'You need to enable your camera to take a photo!',
+					[
+					  {
+						text: 'Cancel',
+						onPress: () => console.log('Cancel Pressed'),
+						style: 'cancel',
+					  },
+					  {text: 'Open Settings', onPress: () => openSettings()},
+					],
+					{cancelable: false},
+				);
+			}
 		} catch (error) {
-			console.log(error)
+			
 		}
 	}
 	
-	if (cameraPermission == null || microphonePermission == null) {
+	if (cameraPermission == null) {
 		// still loading
 		return null;
 	}
-
-
-
 
     return (
         <SafeAreaView style={styles.initialTakePhotoforDPBackground}>
@@ -140,7 +130,7 @@ function InitialTakePhotoForDP ({navigation}) {
 							<ImageBackground style={styles.justTakenPhoto} source={{uri:'file://' + imageURL}}>
 								
 								<MCIcon name='camera-retake' style={styles.justTakenPhotoClose} size={scale(25)} color='white'
-								onPress={() => {closePhoto(); setPhotoTaken(false)}}
+								onPress={() => {closePhoto(); }}
 								/>
 							</ImageBackground>	 
 						</View>		
@@ -177,11 +167,11 @@ function InitialTakePhotoForDP ({navigation}) {
 						</View>
                         
 					: 
-					<Text>You must accept camera permission</Text>
+					null
 			}
 			{
 				takePhotoButton ? 
-				<Pressable onPress={() => {takePhotoAndButton(); setPhotoTaken(true) }}>
+				<Pressable onPress={() => {takePhotoAndButton(); }}>
 					<View style={styles.takePhotoButton}>
 						<IIcon name="ios-camera-outline" size={scale(36)} color='white'/>
 					</View>

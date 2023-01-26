@@ -1,43 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Pressable, TextInput, SafeAreaView } from 'react-native';
+import { View, Text, Pressable, SafeAreaView, Dimensions } from 'react-native';
 import styles from './styles';
-import ActiveNowModal from './captionModal';
-import IIcon from 'react-native-vector-icons/Ionicons'
-import MIIcon from 'react-native-vector-icons/MaterialIcons';
-import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import ADIcon from 'react-native-vector-icons/AntDesign'
-import database from '@react-native-firebase/database';
-import auth from '@react-native-firebase/auth';
 
+const screenHeight = Dimensions.get("window").height
 
 function LoginAndSignup ({navigation}) {
 
-    const [signUpBlur, setSignUpBlur] = useState(true);
-    const [email, setEmail] = useState(false);
-    const [name, setName] = useState(false);
-    const [username, setUsername] = useState(false);
-    const [password, setPassword] = useState(false);
-    const [confirm, setConfirm] = useState(null);
-    const [phoneNumber, setPhoneNumber] = useState()
-
-
-    const [phoneInputCheck, setphoneInputCheck] = useState(false);
-    const [nameInputCheck, setNameInputCheck] = useState(false);
-    const [usernameInputCheck, setUsernameInputCheck] = useState(false);
-    const [passwordInputCheck, setPasswordInputCheck] = useState(false);
+    const [loginPressed, setLoginPressed] = useState(false)
+    const [signUpPressed, setSignUpPressed] = useState(false)
 
     useEffect(() => {
-		if (passwordInputCheck === true && nameInputCheck === true && usernameInputCheck === true && passwordInputCheck === true) {
-            setSignUpBlur(false);
-        }
-	}, [email, name, username, password])
-    
-   
+        setTimeout(() => {
+            setLoginPressed(false)
+            setSignUpPressed(false)
+        }, 1000)
+    }, [loginPressed, signUpPressed])
+
     return (
         <SafeAreaView style={styles.signUpScreen}>
             <View style={styles.signUpScreenSocialyse}>
                 <Text style={styles.signUpSocialTextYellow}>
-                    SOCIALYSE
+                    Socialyse
                 </Text>
             </View>
             <View style={styles.signUpInfoContainer}>
@@ -47,8 +30,8 @@ function LoginAndSignup ({navigation}) {
                 </Text>
             </View>
             <View style={styles.loginInput}>
-                <Pressable style={styles.loginButton} onPress={() => {navigation.navigate('Login')}}>
-                    <Text style={{fontSize: 16, fontWeight: '700', color: 'black'}}>
+                <Pressable style={[styles.loginButton, {backgroundColor: loginPressed ? 'grey' : 'white'}]} onPress={() => {navigation.navigate('Login'); setLoginPressed(true)}}>
+                    <Text style={{fontSize: screenHeight * 0.022, fontWeight: '700', color: 'black'}}>
                         Log In
                     </Text>
                 </Pressable>
@@ -57,20 +40,15 @@ function LoginAndSignup ({navigation}) {
                 OR
             </Text>
 
-            <Pressable style={styles.signUpButton} 
-            onPress={() => {navigation.navigate('SignUp')}}
+            <Pressable style={[styles.signUpButton, {backgroundColor: signUpPressed ? 'grey' : 'white'}]} 
+            onPress={() => {navigation.navigate('SignUp'); setSignUpPressed(true)}}
             >
-                <Text style={{fontSize: 16, fontWeight: '700', color: 'black'}}>
+                <Text style={{fontSize: screenHeight * 0.022, fontWeight: '700', color: 'black'}}>
                     Sign Up
                 </Text>
             </Pressable>
-        
-            
-            
         </SafeAreaView>
     )
-    
-    
 }
 
 export default LoginAndSignup;

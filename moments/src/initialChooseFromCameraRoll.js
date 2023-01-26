@@ -1,61 +1,67 @@
-import React, { useEffect, useState, useRef, useContext } from 'react';
-import { View, Text, Pressable, TextInput, SafeAreaView, ImageBackground, Image, Platform } from 'react-native';
+import React, { useContext,useEffect } from 'react';
+import { View, Text, Pressable, SafeAreaView, Image, Alert } from 'react-native';
 import styles from './styles';
-import IIcon from 'react-native-vector-icons/Ionicons'
 import MIIcon from 'react-native-vector-icons/MaterialIcons';
-import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import ADIcon from 'react-native-vector-icons/AntDesign'
-import FIcon from 'react-native-vector-icons/Fontisto';
 import { LoggedInContext } from '../App';
 import ImagePicker from 'react-native-image-crop-picker';
 import { Dimensions } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
-import { utils } from '@react-native-firebase/app';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { PERMISSIONS, check, openSettings, request } from 'react-native-permissions';
+
 
 const screenWidth = Dimensions.get("window").width
 const screenHeight = Dimensions.get("window").height
 
 const displayPhotoKey = '@app:displayPhoto'
 
-
+async function getCameraRollPermission() {
+    if (Platform.OS === 'ios') {
+        check(PERMISSIONS.IOS.PHOTO_LIBRARY)
+        .then(async (result) => {
+            if (result !== 'granted') {
+                request(PERMISSIONS.IOS.PHOTO_LIBRARY).then(res => {
+                    Alert.alert(
+                        'Permission required',
+                        'We need location permission to work this app, Please allow location permission in your settings',
+                        [
+                        {
+                            text: 'Cancel',
+                            onPress: () => console.log('Cancel Pressed'),
+                            style: 'cancel',
+                        },
+                        {text: 'Open Settings', onPress: () => openSettings()},
+                        ],
+                        {cancelable: false},
+                    );
+                })
+            }
+        }) 
+    }
+}
 
 async function UploadProfilePic(ProfilePicDownloadedURL, uid) {
 
-    let profilePicExists = false
+    // update
     await firestore()
     .collection('Users')
     .doc(uid)
-    .get()
-    .then (docSnapshot => {
-        if (docSnapshot.exists) {
-            profilePicExists = true
-        }
+    .update({
+        ProfilePic: ProfilePicDownloadedURL
     })
-    // update
-    if (profilePicExists === true) {
-        await firestore()
-        .collection('Users')
-        .doc(uid)
-        .update({
-            ProfilePic: ProfilePicDownloadedURL
-        })
-    } else {
-        await firestore()
-        .collection('Users')
-        .doc(uid)
-        .set({
-            ProfilePic: ProfilePicDownloadedURL
-        })
-    }
+    await firestore()
+    .collection('UsernameAndDP')
+    .doc(uid)
+    .update({
+        ProfilePic: ProfilePicDownloadedURL
+    })
+    
 }
 
 function InitialChooseFromCameraRoll ({navigation}) {
 
-    const { dpURL, setDpURL, user, setUser } = useContext(LoggedInContext);
-
-    
+    const { dpURL, setDpURL, user } = useContext(LoggedInContext);
 
     const reference = storage().ref(`/ProfilePics/${user.uid}`)
 
@@ -72,18 +78,14 @@ function InitialChooseFromCameraRoll ({navigation}) {
 
     async function setInitialDP () {
         // upload to firestore and context state
-        
         await AsyncStorage.setItem(displayPhotoKey, 'true')
         navigation.navigate('Map')
     }
-
-    //console.log("dpURL", dpURL)
 
     async function uploadImage() {
         const pathToFile = dpURL;
         // uploads file
         await reference.putFile(pathToFile);
-        //console.log(user.uid)
         // assign DPURL to context state
         const downloadedURL = await storage().ref(`/ProfilePics/${user.uid}`).getDownloadURL();
         setDpURL(downloadedURL)
@@ -92,6 +94,14 @@ function InitialChooseFromCameraRoll ({navigation}) {
 
         await UploadProfilePic(downloadedURL, user.uid)
     }
+
+    async function checkPermissions() {
+        await getCameraRollPermission()
+    }
+    
+    useEffect(() => {
+        checkPermissions()
+    }, [])
     
     return (
         <SafeAreaView style={styles.takePhotoforDPBackground}>
@@ -122,5 +132,3 @@ function InitialChooseFromCameraRoll ({navigation}) {
 }
 
 export default InitialChooseFromCameraRoll;
-
-//navigation.navigate('Dms')          

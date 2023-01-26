@@ -1,14 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View,  Text, Pressable, SafeAreaView, TextInput, Image } from 'react-native';
+import { View,  Text, Pressable, SafeAreaView, TextInput, Image, Dimensions } from 'react-native';
 import styles from './styles';
-import IIcon from 'react-native-vector-icons/Ionicons'
 import MIIcon from 'react-native-vector-icons/MaterialIcons';
-import FIcon from 'react-native-vector-icons/Feather';
-import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
-import { scale, ScaledSheet } from 'react-native-size-matters';
-import { RFValue } from 'react-native-responsive-fontsize';
+import { scale } from 'react-native-size-matters';
 import firestore from '@react-native-firebase/firestore';
 import { LoggedInContext } from '../App'
+const screenHeight = Dimensions.get("window").height
+
 
 async function getUserDetails(UserUID) {
     let obj = {
@@ -34,35 +32,47 @@ async function getUserDetails(UserUID) {
 }
 
 async function ChangeName(newName, UserUID) {
-    await firestore()
-    .collection('Users')
-    .doc(UserUID)
-    .update({
-        Name: newName
-    })
+    if (newName !== '') {
+        await firestore()
+        .collection('Users')
+        .doc(UserUID)
+        .update({
+            Name: newName
+        })
+    }
+    
 }
 
 async function ChangeUsername(newUsername, UserUID) {
     // check if the username is alreay taken
     //console.log('newUsername', newUsername)
-    await firestore()
-    .collection('Users')
-    .get()
-    .then((querySnapshot) => {
-        querySnapshot.forEach(snapshot => {
-            let data = snapshot.data()
-            if (data.Username == newUsername) {
-                throw Error("infunction error");
-            }
+    if (newUsername !== '') {
+        await firestore()
+        .collection('UsernameAndDP')
+        .get()
+        .then((querySnapshot) => {
+            querySnapshot.forEach(snapshot => {
+                let data = snapshot.data()
+                if (data.Username == newUsername) {
+                    throw Error("infunction error");
+                }
+            })
         })
-    })
 
-    await firestore()
-    .collection('Users')
-    .doc(UserUID)
-    .update({
-        Username: newUsername
-    })
+        await firestore()
+        .collection('Users')
+        .doc(UserUID)
+        .update({
+            Username: newUsername
+        })
+        await firestore() 
+        .collection('UsernameAndDP')
+        .doc(UserUID)
+        .update({
+            Username: newUsername
+        })
+    }
+    
 }
 
 function ChangeNameAndUsername ({navigation}) {
@@ -74,11 +84,13 @@ function ChangeNameAndUsername ({navigation}) {
     const [placeholderName, setPlaceholderName] = useState('')
     const [placeholderUsername, setPlaceholderUsername] = useState('')
     const [showErrorMessage, setShowErrorMessage] = useState(false)
-    const [doneEnabled, setDoneEnabled] = useState(false);
+    //const [doneEnabled, setDoneEnabled] = useState(false);
     const [userDetails, setUserDetails] = useState()
     const [dataLoaded, setDataLoaded] = useState(false)
-    const [changedName, setChangedName] = useState(false)
-    const [changedUsername, setChangedUsername] = useState(false)
+    const [backButtonPressed, setBackButtonPressed] = useState(false)
+    const [donePressed, setDonePressed] = useState(false)
+    // const [changedName, setChangedName] = useState(false)
+    // const [changedUsername, setChangedUsername] = useState(false)
 
     async function GetData() {
         await getUserDetails(user.uid)
@@ -101,7 +113,6 @@ function ChangeNameAndUsername ({navigation}) {
     async function updateDetails() {
         try {
             if (placeholderName != inputName) {
-                console.log('name', inputName)
                 await ChangeName(inputName, user.uid)
                 navigation.navigate('profile'); 
             }
@@ -120,23 +131,35 @@ function ChangeNameAndUsername ({navigation}) {
         }
     }
 
+    useEffect(() => {
+        setTimeout(() => {
+            setBackButtonPressed(false)
+        }, 100)
+    }, [backButtonPressed])
+
+    useEffect(() => {
+        setTimeout(() => {
+            setDonePressed(false)
+        }, 100)
+    }, [donePressed])
+
     if (dataLoaded == false) return null
 
     return (
         <SafeAreaView style={styles.settingsScreen}>
             <View style={styles.ChangeNameAndUsernameHeader}>
 
-                <Pressable style={styles.changePasswordBackButton} onPress={() => navigation.goBack()}>
-					<MIIcon name='arrow-forward-ios' size={scale(30)} color='white'/>
+                <Pressable style={styles.changePasswordBackButton} onPress={() => {navigation.goBack(); setBackButtonPressed(true)}}>
+					<MIIcon name='arrow-forward-ios' size={scale(30)} color={backButtonPressed ? 'grey' : 'white'}/>
 				</Pressable>
                     
-                <Text style={{color: 'white', fontSize: RFValue(16), fontWeight: '900'}}>
+                <Text style={{color: 'white', fontSize: screenHeight * 0.026, fontWeight: '900', fontFamily: 'Helvetica'}}>
                     Edit profile
                 </Text>
 
                 <Pressable 
-                onPress={() => {updateDetails()}}>
-                    <Text style={[styles.changePasswordDoneText, {color: 'white'}]}>
+                onPress={() => {updateDetails(); setDonePressed(true)}}>
+                    <Text style={[styles.changePasswordDoneText, {color: donePressed ? 'grey' : 'white'}]}>
                         Done
                     </Text>
                 </Pressable>
@@ -148,8 +171,8 @@ function ChangeNameAndUsername ({navigation}) {
                 </View>
                 <View style={styles.ChangeNameAndUsernameBodyInput}>
                     <View style={styles.editProfileNameContainer }>
-                        <View style={{width: '20%'}}>
-                            <Text style={{marginLeft: '5%', color: 'white', fontWeight: '500'}}>
+                        <View style={{width: '30%'}}>
+                            <Text style={{marginLeft: '5%', color: 'white', fontWeight: '500', fontSize: screenHeight * 0.022, fontFamily: 'Helvetica'}}>
                                 Name
                             </Text>
                         </View>
@@ -165,15 +188,15 @@ function ChangeNameAndUsername ({navigation}) {
                     </View>
                     
                     <View style={styles.editProfileUsernameContainer}>
-                        <View style={{width: '20%'}}>
-                            <Text style={{marginLeft: '5%', color: 'white', fontWeight: '500'}}>
+                        <View style={{width: '30%'}}>
+                            <Text style={{marginLeft: '5%', color: 'white', fontWeight: '500', fontSize: screenHeight * 0.022, fontFamily: 'Helvetica'}}>
                                 Username
                             </Text>
                         </View>
                         {
                             showErrorMessage ?
                             <View style={styles.editProfileTextInputArea}>
-                                <Text style={{color: 'red'}}>
+                                <Text style={{color: 'red', fontFamily: 'Helvetica'}}>
                                     Username is already taken!
                                 </Text>
                             </View>

@@ -1,3 +1,22 @@
+# ######## new
+# #use_frameworks!
+
+# # Convert all permission pods into static libraries
+# # pre_install do |installer|
+# #   Pod::Installer::Xcode::TargetValidator.send(:define_method, :verify_no_static_framework_transitive_dependencies) {}
+
+# #   installer.pod_targets.each do |pod|
+# #     if pod.name.eql?('RNPermissions') || pod.name.start_with?('Permission-')
+# #       def pod.build_type;
+# #         # Uncomment the line corresponding to your CocoaPods version
+# #         Pod::BuildType.static_library # >= 1.9
+# #         # Pod::Target::BuildType.static_library # < 1.9
+# #       end
+# #     end
+# #   end
+# # end
+# ###########
+
 # require_relative '../node_modules/react-native/scripts/react_native_pods'
 # require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
@@ -6,60 +25,22 @@
 
 # production = ENV["PRODUCTION"] == "1"
 
+# use_frameworks! :linkage => :static
 # target 'moments' do
-#   config = use_native_modules!
-
-#   # Flags change depending on the env values.
-#   flags = get_default_flags()
-
-#   use_react_native!(
-#     :path => config[:reactNativePath],
-#     # to enable hermes on iOS, change false to true and then install pods
-#     :production => production,
-
-#     :hermes_enabled => flags[:hermes_enabled],
-#     :fabric_enabled => flags[:fabric_enabled],
-#     :flipper_configuration => FlipperConfiguration.enabled,
-#     # An absolute path to your application root.
-#     :app_path => "#{Pod::Config.instance.installation_root}/.."
-#   )
-#   # React Native Maps dependencies
+#   $static_framework = []
 #   rn_maps_path = '../node_modules/react-native-maps'
-#   pod 'react-native-google-maps', :path => rn_maps_path
-
-#   target 'momentsTests' do
-#     inherit! :complete
-#     # Pods for testing
-#   end
-
-#   post_install do |installer|
-#     react_native_post_install(installer)
-#     __apply_Xcode_12_5_M1_post_install_workaround(installer)
-#   end
-# end
-
-#################################################################
-# require_relative '../node_modules/react-native/scripts/react_native_pods'
-# require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
-
-# platform :ios, '13.0'
-# install! 'cocoapods', :deterministic_uuids => false
-
-# production = ENV["PRODUCTION"] == "1"
-
-# target 'moments' do
-
 #   config = use_native_modules!
-#   #use_frameworks!
-#   use_frameworks! :linkage => :static
-#   $RNFirebaseAsStaticFramework = true
-
-
-#   #pod 'Firebase/Storage', '10.3.0'
-
 
 #   # Flags change depending on the env values.
 #   flags = get_default_flags()
+
+#   #for location permissions on ios
+#  # permissions_path = '../node_modules/react-native-permissions/ios'
+#   #pod , :path => "#{permissions_path}/LocationWhenInUse"
+#   #pod , :path => "#{permissions_path}/LocationAccuracy"
+#   #pod , :path => "#{permissions_path}/LocationAlways"
+#   #pod , :path => "#{permissions_path}/Camera"
+
 
 #   use_react_native!(
 #     :path => config[:reactNativePath],
@@ -72,32 +53,54 @@
 #     # An absolute path to your application root.
 #     :app_path => "#{Pod::Config.instance.installation_root}/.."
 #   )
-#   # React Native Maps dependencies
-#   rn_maps_path = '../node_modules/react-native-maps'
+
+#   $static_framework += [
+#     'react-native-maps',
+#     'react-native-google-maps',
+#     'Google-Maps-iOS-Utils',
+#     'GoogleMaps',
+#     'Permission-LocationWhenInUse',
+#     'Permission-LocationAccuracy',
+#     'Permission-LocationAlways',
+#     'Permission-Camera'
+
+
+#   ]
+
 #   pod 'react-native-google-maps', :path => rn_maps_path
-#   pod 'Firebase', :modular_headers => true
-#   pod 'FirebaseCoreInternal', :modular_headers => true
-#   pod 'GoogleUtilities', :modular_headers => true
-#   pod 'FirebaseAppCheckInterop', :modular_headers => true
-#   pod 'FirebaseAuthInterop', :modular_headers => true
-#   pod 'FirebaseCore', :modular_headers => true
-#   pod 'FirebaseCoreExtension', :modular_headers => true
-#   pod 'GTMSessionFetcher', :modular_headers => true
-
-#   $RNFirebaseAsStaticFramework = true
+#     pod 'GoogleMaps'
+#     pod 'Google-Maps-iOS-Utils'
 
 
-#   target 'momentsTests' do
-#     inherit! :complete
-#     # Pods for testing
+
+# pre_install do |installer|
+#     Pod::Installer::Xcode::TargetValidator.send(:define_method, :verify_no_static_framework_transitive_dependencies) {}
+#         installer.pod_targets.each do |pod|
+#             if $static_framework.include?(pod.name)
+#                 def pod.build_type;
+#                 Pod::BuildType.static_library # >= 1.9
+#             end
+#         end
+#     end
+# end
+
+# post_install do |installer|
+#   react_native_post_install(installer)
+#   installer.pods_project.targets.each do |target|
+#     if target.name == 'RCT-Folly'
+#       target.build_configurations.each do |config|
+#         config.build_settings['HEADER_SEARCH_PATHS'] = "$(inherited) ${PODS_ROOT}/fmt/include"
+#       end
+#     end
 #   end
-
-#   post_install do |installer|
-#     react_native_post_install(installer)
-#     __apply_Xcode_12_5_M1_post_install_workaround(installer)
+#   #   __apply_Xcode_12_5_M1_post_install_workaround(installer)
+#   installer.pods_project.build_configurations.each do |config|
+#     config.build_settings["EXCLUDED_ARCHS[sdk=iphonesimulator*]"] = "arm64"
 #   end
 # end
 
+# end
+#############################################
 
 require_relative '../node_modules/react-native/scripts/react_native_pods'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
@@ -121,7 +124,8 @@ target 'moments' do
     # to enable hermes on iOS, change false to true and then install pods
     :production => production,
 
-    :hermes_enabled => flags[:hermes_enabled],
+    # :hermes_enabled => flags[:hermes_enabled],
+    :hermes_enabled => false,
     :fabric_enabled => flags[:fabric_enabled],
     #:flipper_configuration => FlipperConfiguration.enabled,
     # An absolute path to your application root.
@@ -139,11 +143,27 @@ target 'moments' do
     pod 'GoogleMaps'
     pod 'Google-Maps-iOS-Utils'
 
+  permissions_path = '../node_modules/react-native-permissions/ios'
+    pod 'Permission-LocationAccuracy', :path => "#{permissions_path}/LocationAccuracy"
+    pod 'Permission-LocationAlways', :path => "#{permissions_path}/LocationAlways"
+    pod 'Permission-LocationWhenInUse', :path => "#{permissions_path}/LocationWhenInUse"
+    pod 'Permission-Camera', :path => "#{permissions_path}/Camera"
+    pod 'Permission-PhotoLibrary', :path => "#{permissions_path}/PhotoLibrary"
+    pod 'Permission-Notifications', :path => "#{permissions_path}/Notifications"
+
+
 
 
 pre_install do |installer|
     Pod::Installer::Xcode::TargetValidator.send(:define_method, :verify_no_static_framework_transitive_dependencies) {}
         installer.pod_targets.each do |pod|
+            if pod.name.eql?('RNPermissions') || pod.name.start_with?('Permission-')
+                def pod.build_type;
+                  # Uncomment the line corresponding to your CocoaPods version
+                   Pod::BuildType.static_library # >= 1.9
+                  # Pod::Target::BuildType.static_library # < 1.9
+                end
+            end
             if $static_framework.include?(pod.name)
                 def pod.build_type;
                 Pod::BuildType.static_library # >= 1.9
@@ -168,5 +188,6 @@ post_install do |installer|
 end
 
 end
+
 
 
