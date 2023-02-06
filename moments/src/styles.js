@@ -525,12 +525,13 @@ const styles = ScaledSheet.create({
 	locationNameModal: {
 		color: 'black',
 		//fontSize: RFValue(18),
-		fontSize: screenHeight * 0.028,
+		fontSize: screenHeight * 0.024,
 		fontWeight: '600',
 		//alignSelf: 'flex-start',
 		position: 'absolute',
 		top: 0,
-		fontFamily: 'Helvetica'
+		fontFamily: 'Helvetica',
+		//maxWidth: '30%'
 
 	}, 
 	locationNameModalCreateChannel: {
@@ -892,23 +893,16 @@ const styles = ScaledSheet.create({
 		marginBottom: '5%'
 	},
 	profilePageName: {
-		//fontSize: RFValue(17),
-		fontSize: screenHeight * 0.03,
-		color: 'white',
-		fontWeight: 'bold',
-		fontStyle: 'italic',
-		//backgroundColor: 'green',
-		fontFamily: 'Helvetica'
-	},
-	profilePageUsername: {
-		//fontSize: RFValue(26),
 		fontSize: screenHeight * 0.04,
 		color: 'white',
 		fontWeight: 'bold',
-		fontStyle: 'italic',
-		//backgroundColor: 'red',
-		fontFamily: 'Helvetica'
-		
+		fontFamily: 'Epilogue-Regular',
+	},
+	profilePageUsername: {
+		fontSize: screenHeight * 0.03,
+		color: 'white',
+		fontWeight: 'bold',
+		fontFamily: 'Epilogue-Regular',
 	},
 	profilePageSettings: {
 		marginTop: '2%',
@@ -1729,7 +1723,8 @@ const styles = ScaledSheet.create({
 		width: '25@s', 
 		borderRadius: 30, 
 		alignSelf: 'flex-end',
-		marginLeft: '2%'
+		marginLeft: '2%',
+
 	},
 	DMOtherDP: {
 		height: '35@s', 
@@ -1763,9 +1758,9 @@ const styles = ScaledSheet.create({
 		minWidth: '8%'
 	},
 	messageText: {
-		fontSize: RFValue(16),
+		fontSize: screenHeight * 0.022,
 		color: 'white',
-		fontFamily: 'Helvetica'
+		fontFamily: 'Epilogue-Regular',
 	},
 	messageTime: {
 		fontSize: RFValue(10), 
@@ -1824,7 +1819,7 @@ const styles = ScaledSheet.create({
 	},
 	takePhotoForDP: {
 		alignItems: 'center',
-		backgroundColor: '#464646',
+		
 		height: '50@s',
 		justifyContent: 'center',
 		borderBottomColor: 'grey',
@@ -1834,7 +1829,6 @@ const styles = ScaledSheet.create({
 	},
 	chooseFromLibrary: {
 		alignItems: 'center',
-		backgroundColor: '#464646',
 		height: '50@s',
 		justifyContent: 'center',
 		borderBottomLeftRadius: 20,
@@ -1842,7 +1836,6 @@ const styles = ScaledSheet.create({
 	},
 	cancelDPModal: {
 		alignItems: 'center',
-		backgroundColor: '#464646',
 		marginTop: '5%',
 		justifyContent: 'center',
 		height: '50@s',
@@ -2002,7 +1995,7 @@ const styles = ScaledSheet.create({
 	},
 	multiLocationModalHeader: {
 		//backgroundColor: 'pink', 
-		flex: 2.3, 
+		flex: 2.5, 
 		flexDirection: 'row', 
 		alignItems: 'center', 
 		justifyContent: 'center', 
@@ -2013,7 +2006,7 @@ const styles = ScaledSheet.create({
 	},
 	multiLocationModalHeaderNoPic: {
 		//backgroundColor: 'pink', 
-		flex: 1, 
+		flex: 1.5, 
 		flexDirection: 'row', 
 		alignItems: 'center', 
 		justifyContent: 'center', 
@@ -2186,9 +2179,9 @@ const styles = ScaledSheet.create({
   		padding: '3%',
   		borderRadius: 30,
   		position: 'absolute',
-  		marginTop: screenHeight * 0.4,
+  		marginTop: screenHeight * 0.3,
   		height: screenHeight * 0.05,
-		  fontFamily: 'Helvetica',
+		fontFamily: 'Helvetica',
 
   	},
   	verificationBackground: {
@@ -2433,12 +2426,31 @@ const styles = ScaledSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'center',
 	},
+	loadingScreen2: {
+		height: screenHeight,
+		width: screenWidth,
+		backgroundColor: '#96B9FE',
+		//flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center'
+	},
 	loadingSocialyseText: {
 		marginTop: screenHeight * 0.4,
 		fontSize: RFValue(30),
 		color: 'black',
 		fontWeight: '900',
-		fontStyle: 'italic'
+		//fontStyle: 'italic',
+		fontFamily: 'Epilogue-Regular',
+
+	},
+	loadingSocialyseText2: {
+		//marginTop: screenHeight * 0.4,
+		fontSize: RFValue(30),
+		color: 'black',
+		fontWeight: '900',
+		//fontStyle: 'italic',
+		fontFamily: 'Epilogue-Regular',
+
 	},
 	editProfileNameContainer: {
 		flexDirection: 'row', 
@@ -2482,9 +2494,11 @@ const styles = ScaledSheet.create({
 		marginTop: screenHeight * 0.3,
 		fontSize: screenHeight * 0.028,
 		fontWeight: '900',
-		fontStyle: 'italic',
+		//fontStyle: 'italic',
 		color: 'black',
-		textAlign: 'center'
+		textAlign: 'center',
+		fontFamily: 'Helvetica',
+
 	},
 	initialTakePhotoforDPBackground: {
 		flex: 1,
@@ -2508,6 +2522,22 @@ const styles = ScaledSheet.create({
 	checkBoxContainer: {
 		height: '10@s',
 		width: '10@s'
+	},
+	locationPermissionModal: {
+		height: screenHeight * 0.3,
+		width: screenWidth * 0.8,
+		//backgroundColor: 'pink',
+		alignSelf: 'center',
+		marginTop: screenHeight * 0.3,
+	},
+	locationPermissionModalMain: {
+		backgroundColor: '#2E2E2E', 
+		alignItems: 'center', 
+		flex: 4, 
+		borderTopLeftRadius: 10, 
+		borderTopRightRadius: 10, 
+		justifyContent: 'center', 
+		paddingHorizontal: '3%'
 	}
 
 	

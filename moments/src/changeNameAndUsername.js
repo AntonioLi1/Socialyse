@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View,  Text, Pressable, SafeAreaView, TextInput, Image, Dimensions } from 'react-native';
+import { View,  Text, Pressable, SafeAreaView, TextInput, Image, Dimensions, Platform } from 'react-native';
 import styles from './styles';
 import MIIcon from 'react-native-vector-icons/MaterialIcons';
 import { scale } from 'react-native-size-matters';
@@ -43,22 +43,19 @@ async function ChangeName(newName, UserUID) {
     
 }
 
-async function ChangeUsername(newUsername, UserUID) {
+async function ChangeUsername(newUsername, UserUID, oldUsername) {
     // check if the username is alreay taken
-    //console.log('newUsername', newUsername)
     if (newUsername !== '') {
+        // check username is already taken
         await firestore()
-        .collection('UsernameAndDP')
+        .collection('Usernames')
+        .doc(newUsername)
         .get()
-        .then((querySnapshot) => {
-            querySnapshot.forEach(snapshot => {
-                let data = snapshot.data()
-                if (data.Username == newUsername) {
-                    throw Error("infunction error");
-                }
-            })
+        .then(docSnapshot => {
+            if (docSnapshot.exists) {
+                throw Error("infunction error");
+            }
         })
-
         await firestore()
         .collection('Users')
         .doc(UserUID)
@@ -71,8 +68,20 @@ async function ChangeUsername(newUsername, UserUID) {
         .update({
             Username: newUsername
         })
+        // deelte old username
+        await firestore()
+        .collection('Usernames')
+        .doc(oldUsername)
+        .delete()
+        // add new username
+        await firestore()
+        .collection('Usernames')
+        .doc(newUsername)
+        .set({
+            Username: newUsername,
+            UserID: UserUID
+        })
     }
-    
 }
 
 function ChangeNameAndUsername ({navigation}) {
@@ -84,13 +93,11 @@ function ChangeNameAndUsername ({navigation}) {
     const [placeholderName, setPlaceholderName] = useState('')
     const [placeholderUsername, setPlaceholderUsername] = useState('')
     const [showErrorMessage, setShowErrorMessage] = useState(false)
-    //const [doneEnabled, setDoneEnabled] = useState(false);
     const [userDetails, setUserDetails] = useState()
     const [dataLoaded, setDataLoaded] = useState(false)
     const [backButtonPressed, setBackButtonPressed] = useState(false)
     const [donePressed, setDonePressed] = useState(false)
-    // const [changedName, setChangedName] = useState(false)
-    // const [changedUsername, setChangedUsername] = useState(false)
+    const [oldUsername, setOldUsername] = useState('')
 
     async function GetData() {
         await getUserDetails(user.uid)
@@ -100,6 +107,7 @@ function ChangeNameAndUsername ({navigation}) {
             setPlaceholderUsername(data.Username)
             setinputName(data.FirstName)
             setinputUsername(data.Username)
+            setOldUsername(data.Username)
             setDataLoaded(true)
         }) 
     }
@@ -108,8 +116,6 @@ function ChangeNameAndUsername ({navigation}) {
         GetData()
     }, [])
 
-
-
     async function updateDetails() {
         try {
             if (placeholderName != inputName) {
@@ -117,13 +123,10 @@ function ChangeNameAndUsername ({navigation}) {
                 navigation.navigate('profile'); 
             }
             if (placeholderUsername != inputUsername) {
-                //console.log('inputUsername', inputUsername)
-                await ChangeUsername(inputUsername, user.uid)
+                await ChangeUsername(inputUsername, user.uid, oldUsername)
                 navigation.navigate('profile'); 
             }
-            
         } catch {
-            console.log('username is already taken')
             setShowErrorMessage(true)
             setTimeout(() => {
 				setShowErrorMessage(false)

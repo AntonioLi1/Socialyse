@@ -34,7 +34,6 @@ async function ViewChannelFeed(userUId, selectedChannelID) {
             .orderBy('TimeUploaded', 'desc')
             .limit(100)
             .get()
-            //console.log('viewfeed channels posts')
 
         for (let i = 0; i < querySnapshot.size; i++) {
             const snapshot = querySnapshot.docs[i];
@@ -47,17 +46,13 @@ async function ViewChannelFeed(userUId, selectedChannelID) {
                 UserLiked: false,
             }
             const docID = snapshot.id
-            //console.log('docid', docID)
             const likedQuerySnapshot = await firestore()
                 .collection('Channels')
                 .doc(selectedChannelID)
                 .collection('Posts')
                 .doc(docID)
                 .collection('LikedBy')
-                .get();
-                //console.log('view posts likedby')
-
-            
+                .get();            
             for (let j = 0; j < likedQuerySnapshot.size; j++) {
                 const likedBy = likedQuerySnapshot.docs[j];
                 
@@ -89,17 +84,14 @@ async function getChannelName(selectedChannelID) {
             let data = docSnapshot.data()
             channelName = data.ChannelName
         })
-       // console.log('reading channel name') WORKS
     return channelName
 
 }
 
 function PostsFeed({ navigation }) {
-    const { setMessageDisplay, setNotifDisplay, user, selectedPost, setSelectedPost, selectedPinId, channelPosts, setChannelPosts, justUnliked, setJustUnliked, selectedChannelId, setSelectedChannelId } = useContext(LoggedInContext);
+    const { setMessageDisplay, user, selectedPost, setSelectedPost, selectedPinId, channelPosts, setChannelPosts, justUnliked, setJustUnliked, selectedChannelId, setSelectedChannelId } = useContext(LoggedInContext);
     const [openPost, setOpenPost] = useState(false);
     const [ownPost, setOwnPost] = useState(false);
-    //const [channelPosts, setChannelPosts] = useState()
-    const [notiCount, setNotiCount] = useState()
     const [messageCount, setMessageCount] = useState()
     const [dataLoaded, setDataLoaded] = useState(false)
     const [channelName, setChannelName] = useState('')
@@ -107,14 +99,12 @@ function PostsFeed({ navigation }) {
     const [postOwner, setPostOwner] = useState()
     const [selectPostIndex, setSelectedPostIndex] = useState()
     const [doubleTapped, setDoubleTapped] = useState(false)
-    //const [unlikePost, setUnlikePost] = useState(false)
     // in seconds
     const [lastPostedTime, setLastPostedTime] = useState()
     const [canPostAnother, setCanPostAnother] = useState(false)
     const [messageButtonPressed, setMessageButtonPressed] = useState(false)
     const [notifButtonPressed, setNotifButtonPressed] = useState(false)
     const [ownPostsButtonPressed, setOwnPostsButtonPressed] = useState(false)
-    const [showFirstTimeMsg, setShowFirstTimeMsg] = useState(true)
 
     useEffect(() => {
         setTimeout(() => {
@@ -219,8 +209,8 @@ function PostsFeed({ navigation }) {
                 
                 for (let j = 0; j < likedQuerySnapshot.size; j++) {
                     const likedBy = likedQuerySnapshot.docs[j];
-                    
-                    if (likedBy.data().UserID == user.uid) {
+                    //console.log('refresh liked', likedBy.data().LikerID)
+                    if (likedBy.data().LikerID == user.uid) {
                         
                         obj.UserLiked = true;
                     }
@@ -339,7 +329,7 @@ function PostsFeed({ navigation }) {
             <View style={styles.postsFeedHeader}>
                 <View style={{ height: '100%', width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
                     <Pressable style={styles.postsFeedHeaderBackButton} onPress={() => {
-                        setMessageDisplay(true); navigation.navigate('Map'); setNotifDisplay(true);
+                        setMessageDisplay(true); navigation.navigate('Map');
                         setChannelPosts(); setSelectedChannelId();
                     }}>
                         <MIIcon name='arrow-forward-ios' size={scale(30)} color='black' />
@@ -372,7 +362,7 @@ function PostsFeed({ navigation }) {
                             
                             <View>
                                 <Pressable    
-                                onPress={() => { setSelectedPost(item); setPostOwner(item.PostOwner); setSelectedPostIndex(index); console.log('tap'); console.log('selectefd', selectedPost); setOpenPost(true) }}>
+                                onPress={() => { setSelectedPost(item); setPostOwner(item.PostOwner); setSelectedPostIndex(index); setOpenPost(true) }}>
                                     <View style={styles.postContainer}>
                                         <View style={styles.fullPost}>
                                             <View style={{height: '85%'}}>
@@ -432,28 +422,3 @@ function PostsFeed({ navigation }) {
 }
 
 export default PostsFeed;
-
-/*
-         <Pressable style={styles.postsFeedHeaderBackButton} onPress={() => {
-                        setMessageDisplay(true); navigation.navigate('Map'); setNotifDisplay(true);
-                        LeaveChannel(user.uid, selectedChannelId); setChannelPosts(); setSelectedChannelId();
-                    }}>           
-*/
-{/* <Pressable style={styles.messageButtonPostsFeed} onPress={() => {setMessageButtonPressed(true);navigation.navigate('Dms')}}>
-    <IIcon style={styles.messageIcon} name='ios-chatbubbles-outline' size={scale(25)} color={messageButtonPressed ? 'grey' : 'white'}/>
-    <View style={styles.messageCountContainerFeed}>
-        <Text style={styles.notifCountText}>
-            {messageCount}
-        </Text>
-    </View>
-</Pressable>
-
-<Pressable disabled={!canPostAnother} onPress={() => navigation.navigate('MakeAPost', { selectedChannelID: selectedChannelId })}>
-    <View style={[styles.takePhotoButtonPostFeed, { borderColor: canPostAnother ? 'white' : 'grey' }]}>
-        <IIcon name="ios-camera-outline" size={scale(25)} color={canPostAnother ? 'white' : 'grey'} />
-    </View>
-</Pressable>
-
-<Pressable style={styles.ownPostsButton} onPress={() => { setOwnPost(true); setOwnPostsButtonPressed(true) }}>
-    <MCIcon name='account-details' size={scale(25)} color={ownPostsButtonPressed ? 'grey' : 'white'} />
-</Pressable> */}

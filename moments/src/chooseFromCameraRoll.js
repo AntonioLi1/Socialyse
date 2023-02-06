@@ -9,7 +9,6 @@ import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import { PERMISSIONS, check, openSettings, request } from 'react-native-permissions';
 
-
 const screenWidth = Dimensions.get("window").width
 const screenHeight = Dimensions.get("window").height
 
@@ -30,36 +29,41 @@ async function UploadProfilePic(ProfilePicDownloadedURL, uid) {
     })
 }
 
-async function getCameraRollPermission() {
-    if (Platform.OS === 'ios') {
-        check(PERMISSIONS.IOS.PHOTO_LIBRARY)
-        .then(async (result) => {
-            if (result !== 'granted') {
-                request(PERMISSIONS.IOS.PHOTO_LIBRARY).then(res => {
-                    Alert.alert(
-                        'Permission required',
-                        'We need location permission to work this app, Please allow location permission in your settings',
-                        [
-                        {
-                            text: 'Cancel',
-                            onPress: () => console.log('Cancel Pressed'),
-                            style: 'cancel',
-                        },
-                        {text: 'Open Settings', onPress: () => openSettings()},
-                        ],
-                        {cancelable: false},
-                    );
-                })
-            }
-        }) 
-    }
-}
+
 
 function ChooseFromCameraRoll ({navigation}) {
 
     const { setDpURL, user } = useContext(LoggedInContext);
     const [imageURL, setImageURL] = useState()
     const [pressedCameraRoll, setPressedCameraRoll] = useState(false)
+    const [havePermission, setHavePermission] = useState(false)
+
+    async function getCameraRollPermission() {
+        if (Platform.OS === 'ios') {
+            check(PERMISSIONS.IOS.PHOTO_LIBRARY)
+            .then(async (result) => {
+                if (result !== 'granted') {
+                    request(PERMISSIONS.IOS.PHOTO_LIBRARY).then(res => {
+                        Alert.alert(
+                            'Permission required',
+                            'We need your permission to access your photos for your profile pic!',
+                            [
+                            {
+                                text: 'Cancel',
+                                //onPress: () => console.log('Cancel Pressed'),
+                                style: 'cancel',
+                            },
+                            {text: 'Open Settings', onPress: () => openSettings()},
+                            ],
+                            {cancelable: false},
+                        );
+                    })
+                } else {
+                    setHavePermission(true)
+                }
+            }) 
+        }
+    }
 
     useEffect(() => {
         setTimeout(() => {
@@ -70,14 +74,17 @@ function ChooseFromCameraRoll ({navigation}) {
     const reference = storage().ref(`/ProfilePics/${user.uid}`)
 
     function PickImage() {
-        ImagePicker.openPicker({
-            width: screenWidth * 0.9,
-            height: screenHeight * 0.55,
-            cropping: true,
-
-        }).then(image => {
-            setImageURL(image.path)
-        });
+        if (havePermission === true) {
+            ImagePicker.openPicker({
+                width: screenWidth * 0.9,
+                height: screenHeight * 0.55,
+                cropping: true,
+    
+            }).then(image => {
+                setImageURL(image.path)
+            });
+        }
+        
     }
     async function checkPermissions() {
         await getCameraRollPermission()

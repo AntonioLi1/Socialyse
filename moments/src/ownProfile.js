@@ -59,9 +59,6 @@ function OwnProfile ({navigation}) {
 		}, 100)
 	}, [buttonPressed])
 
-	console.log(dpURL)
-
-
 	return (
 	<SafeAreaView style={styles.profileScreen}>
 		<View style={styles.profilePageDPContainer}>
@@ -75,11 +72,11 @@ function OwnProfile ({navigation}) {
 		
 		<View style={styles.profilePageUsernameNameSettingsContainer}>
 			<View style={styles.usernameAndNameContainer}>
-				<Text adjustsFontSizeToFit numberOfLines={1} style={styles.profilePageUsername}>
+				<Text adjustsFontSizeToFit numberOfLines={1} style={styles.profilePageName}>
 					{name}
 					
 				</Text>
-				<Text style={styles.profilePageName}>
+				<Text style={styles.profilePageUsername}>
 					{username}
 				</Text>
 			</View>

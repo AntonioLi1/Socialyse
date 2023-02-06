@@ -1,14 +1,8 @@
 import 'react-native-gesture-handler';
 import React, {createContext, useState, useEffect, useContext} from 'react';
-import { View, Text, Pressable, TextInput, SafeAreaView, Button } from 'react-native';
 import {LoggedOutNavigator, LoggedInNavigator} from './src/navigator';
-import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
-import Login from './src/login';
 import firestore from '@react-native-firebase/firestore';
-
-
-
 
 export const LoggedInContext = createContext({
 	messageDisplay: true,
@@ -30,8 +24,7 @@ export const LoggedInContext = createContext({
 	justUnliked: null,
 	setJustUnliked: (value) => {},
 	selectedChannelId: null,
-	setSelectedChannelId: (value) => {}
-	
+	setSelectedChannelId: (value) => {}	
 });
 
 export const LoggedOutContext = createContext({
@@ -58,9 +51,8 @@ function App () {
 	const [justUnliked, setJustUnliked] = useState(false)
 	const [dataAdded, setDataAdded] = useState(false)
 	const [selectedChannelId, setSelectedChannelId] = useState()
-	const { signUpName, signUpUsername, signUpPhoneNumber, signUpDoB, setSignUpDoB} = useContext(LoggedOutContext)
-
-	
+	//console.log('loggincontext')
+	const { signUpName, signUpUsername, signUpPhoneNumber, signUpDoB } = useContext(LoggedOutContext)
 
 	/////////////////////////////////////////////
 	// FIREBASE
@@ -88,7 +80,7 @@ function App () {
 			UserID: uid
 		})
 		.then(() => {
-			console.log('User added!');
+			// console.log('User added!');
 		});
 		// adding users to friends 
 		await firestore()
@@ -99,7 +91,7 @@ function App () {
 			UserID: uid
 		})
 		.then(() => {
-			console.log('uidofotherperson Added for friends!');
+			// console.log('uidofotherperson Added for friends!');
 		});
 		// adding user to messages
 		await firestore()
@@ -110,7 +102,7 @@ function App () {
 			UserID: uid
 		})
 		.then(() => {
-			console.log('uidofotherperson Added for messages!');
+			// console.log('uidofotherperson Added for messages!');
 		});
 		// adding user to peopleliked
 		await firestore()
@@ -120,7 +112,7 @@ function App () {
 			UserID: uid,
 		})
 		.then(() => {
-			console.log('uidofotherperson Added for peopleLiked!');
+			// console.log('uidofotherperson Added for peopleLiked!');
 		});
 		//adding user to phoneNumbers
 		await firestore()
@@ -130,7 +122,7 @@ function App () {
 			PhoneNumber: signUpPhoneNumber
 		})
 		.then(() => {
-			console.log('uidofotherperson Added for phoneNumber!');
+			// console.log('uidofotherperson Added for phoneNumber!');
 		});
 		// adding user to UsernameAndDP
 		await firestore()
@@ -161,13 +153,21 @@ function App () {
 		.set({
 			UserID: uid
 		})
+		await firestore()
+		.collection('Usernames')
+		.doc(signUpUsername)
+		.set({
+			Username: signUpUsername,
+			UserID: uid
+		})
 		setDataAdded(true) 
+		//console.log('add to db')
     }
 
 	async function EnterApp(uid, signUpName, signUpUsername, signUpPhoneNumber, signUpDoB) {
-		console.log('enterapp name',signUpName)
-   		console.log('enterapp username',signUpUsername)
-		console.log('uid', uid)
+		// console.log('enterapp name',signUpName)
+   		// console.log('enterapp username',signUpUsername)
+		// console.log('uid', uid)
 		await firestore()
 		.collection('UIDs')
 		.doc(uid)
@@ -176,7 +176,7 @@ function App () {
 			if (!docSnapshot.exists) {
 				//console.log(querySnapshot.exists)
 				// sign up 
-				console.log('signing up')
+				//console.log('signing up')
 				AddUserToDB (uid, signUpName, signUpUsername, signUpPhoneNumber, signUpDoB)
 			} else {
 				setDpURL(docSnapshot.data().ProfilePic)
@@ -186,9 +186,9 @@ function App () {
 				.get()
 				.then(docSnapshot => {
 					setDpURL(docSnapshot.data().ProfilePic)
-					console.log('profilepic set')
+					//console.log('profilepic set')
 				})
-				console.log('login')
+				//console.log('login')
 
 			}
 		}) 
@@ -201,10 +201,12 @@ function App () {
 		//console.log("user deets",user)
 		// console.log('app name3', signUpName)
 		// console.log('app username3', signUpUsername)
-		console.log('auth name', signUpName)
-		console.log('auth uname', signUpUsername)
-		console.log('auth Phone',signUpPhoneNumber)
+		//console.log('auth name', signUpName)
+		//console.log('auth uname', signUpUsername)
+		//console.log('auth state changed')
+		//console.log('auth Phone',signUpPhoneNumber)
 		if (user) await EnterApp(user.uid, signUpName, signUpUsername, signUpPhoneNumber, signUpDoB);
+		else setDataAdded(false);
 		
 		if (initializing) setInitializing(false);
 	}
@@ -271,6 +273,8 @@ const Root = ()=>{
 	const [signUpUsername, setSignUpUsername] = useState('')
 	const [signUpPhoneNumber, setSignUpPhoneNumber] = useState('')
 	const [signUpDoB, setSignUpDoB] = useState(null)
+	//console.log('logged outcontext')
+
 	return(
 		<LoggedOutContext.Provider value={{signUpName, setSignUpName, signUpUsername, setSignUpUsername, signUpPhoneNumber, setSignUpPhoneNumber, signUpDoB, setSignUpDoB}}>
 			<App/>

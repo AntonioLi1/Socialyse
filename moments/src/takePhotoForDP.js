@@ -65,6 +65,7 @@ function TakePhotoForDP({ navigation }) {
 	const [backCamera, setbackCamera] = useState(true);
 	const cameraref = useRef();
 	const [photoTaken, setPhotoTaken] = useState(false);
+	const [cameraDisabled, setCameraDisabled] = useState(false)
 
 	const { setEditProfileModal, setDpURL, user } = useContext(LoggedInContext);
 
@@ -111,9 +112,11 @@ function TakePhotoForDP({ navigation }) {
 	const getCameraPermission = async () => {
 		try {
 			const newCameraPermission = await Camera.requestCameraPermission()
-
+			console.log('camera', newCameraPermission)
 			setCameraPermission(newCameraPermission);
 			if (newCameraPermission !== 'authorized') {
+				console.log('here')
+				setCameraDisabled(true)
 				// pop up alert
 				Alert.alert(
 					'Permission required',
@@ -121,13 +124,15 @@ function TakePhotoForDP({ navigation }) {
 					[
 					  {
 						text: 'Cancel',
-						onPress: () => console.log('Cancel Pressed'),
+						//onPress: () => console.log('Cancel Pressed'),
 						style: 'cancel',
 					  },
 					  {text: 'Open Settings', onPress: () => openSettings()},
 					],
 					{cancelable: false},
 				);
+			} else {
+				setCameraDisabled(false)
 			}
 		} catch (error) {
 			setCameraPermission(null)
@@ -184,7 +189,7 @@ function TakePhotoForDP({ navigation }) {
 			}
 			{
 				takePhotoButton ?
-					<Pressable onPress={() => { takePhotoAndButton(); setPhotoTaken(true) }}>
+					<Pressable disabled={cameraDisabled} onPress={() => { takePhotoAndButton(); setPhotoTaken(true) }}>
 						<View style={styles.takePhotoButton}>
 							<IIcon name="ios-camera-outline" size={scale(36)} color='white' />
 						</View>

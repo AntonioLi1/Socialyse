@@ -16,16 +16,16 @@ function InitialCreateDP() {
     const [takePhotoPressed, setTakePhotoPressed] = useState(false)
     const [cameraRollPressed, setCameraRollPressed] = useState(false)
 
-    function PickImage() {
-        ImagePicker.openPicker({
-            width: screenWidth * 0.9,
-            height: screenHeight * 0.55,
-            cropping: true,
+    // function PickImage() {
+    //     ImagePicker.openPicker({
+    //         width: screenWidth * 0.9,
+    //         height: screenHeight * 0.55,
+    //         cropping: true,
 
-        }).then(image => {
-            setDpURL(image.path)
-        });
-    }
+    //     }).then(image => {
+    //         setDpURL(image.path)
+    //     });
+    // }
 
     useEffect(() => {
         setTimeout(() => {
@@ -53,7 +53,7 @@ function InitialCreateDP() {
                 </Text>
 
                 <Pressable style={[styles.signUpButton, {backgroundColor: cameraRollPressed ? 'grey' : 'white'}]} 
-                onPress={() => {navigation.navigate('InitialChooseFromCameraRoll'); setCameraRollPressed(true); PickImage()}}>
+                onPress={() => {navigation.navigate('InitialChooseFromCameraRoll'); setCameraRollPressed(true);}}>
                     <Text style={{fontSize: screenHeight * 0.018, fontWeight: '700', color: 'black'}}>
                         Choose from camera roll
                     </Text>

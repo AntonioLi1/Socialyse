@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.1//EN" "http://www.apple.com/DTDs/PropertyList-1.1.dtd">
+<plist version="1.1">
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
@@ -17,7 +17,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
+	<string>1.1</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -47,19 +47,19 @@
 		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>$(PRODUCT_NAME) needs access to your Camera.</string>
+	<string>Socialyse needs access to your camera for your profile pic.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>Once you turn on location services, you'll be able to interact with channels and pins in your area.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Location Permission</string>
+	<string>Once you turn on location services, you'll be able to interact with channels and pins in your area.</string>
 	<key>NSLocationUsageDescription</key>
-	<string>GPS data is required to...</string>
+	<string>Once you turn on location services, you'll be able to interact with channels and pins in your area.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Location Permission</string>
+	<string>Once you turn on location services, you'll be able to interact with channels and pins in your area.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Socialyse needs access to your mircophone</string>
+	<string>Socialyse needs access to your microphone</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Socialyse needs access to the photo library in order for users to create a profile pic</string>
+	<string>Socialyse needs access to the photo library for your profile pic.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string/>

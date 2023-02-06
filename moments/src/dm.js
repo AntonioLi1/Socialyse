@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useContext} from 'react';
-import { View, Pressable, Text, FlatList, TextInput, Image, KeyboardAvoidingView, Alert } from 'react-native';
+import { View, Pressable, Text, FlatList, TextInput, Image, KeyboardAvoidingView, Alert, Dimensions } from 'react-native';
 import IIcon from 'react-native-vector-icons/Ionicons';
 import MIIcon from 'react-native-vector-icons/MaterialIcons';
 import styles from './styles';
 import { LoggedInContext } from '../App'
 import { scale } from 'react-native-size-matters';
 import firestore from '@react-native-firebase/firestore';
+const screenHeight = Dimensions.get("window").height
 
 async function SendMessage(UserID, FriendID, Text) {
     // first check if messaged is false
@@ -34,6 +35,7 @@ async function SendMessage(UserID, FriendID, Text) {
 		.update({
 			Messaged: true
 		});
+		//console.log('update my friendswit')
 		await firestore()
 		.collection('Friends')
 		.doc(FriendID)
@@ -42,6 +44,22 @@ async function SendMessage(UserID, FriendID, Text) {
 		.update({
 			Messaged: true
 		});
+		// reduce unopened msg count
+		let unopenedMsgCount = 0
+		await firestore()
+		.collection('Messages')
+		.doc(UserID)
+		.get()
+		.then(docSnapshot => {
+			unopenedMsgCount = docSnapshot.data().UnopenedMessages
+		})
+		unopenedMsgCount = unopenedMsgCount - 1
+		await firestore()
+		.collection('Messages')
+		.doc(UserID)
+		.update({
+			UnopenedMessages: unopenedMsgCount
+		})
 	}
 	
     // and then send the actual message
@@ -71,6 +89,7 @@ async function SendMessage(UserID, FriendID, Text) {
 		TimeSent: messageSendTime,
 		Receiver: FriendID
 	})
+
   	// update the contents of the collection for yourself
 
 	// check if Last... details exist
@@ -98,6 +117,7 @@ async function SendMessage(UserID, FriendID, Text) {
 			LastMessageTime: messageSendTime, 
 			LastMessageSender: UserID
 		});
+
 	}
 	// last details dont exist, set
 	else {
@@ -182,8 +202,6 @@ async function SendMessage(UserID, FriendID, Text) {
 			LastMessageSender: UserID,
 			Opened: false
 		})
-
-		
   	} 
 	// last... details dont exist, set
 	else {
@@ -207,6 +225,7 @@ async function reduceUnopenedMessageCount(UserID, OtherUid) {
 	
 	// check if dm is already opened before opening
 	// check if this is a new friend first
+	//console.log('Otheruid', OtherUid)
 	let newFriendCheck = false
 	await firestore()
 	.collection('Friends')
@@ -241,6 +260,7 @@ async function reduceUnopenedMessageCount(UserID, OtherUid) {
 			.then(docSnapshot => {
 				unopenedMessagesCount = docSnapshot.data().UnopenedMessages
 			})
+
 			// decrement count
 			unopenedMessagesCount -= 1
 			await firestore()
@@ -249,6 +269,7 @@ async function reduceUnopenedMessageCount(UserID, OtherUid) {
 			.update({
 				UnopenedMessages: unopenedMessagesCount
 			})
+
 			// make true
 			await firestore()
 			.collection('Messages')
@@ -260,45 +281,10 @@ async function reduceUnopenedMessageCount(UserID, OtherUid) {
 			})
 		}
 	}
-	// opening a new friend dm reduces unopenedmessages count
-	else {
-		let unopenedMessagesCount = 0
-		await firestore()
-		.collection('Messages')
-		.doc(UserID)
-		.get()
-		.then(docSnapshot => {
-			unopenedMessagesCount = docSnapshot.data().UnopenedMessages
-		})
-		// decrement count
-		unopenedMessagesCount -= 1
-		await firestore()
-		.collection('Messages')
-		.doc(UserID)
-		.update({
-			UnopenedMessages: unopenedMessagesCount
-		})
-	}
 }
 
 async function UnmatchWithUser(UserID, FriendID) {
 	
-	// FOR USERID
-	// remove from notifications
-	// const notifs = await firestore()
-	// .collection('Notifications')
-	// .doc(UserID)
-	// .collection('Notifs')
-	// .where('OtherUid', '==', FriendID)
-	// .get()
-
-	// const batch = firestore().batch()
-
-	// notifs.forEach(docSnapshot => {
-	// 	batch.update(docSnapshot.ref, {
-	// 		TimeNotified: 0
-	// 	})
-	// })
 
 	// remove from peopleliked
 	await firestore()
@@ -323,6 +309,8 @@ async function UnmatchWithUser(UserID, FriendID) {
 	.collection('Chats')
 	.doc(FriendID)
 	.delete()
+
+	//console.log('removed from messages1')
 
 	// reduce friend count
 	let friendCount = 0
@@ -333,6 +321,7 @@ async function UnmatchWithUser(UserID, FriendID) {
 	.then(docSnapshot => {
 		friendCount = docSnapshot.data().FriendCount
 	})
+
 	friendCount = friendCount - 1
 	await firestore()
 	.collection('Friends')
@@ -341,20 +330,23 @@ async function UnmatchWithUser(UserID, FriendID) {
 		FriendCount: friendCount
 	})
 
-	// FOR FRIENDID
-	// remove from notifications
-	// const notifs2 = await firestore()
-	// .collection('Notifications')
+	// change time of messages
+	// const userMessages = await firestore()
+	// .collection('Messages')
+	// .doc(UserID)
+	// .collection('Chats')
 	// .doc(FriendID)
-	// .collection('Notifs')
-	// .where('OtherUid', '==', UserID)
+	// .collection('IndividualMessages')
 	// .get()
 
-	// notifs2.forEach(docSnapshot => {
+	// const batch = firestore().batch()
+
+	// userMessages.forEach(docSnapshot => {
 	// 	batch.update(docSnapshot.ref, {
-	// 		TimeNotified: 0
+	// 		TimeSent: 0
 	// 	})
 	// })
+	/////////////////////////////////
 
 	// remove from peopleliked
 	await firestore()
@@ -379,6 +371,8 @@ async function UnmatchWithUser(UserID, FriendID) {
 	.collection('Chats')
 	.doc(UserID)
 	.delete()
+	//console.log('removed from messages2')
+
 
 	// reduce friend count
 	let friendCount2 = 0
@@ -389,6 +383,7 @@ async function UnmatchWithUser(UserID, FriendID) {
 	.then(docSnapshot => {
 		friendCount2 = docSnapshot.data().FriendCount
 	})
+	
 	friendCount2 = friendCount2 - 1
 	await firestore()
 	.collection('Friends')
@@ -396,6 +391,23 @@ async function UnmatchWithUser(UserID, FriendID) {
 	.update({
 		FriendCount: friendCount2
 	})
+
+	// change time of messages
+	// const friendMessages = await firestore()
+	// .collection('Messages')
+	// .doc(FriendID)
+	// .collection('Chats')
+	// .doc(UserID)
+	// .collection('IndividualMessages')
+	// .get()
+
+	// const batch2 = firestore().batch()
+
+	// friendMessages.forEach(docSnapshot => {
+	// 	batch2.update(docSnapshot.ref, {
+	// 		TimeSent: 0
+	// 	})
+	// })
 }
 
 function Dm ({route, navigation}) {
@@ -437,27 +449,27 @@ function Dm ({route, navigation}) {
         .where('TimeSent', '>', test)
         .onSnapshot((querySnapshot) => {
             let messagesArr = []
-            querySnapshot.forEach(snapshot => {
-                let data = snapshot.data()
-                let timeSent = new Date((data.TimeSent.nanoseconds / 1000000) + data.TimeSent.seconds * 1000)
-                let hours = timeSent.getHours()
-                let hoursString = ('0' + hours).slice(-2)
-                let mins = timeSent.getMinutes().toString()
-                let minsString = ('0' + mins).slice(-2)
-                let displayTime = hoursString.concat(":",minsString)
-                let TimeInSeconds = timeSent/1000
-                let obj = {
-                    Sender: data.Sender,
-                    Text: data.Text, 
-                    DisplayTime: displayTime,
-                    TimeInSeconds: TimeInSeconds
-                } 
-                messagesArr.push(obj)
-            })
+			if (querySnapshot !== null) {
+				querySnapshot.forEach(snapshot => {
+					let data = snapshot.data()
+					let timeSent = new Date((data.TimeSent.nanoseconds / 1000000) + data.TimeSent.seconds * 1000)
+					let hours = timeSent.getHours()
+					let hoursString = ('0' + hours).slice(-2)
+					let mins = timeSent.getMinutes().toString()
+					let minsString = ('0' + mins).slice(-2)
+					let displayTime = hoursString.concat(":",minsString)
+					let TimeInSeconds = timeSent/1000
+					let obj = {
+						Sender: data.Sender,
+						Text: data.Text, 
+						DisplayTime: displayTime,
+						TimeInSeconds: TimeInSeconds
+					} 
+					messagesArr.push(obj)
+				})
+			}
             setMessages(messagesArr) 
-			console.log(messages)
         });
-        
         return () => subscriber()
     }, [])
 
@@ -477,16 +489,13 @@ function Dm ({route, navigation}) {
 				},
 				{
 					text: 'No',
-					onPress: () => console.log('Cancel Pressed'),
+					//onPress: () => console.log('Cancel Pressed'),
 				},
 			],
 			{cancelable: false},
 		);
 	}
 
-
-
-    
     return (
       <View style={styles.messagesScreen}>
         <View style={styles.messagesHeader}>
@@ -524,7 +533,7 @@ function Dm ({route, navigation}) {
 							return (
 								<View>
 									<View style={{alignItems: 'center', marginBottom: '2%'}}>
-										<Text style={{color: 'white'}}>
+										<Text style={{color: 'white', fontFamily: 'Helvetica', fontSize: screenHeight * 0.022}}>
 											{item.DisplayTime}
 										</Text>
 									</View>
@@ -543,7 +552,7 @@ function Dm ({route, navigation}) {
 							return (
 								<View style={{}}>
 									<View style={{alignItems: 'center', marginBottom: '2%'}}>
-										<Text style={{color: 'white', fontFamily: 'Helvetica'}}>
+										<Text style={{color: 'white', fontFamily: 'Helvetica', fontSize: screenHeight * 0.022}}>
 											{item.DisplayTime}
 										</Text>
 									</View>
@@ -571,7 +580,7 @@ function Dm ({route, navigation}) {
 									return (
 										<View style={{}}>
 											<View style={{alignItems: 'center', marginBottom: '2%'}}>
-												<Text style={{color: 'white', fontFamily: 'Helvetica'}}>
+												<Text style={{color: 'white', fontFamily: 'Helvetica', fontSize: screenHeight * 0.022}}>
 													{item.DisplayTime}
 												</Text>
 											</View>
@@ -595,15 +604,19 @@ function Dm ({route, navigation}) {
 										return (
 											<View>
 												<View style={{alignItems: 'center', marginBottom: '2%'}}>
-													<Text style={{color: 'white', fontFamily: 'Helvetica'}}>
+													<Text style={{color: 'white', fontFamily: 'Helvetica', fontSize: screenHeight * 0.022}}>
 														{item.DisplayTime}
 													</Text>
 												</View>
-												<View style={styles.messageLeftContainer}>
-													<Text style={styles.messageText}>
-														{item.Text}
-													</Text>
+												<View style={{flexDirection: 'row'}}>
+													<View style={styles.messageOtherDP}/>
+													<View style={[styles.messageLeftContainer]}>
+														<Text style={styles.messageText}>
+															{item.Text}
+														</Text>
+													</View>
 												</View>
+												
 											</View>
 										) 
 									} 
@@ -613,7 +626,7 @@ function Dm ({route, navigation}) {
 										return (
 											<View style={{}}>
 												<View style={{alignItems: 'center', marginBottom: '2%'}}>
-													<Text style={{color: 'white', fontFamily: 'Helvetica'}}>
+													<Text style={{color: 'white', fontFamily: 'Helvetica', fontSize: screenHeight * 0.022}}>
 														{item.DisplayTime}
 													</Text>
 												</View>
@@ -637,11 +650,11 @@ function Dm ({route, navigation}) {
 									// if message above time >= 30min
 									if (messages[0].TimeInSeconds - messages[1].TimeInSeconds >= 1800) {
 										// show dp, show time
-										console.log('here')
+										//console.log('here')
 										return (	
 											<View style={{}}>
 												<View style={{alignItems: 'center', marginBottom: '2%'}}>
-													<Text style={{color: 'white', fontFamily: 'Helvetica'}}>
+													<Text style={{color: 'white', fontFamily: 'Helvetica', fontSize: screenHeight * 0.022}}>
 														{item.DisplayTime}
 													</Text>
 												</View>
@@ -681,7 +694,7 @@ function Dm ({route, navigation}) {
 										return (
 											<View style={{marginTop: '2%'}}>
 												<View style={{alignItems: 'center', marginBottom: '2%'}}>
-													<Text style={{color: 'white', fontFamily: 'Helvetica'}}>
+													<Text style={{color: 'white', fontFamily: 'Helvetica', fontSize: screenHeight * 0.02}}>
 														{item.DisplayTime}
 													</Text>
 												</View>
@@ -742,7 +755,7 @@ function Dm ({route, navigation}) {
 											return (
 												<View style={{marginTop: '2%'}}>
 													<View style={{alignItems: 'center', marginBottom: '2%'}}>
-														<Text style={{color: 'white', fontFamily: 'Helvetica'}}>
+														<Text style={{color: 'white', fontFamily: 'Helvetica', fontSize: screenHeight * 0.02}}>
 															{item.DisplayTime}
 														</Text>
 													</View>
@@ -765,7 +778,7 @@ function Dm ({route, navigation}) {
 												return (
 													<View style={{marginTop: '2%'}}>
 														<View style={{alignItems: 'center', marginBottom: '2%'}}>
-															<Text style={{color: 'white', fontFamily: 'Helvetica'}}>
+															<Text style={{color: 'white', fontFamily: 'Helvetica', fontSize: screenHeight * 0.02}}>
 																{item.DisplayTime}
 															</Text>
 														</View>
@@ -786,7 +799,7 @@ function Dm ({route, navigation}) {
 												return (
 													<View style={{marginTop: '2%'}}>
 														<View style={{alignItems: 'center', marginBottom: '2%'}}>
-															<Text style={{color: 'white', fontFamily: 'Helvetica'}}>
+															<Text style={{color: 'white', fontFamily: 'Helvetica', fontSize: screenHeight * 0.02}}>
 																{item.DisplayTime}
 															</Text>
 														</View>
@@ -919,7 +932,7 @@ function Dm ({route, navigation}) {
 											return (
 												<View style={{}}>
 													<View style={{alignItems: 'center', marginBottom: '2%'}}>
-														<Text style={{color: 'white', fontFamily: 'Helvetica'}}>
+														<Text style={{color: 'white', fontFamily: 'Helvetica', fontSize: screenHeight * 0.02}}>
 															{item.DisplayTime}
 														</Text>
 													</View>
@@ -958,7 +971,7 @@ function Dm ({route, navigation}) {
 												return (
 													<View style={{}}>
 														<View style={{alignItems: 'center', marginBottom: '2%'}}>
-															<Text style={{color: 'white', fontFamily: 'Helvetica'}}>
+															<Text style={{color: 'white', fontFamily: 'Helvetica', fontSize: screenHeight * 0.02}}>
 																{item.DisplayTime}
 															</Text>
 														</View>
@@ -1043,7 +1056,7 @@ function Dm ({route, navigation}) {
 										return (
 											<View>
 												<View style={{alignItems: 'center', marginBottom: '2%'}}>
-													<Text style={{color: 'white', fontFamily: 'Helvetica'}}>
+													<Text style={{color: 'white', fontFamily: 'Helvetica', fontSize: screenHeight * 0.02}}>
 														{item.DisplayTime}
 													</Text>
 												</View>
@@ -1061,7 +1074,7 @@ function Dm ({route, navigation}) {
 										return (
 											<View>
 												<View style={{alignItems: 'center', marginBottom: '2%'}}>
-													<Text style={{color: 'white', fontFamily: 'Helvetica'}}>
+													<Text style={{color: 'white', fontFamily: 'Helvetica', fontSize: screenHeight * 0.02}}>
 														{item.DisplayTime}
 													</Text>
 												</View>
@@ -1081,7 +1094,7 @@ function Dm ({route, navigation}) {
 									return (
 										<View>
 											<View style={{alignItems: 'center', marginBottom: '2%'}}>
-												<Text style={{color: 'white', fontFamily: 'Helvetica'}}>
+												<Text style={{color: 'white', fontFamily: 'Helvetica', fontSize: screenHeight * 0.02}}>
 													{item.DisplayTime}
 												</Text>
 											</View>
@@ -1132,7 +1145,7 @@ function Dm ({route, navigation}) {
 										return (
 											<View style={{marginTop: '2%'}}>
 												<View style={{alignItems: 'center', marginBottom: '2%'}}>
-													<Text style={{color: 'white', fontFamily: 'Helvetica'}}>
+													<Text style={{color: 'white', fontFamily: 'Helvetica', fontSize: screenHeight * 0.02}}>
 														{item.DisplayTime}
 													</Text>
 												</View>
@@ -1154,7 +1167,7 @@ function Dm ({route, navigation}) {
 										return (
 											<View style={{}}>
 												<View style={{alignItems: 'center', marginBottom: '2%'}}>
-													<Text style={{color: 'white', fontFamily: 'Helvetica'}}>
+													<Text style={{color: 'white', fontFamily: 'Helvetica', fontSize: screenHeight * 0.02}}>
 														{item.DisplayTime}
 													</Text>
 												</View>
@@ -1195,7 +1208,7 @@ function Dm ({route, navigation}) {
 											return (
 												<View style={{}}>
 													<View style={{alignItems: 'center', marginBottom: '2%'}}>
-														<Text style={{color: 'white', fontFamily: 'Helvetica'}}>
+														<Text style={{color: 'white', fontFamily: 'Helvetica', fontSize: screenHeight * 0.02}}>
 															{item.DisplayTime}
 														</Text>
 													</View>
@@ -1216,7 +1229,7 @@ function Dm ({route, navigation}) {
 												return (
 													<View style={{marginTop: '2%'}}>
 														<View style={{alignItems: 'center', marginBottom: '2%'}}>
-															<Text style={{color: 'white', fontFamily: 'Helvetica'}}>
+															<Text style={{color: 'white', fontFamily: 'Helvetica', fontSize: screenHeight * 0.02}}>
 																{item.DisplayTime}
 															</Text>
 														</View>
@@ -1235,7 +1248,7 @@ function Dm ({route, navigation}) {
 												return (
 													<View style={{marginTop: '2%'}}>
 														<View style={{alignItems: 'center', marginBottom: '2%'}}>
-															<Text style={{color: 'white', fontFamily: 'Helvetica'}}>
+															<Text style={{color: 'white', fontFamily: 'Helvetica', fontSize: screenHeight * 0.02}}>
 																{item.DisplayTime}
 															</Text>
 														</View>
@@ -1308,7 +1321,7 @@ function Dm ({route, navigation}) {
 											return (
 												<View style={{}}>
 													<View style={{alignItems: 'center', marginBottom: '2%'}}>
-														<Text style={{color: 'white', fontFamily: 'Helvetica'}}>
+														<Text style={{color: 'white', fontFamily: 'Helvetica', fontSize: screenHeight * 0.02}}>
 															{item.DisplayTime}
 														</Text>
 													</View>
@@ -1329,7 +1342,7 @@ function Dm ({route, navigation}) {
 												return (
 													<View style={{marginTop: '2%'}}>
 														<View style={{alignItems: 'center', marginBottom: '2%'}}>
-															<Text style={{color: 'white', fontFamily: 'Helvetica'}}>
+															<Text style={{color: 'white', fontFamily: 'Helvetica', fontSize: screenHeight * 0.02}}>
 																{item.DisplayTime}
 															</Text>
 														</View>
@@ -1348,7 +1361,7 @@ function Dm ({route, navigation}) {
 												return (
 													<View style={{marginTop: '2%'}}>
 														<View style={{alignItems: 'center', marginBottom: '2%'}}>
-															<Text style={{color: 'white', fontFamily: 'Helvetica'}}>
+															<Text style={{color: 'white', fontFamily: 'Helvetica', fontSize: screenHeight * 0.02}}>
 																{item.DisplayTime}
 															</Text>
 														</View>

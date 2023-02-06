@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useContext } from 'react';
-import { View, Pressable, SafeAreaView, ImageBackground, Alert } from 'react-native';
+import { View, Pressable, SafeAreaView, ImageBackground, Alert, Text } from 'react-native';
 import styles from './styles';
 import IIcon from 'react-native-vector-icons/Ionicons'
 import MIIcon from 'react-native-vector-icons/MaterialIcons';
@@ -38,6 +38,7 @@ function InitialTakePhotoForDP ({navigation}) {
 	const [imageURL, setImageURL] = useState(null);
 	const [takePhotoButton, setTakePhotoButton] = useState(true);
 	const [backCamera, setbackCamera] = useState(true);
+	const [cameraDisabled, setCameraDisabled] = useState(false)
     const cameraref = useRef();
 
     const { setEditProfileModal, setDpURL, user} = useContext(LoggedInContext);
@@ -55,7 +56,6 @@ function InitialTakePhotoForDP ({navigation}) {
 	async function uploadImage() {
         // uploads file to storage
 		const pathToFile = imageURL
-		// const reference = storage().ref(`/ProfilePics/${user.uid}`)
 		await reference.putFile(pathToFile);
 
         // assign DPURL to context state
@@ -96,6 +96,7 @@ function InitialTakePhotoForDP ({navigation}) {
 			const newCameraPermission = await Camera.requestCameraPermission()
 			setCameraPermission(newCameraPermission);
 			if (newCameraPermission !== 'authorized') {
+				setCameraDisabled(true)
 				// pop up alert
 				Alert.alert(
 					'Permission required',
@@ -103,13 +104,15 @@ function InitialTakePhotoForDP ({navigation}) {
 					[
 					  {
 						text: 'Cancel',
-						onPress: () => console.log('Cancel Pressed'),
+						//onPress: () => console.log('Cancel Pressed'),
 						style: 'cancel',
 					  },
 					  {text: 'Open Settings', onPress: () => openSettings()},
 					],
 					{cancelable: false},
 				);
+			} else {
+				setCameraDisabled(false)
 			}
 		} catch (error) {
 			
@@ -118,7 +121,13 @@ function InitialTakePhotoForDP ({navigation}) {
 	
 	if (cameraPermission == null) {
 		// still loading
-		return null;
+		return (
+			<SafeAreaView style={styles.loadingScreen}>
+				<Text style={styles.loadingSocialyseText}>
+				SOCIALYSE
+				</Text>
+			</SafeAreaView>
+		);
 	}
 
     return (
@@ -171,7 +180,7 @@ function InitialTakePhotoForDP ({navigation}) {
 			}
 			{
 				takePhotoButton ? 
-				<Pressable onPress={() => {takePhotoAndButton(); }}>
+				<Pressable disabled={cameraDisabled} onPress={() => {takePhotoAndButton(); }}>
 					<View style={styles.takePhotoButton}>
 						<IIcon name="ios-camera-outline" size={scale(36)} color='white'/>
 					</View>
@@ -183,15 +192,9 @@ function InitialTakePhotoForDP ({navigation}) {
 					</View>
 				</Pressable> 
 			}
-            
-
 			<Pressable style={styles.takeAPhotoDPBackButton} onPress={() => {navigation.goBack(); setEditProfileModal(false)}}>
 				<MIIcon name='arrow-forward-ios' size={scale(30)} color='white'/>
 			</Pressable>
-			
-			
-			
-			
         </SafeAreaView>
     );
 }

@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { View, Pressable, Text, SafeAreaView, Dimensions, PermissionsAndroid, Alert, Platform } from 'react-native';
+import React, { useEffect, useState, useContext, useCallback } from 'react';
+import { View, Pressable, Text, SafeAreaView, Dimensions, PermissionsAndroid, Alert, Platform, Modal, ActivityIndicator } from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import styles from './styles'
@@ -12,24 +12,41 @@ import SLIcon from 'react-native-vector-icons/SimpleLineIcons'
 import { scale } from 'react-native-size-matters';
 import { useFocusEffect } from '@react-navigation/native';
 import { PERMISSIONS, checkMultiple, openSettings, requestMultiple } from 'react-native-permissions';
+import { useAppState } from '@react-native-community/hooks'
+import LocationPermissionModal from './locationPermissionModal';
+import useGeolocation from './useGeolocation';
 
 function MapDisplay({ navigation }) {
+  const currentAppState = useAppState()
+  const { position, error, startWatching, stopWatching } = useGeolocation();
 
   const [longitude, setLongitude] = useState(0)
   const [latitude, setLatitude] = useState(0)
   const [multipleModalDisplay, setMultipleModalDisplay] = useState(false);
   const [createPinModalDisplay, setCreatePinModalDisplay] = useState(false)
   const [pins, setPins] = useState()
-  const [notificationCount, setNotificationCount] = useState(0)
   const [msgCount, setMsgCount] = useState(0)
   const [canCreatePin, setCanCreatePin] = useState(true)
   const [buttonPressed, setButtonPressed] = useState(false)
-  const { messageDisplay, setMessageDisplay, notifDisplay, setNotifDisplay, selectedPinId, setSelectedPinId, user } = useContext(LoggedInContext);
-
+  const { messageDisplay, setMessageDisplay, setSelectedPinId, user } = useContext(LoggedInContext);
+  const [havePermissions, setHavePermission] = useState(false)
+  const [showPermissionModal, setShowPermissionModal] = useState()
   const [watchId, setWatchId] = useState(null)
+
+
+  useEffect(()=>{
+    if(position){
+      //console.log('position updated', position);
+      setLatitude(position.coords.latitude)
+      setLongitude(position.coords.longitude)
+    }
+  },[position])
+
   async function requestLocationPermission() {
-    if (Platform.OS === 'android') {
-      try {
+    //console.log('requestLocationPermission')
+    try {
+      if (Platform.OS === 'android') {
+
         const granted = await PermissionsAndroid.request(
           PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
           {
@@ -50,74 +67,134 @@ function MapDisplay({ navigation }) {
           setCanCreatePin(false)
 
         }
-      } catch (err) {
-        console.warn(err)
-      }
-    } else if (Platform.OS === 'ios') {
-      checkMultiple([PERMISSIONS.IOS.LOCATION_WHEN_IN_USE, PERMISSIONS.IOS.LOCATION_ALWAYS])
-        .then(async (result) => {
-          if (result[PERMISSIONS.IOS.LOCATION_ALWAYS] !== 'granted' && result[PERMISSIONS.IOS.LOCATION_WHEN_IN_USE] !== 'granted') {
-            requestMultiple([PERMISSIONS.IOS.LOCATION_WHEN_IN_USE, PERMISSIONS.IOS.LOCATION_ALWAYS]).then(res => {
-              if (res[PERMISSIONS.IOS.LOCATION_ALWAYS] !== 'granted' && res[PERMISSIONS.IOS.LOCATION_WHEN_IN_USE] !== 'granted') {
-                Alert.alert(
-                  'Permission required',
-                  'We need location permission to work this app, Please allow location permission in your settings',
-                  [
-                    {
-                      text: 'Cancel',
-                      onPress: () => console.log('Cancel Pressed'),
-                      style: 'cancel',
-                    },
-                    {text: 'Open Settings', onPress: () => openSettings()},
-                  ],
-                  {cancelable: false},
-                );
-              }else{
-              }
-            })
-            setCanCreatePin(false)
-          }
-        })
+
+      } else if (Platform.OS === 'ios') {
+        checkMultiple([PERMISSIONS.IOS.LOCATION_WHEN_IN_USE, PERMISSIONS.IOS.LOCATION_ALWAYS])
+          .then(async (result) => {
+            //console.log('checking location permissions', result)
+            if (result[PERMISSIONS.IOS.LOCATION_ALWAYS] !== 'granted' && result[PERMISSIONS.IOS.LOCATION_WHEN_IN_USE] !== 'granted') {
+              requestMultiple([PERMISSIONS.IOS.LOCATION_WHEN_IN_USE, PERMISSIONS.IOS.LOCATION_ALWAYS]).then(res => {
+                if (res[PERMISSIONS.IOS.LOCATION_ALWAYS] !== 'granted' && res[PERMISSIONS.IOS.LOCATION_WHEN_IN_USE] !== 'granted') {
+                  setHavePermission(false);
+                  setCanCreatePin(false)
+                  setShowPermissionModal(true)
+                } else {
+                  // we have permission
+				          // startWatching()
+                
+                  setCanCreatePin(true)
+                  setHavePermission(true)
+                  setShowPermissionModal(false)
+                }
+              })
+
+            } else {
+				// startWatching()
+              setCanCreatePin(true)
+              setHavePermission(true)
+              setShowPermissionModal(false)
+            }
+          })
         await Geolocation.requestAuthorization("whenInUse");
+      }
+
+    } catch (err) {
+      //console.warn(err)
+    }
+  }
+
+  useEffect(() => {
+    
+    (async ()=>{
+      //console.log('currentAppState',currentAppState)
+      if (currentAppState === 'active') {
+        await getPermissionAndLocation();
+		    // await GetmyLocation()
+        if(havePermissions){
+          startWatching();
+        }
+        // const id = subWatchPosition();
+        // setWatchId(id);
+      } else {
+         if(havePermissions){
+          stopWatching();
+         }
+      }
+    })()
+    
+  }, [currentAppState])
+
+  useEffect(()=>{
+    if(havePermissions){
+      GetmyLocation();
+    }
+  },[havePermissions])
+
+  const GetmyLocation = async () => {
+    //console.log('GetmyLocation')
+    try {
+      if (havePermissions) {
+        Geolocation.getCurrentPosition(info => {
+          setLatitude(info.coords.latitude)
+          setLongitude(info.coords.longitude)
+        })
+      }
+
+    } catch (err) {
+      //console.log('GetmyLocation', err)
     }
 
   }
 
-  const GetmyLocation = async () => {
-    await Geolocation.getCurrentPosition(info => {
-      setLatitude(info.coords.latitude)
-      setLongitude(info.coords.longitude)
-    })
-  }
+  // const ClearLocationFocus = (id) => {
+  //   console.log('id', id)
+  //   try {
+  //     if (id) {
+  //       Geolocation.clearWatch(id);
+  //     }
+  //   } catch (err) {
+  //     //console.log('ClearLocation', err)
+  //   }
+  // }
 
-  async function ClearLocation() {
-    await Geolocation.clearWatch(watchId);
-  }
+  // const ClearLocation = () => {
+  //   try {
+  //     console.log('ClearLocation', watchId)
+  //     // Geolocation.stopObserving();
+  //     if (watchId != null) {
+  //       Geolocation.clearWatch(watchId);
+  //       console.log('Watch position cleared')
+  //     }
+  //   } catch (err) {
+  //     //console.log('ClearLocation', err)
+  //   }
+
+  // }
 
   async function getPermissionAndLocation() {
+    try {
+      await requestLocationPermission()
+      // await GetmyLocation()
+    } catch (err) {
+      //console.log('getPermissionAndLocation',err)
+    }
 
-    await requestLocationPermission()
-    await GetmyLocation()
   }
 
   useFocusEffect(
     React.useCallback(() => {
-      setWatchId(Geolocation.watchPosition(
-        info => {
-          setLatitude(info.coords.latitude)
-          setLongitude(info.coords.longitude)
-        },
-        {
-          enableHighAccuracy: true,
-          distanceFilter: 0,
-          interval: 5000,
-          fastestInterval: 2000,
-        }
-      ));
-      return () => {
-        ClearLocation()
+      // console.log('focuseffct', havePermissions)
+     
+      if (havePermissions === true) {
+        // id = subWatchPosition();
+        // console.log('watchId', id)
+        // setWatchId(id);
+        startWatching();
       }
-    }, [multipleModalDisplay])
+      return () => {
+        stopWatching();
+      }
+    }, [multipleModalDisplay, havePermissions])
   );
 
   useEffect(() => {
@@ -147,8 +224,8 @@ function MapDisplay({ navigation }) {
           };
 
           data.Location = snapshot.data().Location,
-          data.PinID = snapshot.data().PinID,
-          data.Verified = snapshot.data().Verified
+            data.PinID = snapshot.data().PinID,
+            data.Verified = snapshot.data().Verified
           pinsArray.push(data)
         })
         setPins(pinsArray)
@@ -156,6 +233,26 @@ function MapDisplay({ navigation }) {
 
     return () => subscriber()
   })
+
+  // const subWatchPosition = ()=>{
+  //   console.log('watching postion')
+  //   let id = null
+  //   if(havePermissions){
+  //     id =Geolocation.watchPosition(
+  //       info => {
+  //         setLatitude(info.coords.latitude)
+  //         setLongitude(info.coords.longitude)
+  //       },
+  //       {
+  //         enableHighAccuracy: true,
+  //         distanceFilter: 0,
+  //         interval: 5000,
+  //         fastestInterval: 2000,
+  //       }
+  //     )
+  //   }
+  //   return id;
+  // }
 
   // get messages count
   useEffect(() => {
@@ -176,7 +273,6 @@ function MapDisplay({ navigation }) {
     }, 100)
   }, [buttonPressed])
 
-
   if (!pins)
     return (
       <SafeAreaView style={styles.loadingScreen}>
@@ -186,6 +282,13 @@ function MapDisplay({ navigation }) {
       </SafeAreaView>
     );
 
+    if(latitude == 0 && longitude == 0) {
+      return (
+        <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+          <ActivityIndicator size={'large'}/>
+        </View>
+      )
+    }
 
   return (
     <View style={styles.fullScreen}>
@@ -193,26 +296,28 @@ function MapDisplay({ navigation }) {
         provider={PROVIDER_GOOGLE}
         style={styles.map}
         customMapStyle={mapStyle}
-        region={{
+        initialRegion={{
           latitude: latitude,
           longitude: longitude,
           latitudeDelta: 0.003,
           longitudeDelta: 0.003,
-        }}
+        }}    
+        
         showsUserLocation={true}>
         {
           pins.map((pin) => {
+			//console.log(pin)
             return (
               <Marker coordinate={{ latitude: pin.Location.latitude, longitude: pin.Location.longitude }}
 
                 onPress={() => {
                   setSelectedPinId(pin.PinID);
                   setTimeout(() => {
-                    setMultipleModalDisplay(true); setMessageDisplay(false); setNotifDisplay(false);
+                    setMultipleModalDisplay(true); setMessageDisplay(false);;
                   }, 250)
 
                 }}>
-                <IIcon name='ios-location-sharp' size={scale(30)} color={pin.Verified ? '#96B9FE' : 'black'} />
+                <IIcon name='ios-location-sharp' size={scale(30)} color={pin.Verified ? 'black' : '#96B9FE'} />
 
               </Marker>
             )
@@ -220,7 +325,9 @@ function MapDisplay({ navigation }) {
         }
       </MapView>
 
-      <LocationModalMultiple multipleModalDisplay={multipleModalDisplay} setMultipleModalDisplay={setMultipleModalDisplay} setMessageDisplay={setMessageDisplay} setNotifDisplay={setNotifDisplay} />
+      <LocationPermissionModal havePermissions={havePermissions} showPermissionModal={showPermissionModal} setShowPermissionModal={setShowPermissionModal} />
+
+      <LocationModalMultiple multipleModalDisplay={multipleModalDisplay} setMultipleModalDisplay={setMultipleModalDisplay} setMessageDisplay={setMessageDisplay} />
 
       {messageDisplay ?
         <View style={styles.messageCreatePinButtonContainer}>
@@ -246,13 +353,8 @@ function MapDisplay({ navigation }) {
         : null}
 
       <CreatePinModal createPinModalDisplay={createPinModalDisplay} setCreatePinModalDisplay={setCreatePinModalDisplay}
-         setMultipleModalDisplay={setMultipleModalDisplay}
+        setMultipleModalDisplay={setMultipleModalDisplay}
       />
-
-
-
-
-
     </View>
   );
 };

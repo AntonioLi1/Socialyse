@@ -9,23 +9,33 @@ const screenHeight = Dimensions.get("window").height
 function TsAndCs({navigation}) {
 
     async function PrivacyPolicy() {
-        const URL = 'https://app.termly.io/document/privacy-policy/1774d57e-5112-4182-824b-740c958d85e8'
-        const supported = await Linking.canOpenURL(URL)
-        if (supported) {
-            await Linking.openURL(URL)
-        } else {
-            console.log('gg didnt wokr')
+        try{
+            const URL = 'https://app.termly.io/document/privacy-policy/1774d57e-5112-4182-824b-740c958d85e8'
+            const supported = await Linking.canOpenURL(URL)
+            if (supported) {
+                await Linking.openURL(URL)
+            } else {
+                //console.log('gg didnt wokr')
+            }
+        }catch(err){
+            //console.log('PrivacyPolicy', err)
         }
+        
     }
 
     async function EULA() {
-        const URL = 'https://app.termly.io/document/eula/8248d241-36ed-42a2-bd10-fd394c0701f5'
-        const supported = await Linking.canOpenURL(URL)
-        if (supported) {
-            await Linking.openURL(URL)
-        } else {
-            console.log('gg didnt wokr')
+        try{
+            const URL = 'https://app.termly.io/document/eula/8248d241-36ed-42a2-bd10-fd394c0701f5'
+            const supported = await Linking.canOpenURL(URL)
+            if (supported) {
+                await Linking.openURL(URL)
+            } else {
+                //console.log('gg didnt wokr')
+            }
+        }catch(err){
+            //console.log('EULA', err)
         }
+        
     }
 
     return (

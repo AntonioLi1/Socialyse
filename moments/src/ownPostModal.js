@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View, Text, Pressable, FlatList, Modal, Dimensions, ImageBackground } from 'react-native';
+import { View, Text, Pressable, FlatList, Modal, ImageBackground } from 'react-native';
 import styles from './styles';
 import IIcon from 'react-native-vector-icons/Ionicons';
 import { scale } from 'react-native-size-matters';
@@ -41,7 +41,6 @@ async function ViewOwnPosts(uid) {
         const docID = snapshot.id
         const likeCountQuerySnapshot = await firestore()
         .collection('PostLikes').doc(docID).get()
-        //console.log('likecount', likeCountQuerySnapshot.data().LikeCount)
 
         obj.ImageURL = snapshot.data().ImageURL
         obj.Caption = snapshot.data().Caption
@@ -160,7 +159,6 @@ function OwnPosts({ownPost, setOwnPost, selectedChannelID}) {
             if (ownPosts.length == 0) {
                 setOwnPost(false) 
                 LeaveChannelMakeAPost()
-                //LeaveChannel(user.uid, selectedChannelId)
             }
         }
     }, [ownPosts, ownPost])

@@ -25,9 +25,7 @@ class TakenChannelNameError extends Error {
     }
 }
 
-async function checkIfUserCanCreateChannel(uid, selectedPinId) {
-	//console.log('cancreatestart')
-	
+async function checkIfUserCanCreateChannel(uid, selectedPinId) {	
 	// check if user has already created a channel in this pin 
 	let canCreate = null
 	await firestore()
@@ -38,15 +36,12 @@ async function checkIfUserCanCreateChannel(uid, selectedPinId) {
 	.get()
 	.then( docSnapshot => {
 		if (!docSnapshot.exists) {
-			console.log('deosnt exist')
 			canCreate = true
 			return canCreate
 		} else {
-			//console.log('ye exist')
 			canCreate = false
 		}
 	})
-	//console.log('here?')
 
 	//over an hour ago
 	let LastTime = 0;
@@ -78,7 +73,6 @@ async function checkIfUserCanCreateChannel(uid, selectedPinId) {
 
 // for when a user is checked into the channel already, they can 'view' instead of 'join'
 async function checkIfUserCanViewButton(uid, channelID) {
-	console.log('canviewstart')
 
 	let returnBool = false;
 
@@ -100,7 +94,6 @@ async function checkIfUserCanViewButton(uid, channelID) {
 			returnBool = true
 		}
 	})
-	console.log('canview')
 	return returnBool
 }
 
@@ -114,7 +107,6 @@ async function getPinName(selectedPinId) {
 		let data = docSnapshot.data()
 		channelName = data.Name
 	})
-	//console.log('pinname')
 	return channelName
 }
 
@@ -128,11 +120,10 @@ async function getPinPicURL (selectedPinId) {
 		let data = docSnapshot.data()
 		pinPicURL = data.PinPic
 	})
-	//console.log('pinpicurl')
 	return pinPicURL
 }
 
-export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDisplay, setMessageDisplay, setNotifDisplay}) {
+export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDisplay, setMessageDisplay}) {
 	
 	const [isPressed, setIsPressed] = useState(false);
 	const [channelStatus, setChannelStatus] = useState(true);
@@ -156,8 +147,9 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 	const [blankChannelNameErrorMessage, setBlankChannelNameErrorMessage] = useState(false)
 	const [createButtonPressed, setCreateButtonPressed] = useState(false)
 	
-
 	const {selectedPinId, user, setSelectedPinId, setSelectedChannelId} = useContext(LoggedInContext)
+
+	//console.log('seelcted pin id', selectedPinId)
 
 	useEffect(() => {
 		setTimeout(() => {
@@ -166,7 +158,7 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 	}, [createButtonPressed])
 	
 	const GetmyLocation = async () => {
-		await Geolocation.getCurrentPosition(info => {
+		 Geolocation.getCurrentPosition(info => {
 			setLatitude(info.coords.latitude)
 			setLongitude(info.coords.longitude)
 		})
@@ -202,9 +194,7 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 					throw new TakenChannelNameError("channel name taken");
 				}
 			})
-		})
-		console.log('read pins channels')
-	
+		})	
 
 		let Location = {};
 		await firestore()
@@ -216,8 +206,7 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 			Location = docSnapshot.data().Location;
 		  }
 		});
-		console.log('read pins')
-	  
+
 		// add to channels
 		let ChannelID = '';
 		await firestore()
@@ -230,7 +219,8 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 		.then(function(docRef) {
 		  ChannelID = docRef.id;
 		});		
-		console.log('write channels')
+		setSelectedChannelId(ChannelID)
+		//console.log('set channel id after making', ChannelID)
 
 		const realTime = new Date();
 
@@ -246,7 +236,6 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 		  LastActive: realTime,
 		  Name: ChannelName
 		});
-		console.log('write pins channels')
 	  
 		// add to channel creations
 		let createdBefore = false
@@ -261,20 +250,9 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 			createdBefore = true
 		  }
 		})
-		console.log('read from channelcreations pins')
 		
-	  
 		// if user never created a channel at this pin
 		if (createdBefore == false) {
-			console.log('createdbefore', createdBefore)
-			// await firestore()
-			// .collection('ChannelCreations')
-			// .doc(UserID)
-			// .set({
-			// 	UserID: UserID
-			// })
-			// console.log('1')
-
 			await firestore()
 			.collection('ChannelCreations')
 			.doc(UserID)
@@ -285,13 +263,10 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 				LastCreated: realTime,
 				CreatedBy: UserID
 			});
-			console.log('2')
-
-	  
 		} 
 		// if channel does exist, update
 		else {
-			console.log('createdbefore', createdBefore)
+			//console.log('createdbefore', createdBefore)
 			await firestore()
 			.collection('ChannelCreations') 
 			.doc(UserID)
@@ -302,12 +277,7 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 				LastCreated: realTime,
 				CreatedBy: UserID
 			});
-			console.log('3')
-
-	  
-		}
-		console.log('createchannel')
-	  
+		}	  
 	}
 
 	async function getChannels(selectedPinId) {
@@ -320,7 +290,6 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 		}
 
 		let test = subtractHours(24, start)
-		//console.log('getchannels1')
 
 		let channelsArr = []
 		await firestore()
@@ -345,7 +314,6 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 		})
 		setSortedChannels(channelsArr.sort((a,b) => b.ActiveUsers - a.ActiveUsers))
 		setChannelsLoaded(true)
-		//console.log('getchannels2')
 	}
 
 	async function CheckIfUserIsWithinDistance(selectedPinId, userLatitude, userLongtitude) {
@@ -369,36 +337,23 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 		const API_KEY = "AIzaSyA1T4rNRR2NoCUglLkTZOtdCExn392_mZE"
 		const userLocation = `${userLatitude},${userLongtitude}`
 		const pinLocation = `${ChannelLatitude},${ChannelLongitude}`
-		console.log('userlocation', userLocation)
-		console.log('pinlocation', pinLocation)
 		const url = `https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&mode=walking&origins=${userLocation}&destinations=${pinLocation}&key=${API_KEY}`
 		let distance = null
 		await fetch(url)
 		.then((response) => response.json())
 		.then((data) => {
 			distance = parseFloat(data.rows[0].elements[0].distance.text.match(/\d+/)[0]);
-			console.log('data', data)
 			let unit = data.rows[0].elements[0].distance.text.match(/[a-zA-Z]+/g)[0];
 			if (unit == 'km') {
 				distance *= 1000
 			}
-			//console.log('disctance', distance)
-			//console.log('radius', ChannelRadius)
 			if (distance > ChannelRadius) {
-				//console.log('fasle')
-				//canCreate = false
 				setCanInteract(false)
-				//return canCreate
 			} else {
-				//console.log('true')
 				setCanInteract(true)
-				//return canCreate
 			}
-			//console.log('distance check')
 		})
 		.catch((error) => {
-			//console.log('distance check2')
-
 			canCreate = false
 			return canCreate
 		})
@@ -408,31 +363,21 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 
 	async function getData() {
 		await GetmyLocation();
-		console.log('selectedpindi', selectedPinId)
 		if(selectedPinId) {
 			setDataLoaded(false)
 
-			//console.log('dataloaded1', dataLoaded)
 			await getChannels(selectedPinId)
-			//console.log('here')
 			await CheckIfUserIsWithinDistance(selectedPinId, userLatitude, userLongitude)
-			//setCanInteract(canInteract1)
-			//console.log('canInteract', canInteract)
 			const pinName = await getPinName(selectedPinId)
 			setPinName(pinName)
-			//console.log('again')
 			const pinPic = await getPinPicURL(selectedPinId)
 			setPinPicURL(pinPic)
 			if (canInteract === true) {
 				const canCreateCheck = await checkIfUserCanCreateChannel(user.uid, selectedPinId)
 				setCanCreateChannel(canCreateCheck)
 			}
-			setDataLoaded(true)
-			//console.log('dataloaded2', dataLoaded)
-			
-
+			setDataLoaded(true)			
 		}
-		
 	}
 
 	async function viewCheckFunc (channelID) {
@@ -458,10 +403,7 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 			}
 			setJoinEnable(true)
 		}
-		
 	}, [channelSelected])
-
-	//if (dataLoaded === false) return null;
 
 	const callback = ()=>{
         navigation.navigate('MakeAPost')
@@ -474,7 +416,6 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 			setCreateChannelModel(false);
 			callback()
 		} catch(error) {
-			console.log('error createchannelandjoin', error)
 			if (error.name === 'ChannelNameBlankError') {
 				setShowError(true)
 				setBlankChannelNameErrorMessage(true)
@@ -536,7 +477,7 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 						</View>
 						
 						<IIcon style={styles.createChannelModalClose} name='close-outline' size={scale(30)}
-						onPress={() => {setCreateChannelModel(false); setMultipleModalDisplay(true); setMessageDisplay(true); setNotifDisplay(true);}}/> 
+						onPress={() => {setCreateChannelModel(false); setMultipleModalDisplay(true); setMessageDisplay(true);}}/> 
 					</View>
 					:
 					<View style={styles.createChannelModal}>
@@ -577,16 +518,15 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 							</View>
 						</View>
 						<IIcon style={styles.createChannelModalClose} name='close-outline' size={scale(30)}
-						onPress={() => {setCreateChannelModel(false); setMultipleModalDisplay(true); setMessageDisplay(true); setNotifDisplay(true);}}/> 
+						onPress={() => {setCreateChannelModel(false); setMultipleModalDisplay(true); setMessageDisplay(true); }}/> 
 					</View>
 				}
 			</Modal>
 		)
 		
 	if (dataLoaded === true) {
-		//console.log('cantineract in return', canInteract)
 		return (
-			<Modal isVisible={multipleModalDisplay} >
+			<Modal isVisible={multipleModalDisplay}>
 				<View style={styles.multipleLocationModal}>
 					{
 						pinPicURL ?
@@ -600,7 +540,7 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 							</View>
 							
 							<IIcon style={styles.locationModalClose} name='close-outline' size={scale(30)}
-							onPress={() => {setMultipleModalDisplay(false); setMessageDisplay(true); setNotifDisplay(true); setSelectedPinId(null)}}/>
+							onPress={() => {setMultipleModalDisplay(false); setMessageDisplay(true); setSelectedPinId(null)}}/>
 						</View>
 						:
 						<View style={styles.multiLocationModalHeaderNoPic}>
@@ -613,7 +553,7 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 							</View>
 							
 							<IIcon style={styles.locationModalCloseNoPic} name='close-outline' size={scale(32)}
-							onPress={() => {setMultipleModalDisplay(false); setMessageDisplay(true); setNotifDisplay(true); setSelectedPinId(null)}}/>
+							onPress={() => {setMultipleModalDisplay(false); setMessageDisplay(true); setSelectedPinId(null)}}/>
 						</View>
 
 					}
@@ -630,7 +570,7 @@ export function LocationModalMultiple ({multipleModalDisplay, setMultipleModalDi
 								return (
 									
 									<Pressable onPress={() => {setChannelSelected(!channelSelected); item.selected = !item.selected;
-										console.log('channelSelected', channelSelected)
+										//console.log('channelSelected', channelSelected)
 										viewCheckFunc(sortedChannels[index].ChannelID)
 										{
 										// make all other channels unselected

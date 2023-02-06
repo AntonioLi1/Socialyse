@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View, Pressable, Text, SafeAreaView, Image, FlatList } from 'react-native';
+import { View, Pressable, Text, SafeAreaView, Image, FlatList, Dimensions } from 'react-native';
 import MIIcon from 'react-native-vector-icons/MaterialIcons';
 import OIcon from 'react-native-vector-icons/Octicons';
 import styles from './styles';
@@ -7,6 +7,7 @@ import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { scale } from 'react-native-size-matters';
 import firestore from '@react-native-firebase/firestore';
 import { LoggedInContext } from '../App'
+const screenWidth = Dimensions.get("window").width
 
 function DmDisplay({navigation}) {
 
@@ -19,6 +20,16 @@ function DmDisplay({navigation}) {
 	const { user, dpURL } = useContext(LoggedInContext);
 
 	useEffect(() => {
+
+		// let start = new Date();
+
+		// function subtractHours(numOfHours, date = new Date()) {
+		// 	date.setHours(date.getHours() - numOfHours);
+		// return date;
+		// }
+
+		// let test = subtractHours(24, start)
+
         const subscriber = firestore()
         .collection('Messages')
         .doc(user.uid)
@@ -47,9 +58,13 @@ function DmDisplay({navigation}) {
 					.doc(data.RecipientID)
 					.get()
 					dataObj.ProfilePic = docSnapshot.data().ProfilePic
-					dataObj.LastMessage = data.LastMessage
-					dataObj.LastMessageSender = data.LastMessageSender
-					dataObj.LastMessageSendTime = data.LastMessageSendTime
+					let timeDiff = ((Math.round(Date.now() / 1000)) - Math.round((data.LastMessageTime.nanoseconds / 1000000000) + data.LastMessageTime.seconds))
+					// if last message was sent more than a day ago
+					if (timeDiff < 86400) {
+						dataObj.LastMessage = data.LastMessage
+						dataObj.LastMessageSender = data.LastMessageSender
+						dataObj.LastMessageSendTime = data.LastMessageTime	
+					}
 					dataObj.Opened = data.Opened
 					dataObj.RecipientID = data.RecipientID
 					dataObj.Username = docSnapshot.data().Username
@@ -82,11 +97,11 @@ function DmDisplay({navigation}) {
 					};
 					const docSnapshot = await firestore()
 					.collection('UsernameAndDP')
-					.doc(data.Uid)
+					.doc(data.FriendID)
 					.get()
 					friend.ProfilePic = docSnapshot.data().ProfilePic
 					friend.Username = docSnapshot.data().Username;
-					friend.Uid = snapshot.data().Uid
+					friend.Uid = snapshot.data().FriendID
 					unmessagedFriends.push(friend)
 				}
 			}
@@ -94,7 +109,7 @@ function DmDisplay({navigation}) {
             setDataLoaded2(true)
         });
         return () => subscriber()
-    })
+    }, [])
 
 	useEffect(() => {
 		setTimeout(() => {
@@ -180,7 +195,7 @@ function DmDisplay({navigation}) {
 											{item.LastMessage}		
 										</Text> 																																			
 									</View>	
-									<OIcon style={{marginLeft: '40%'}}name='dot-fill' size={scale(18)} color='#96B9FE'/>															
+									<OIcon style={{position: 'absolute', right: screenWidth * 0.15}}name='dot-fill' size={scale(18)} color='#96B9FE'/>															
 								</View>
 								:
 								// all other instances

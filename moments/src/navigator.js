@@ -2,7 +2,6 @@ import React, { useEffect, useState, useContext } from 'react';
 import DmDisplay from './dms';
 import MapDisplay from './map';
 import OwnProfile from './ownProfile';
-import NotificationDisplay from './notifications';
 import MakeAPost from './makeAPost';
 import PostsFeed from './postsFeed';
 import HappySocialysing from './happySocialysing';
@@ -36,30 +35,37 @@ function LoggedInNavigator() {
 
 	async function checkOnboard() {
 		let DPAlreadyExists = false
-		console.log('cehckonbard', user)
+		//console.log('prioer')
 		await firestore()
 		.collection('UsernameAndDP')
 		.doc(user.uid)
 		.get()
 		.then(docSnapshot => {
-			console.log('checkonbard 1')
+			//console.log('9')
 			if (docSnapshot.exists) {
-				DPAlreadyExists = true
+				//console.log('90')
+				if (docSnapshot.data().ProfilePic !== '') {
+					//console.log('900')
+					DPAlreadyExists = true
+				}
 			}
+			
 		})
+		//console.log('after')
+		//console.log('after')
+		//console.log('checkonboard')
 		if (DPAlreadyExists === false) {
 			const displayPhoto = await AsyncStorage.getItem(displayPhotoKey)
 			if (displayPhoto === null) {
-				console.log('checkonbard 2')
 				setInitialScreenName('InitialCreateDP')
 				setLoading(true)
 			} else {
-				console.log('checkonbard 3')
 				setInitialScreenName('Map')
 				setLoading(true)
 			}
 		} else {
-			console.log('checkonbard 4')
+			//console.log('dp exist', DPAlreadyExists)
+
 			setInitialScreenName('Map')
 			setLoading(true)
 		}
@@ -67,6 +73,7 @@ function LoggedInNavigator() {
 	}
 
 	useEffect(() => {
+		//console.log('useeffect for checkonboard')
 		checkOnboard()
 	}, [])
 
@@ -122,9 +129,9 @@ function LoggedInNavigator() {
 				<Stack.Screen options={{ headerShown: false }} name="Settings" component={Settings}></Stack.Screen>
 				<Stack.Screen options={{ headerShown: false }} name="TsAndCs" component={TsAndCs}></Stack.Screen>
 				<Stack.Screen options={{ headerShown: false }} name="ChangeNameAndUsername" component={ChangeNameAndUsername}></Stack.Screen>
-				<Stack.Screen options={{ headerShown: false,
+				{/* <Stack.Screen options={{ headerShown: false,
 					cardStyleInterpolator:TopToBottomCardStyleInterpolator,
-				}} name="notifications" component={NotificationDisplay}></Stack.Screen>
+				}} name="notifications" component={NotificationDisplay}></Stack.Screen> */}
 				<Stack.Screen options={{ headerShown: false }} name="MakeAPost" component={MakeAPost}></Stack.Screen>
 				<Stack.Screen options={{ headerShown: false }} name="SocialyseLoading" component={HappySocialysing}></Stack.Screen>
 				<Stack.Screen options={{ headerShown: false }} name="PostsFeed" component={PostsFeed}></Stack.Screen>

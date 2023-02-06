@@ -1,9 +1,8 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View,  Text, Pressable, Image } from 'react-native';
+import { View,  Text, Pressable, Image, SafeAreaView } from 'react-native';
 import styles from './styles';
 import MIIcon from 'react-native-vector-icons/MaterialIcons';
 import { scale } from 'react-native-size-matters';
-import { LoggedInContext } from '../App'
 import firestore from '@react-native-firebase/firestore';
 
 async function ViewFriendProfile(FriendID) {
@@ -17,10 +16,10 @@ async function ViewFriendProfile(FriendID) {
     .get()
     .then(docSnapshot => {
         if(docSnapshot.exists) {
-          dataRet.Username = docSnapshot.data().Username;
-          dataRet.ProfilePic = docSnapshot.data().ProfilePic;
+            dataRet.Username = docSnapshot.data().Username;
+            dataRet.ProfilePic = docSnapshot.data().ProfilePic;
         } else {
-          throw error;
+            throw error;
         }
     })
     return dataRet
@@ -34,7 +33,7 @@ function ViewOtherProfile({route, navigation}) {
 
 
     async function getData() {
-        const data = await ViewFriendProfile(user.uid, FriendID)
+        const data = await ViewFriendProfile(FriendID)
         setOtherUserData(data)
         setGotData(true)
     }
@@ -43,9 +42,15 @@ function ViewOtherProfile({route, navigation}) {
         getData()
     },[])
 
-	const { user } = useContext(LoggedInContext);
-
-    if (gotData == false) return null;
+    if (gotData == false) {
+        return (
+            <SafeAreaView style={styles.loadingScreen}>
+                <Text style={styles.loadingSocialyseText}>
+                SOCIALYSE
+                </Text>
+            </SafeAreaView>
+        )
+    };
 
     return (
         <View style={styles.profileScreen}>

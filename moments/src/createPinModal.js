@@ -37,7 +37,6 @@ function CreatePinModal({createPinModalDisplay, setCreatePinModalDisplay, setMul
 
     const {setSelectedPinId} = useContext(LoggedInContext)
 
-
     const GetmyLocation = async () => {
 		await Geolocation.getCurrentPosition(info => {
 			setLatitude(info.coords.latitude)
@@ -51,7 +50,6 @@ function CreatePinModal({createPinModalDisplay, setCreatePinModalDisplay, setMul
         if (newPinName === '') {
             throw new PinNameError('pin name is empty')
         }
-
 
         const geopoint = new GeoPoint(userLatitude, userLongitude)
         const currTime = new Date(); 
@@ -78,16 +76,11 @@ function CreatePinModal({createPinModalDisplay, setCreatePinModalDisplay, setMul
                 let data = snapshot.data()
                 const pinLocation = `${data.Location.latitude},${data.Location.longitude}`
                 let pinRadius = data.Radius
-                console.log('userlocation', userLocation)
-                console.log('pinlocation', pinLocation)
                 const url = `https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&mode=walking&origins=${userLocation}&destinations=${pinLocation}&key=${API_KEY}`
-                //console.log('outside data', data)
                 await fetch(url)
                 .then((response) => response.json())
                 .then((distData) => {
-                    //console.log('data', parseFloat(distData.rows[0].elements[0]))
                     let distance = parseFloat(distData.rows[0].elements[0].distance.text.match(/\d+/)[0]);
-                    console.log('distance', distance)
                     let unit = distData.rows[0].elements[0].distance.text.match(/[a-zA-Z]+/g)[0];
                     if (unit == 'km') {
                         distance *= 1000
@@ -138,7 +131,6 @@ function CreatePinModal({createPinModalDisplay, setCreatePinModalDisplay, setMul
     if (dataLoaded === false) return null;
 
     async function createPinPress() {
-        console.log('running')
         try {
             await CreatePin(newPinName, longitude, latitude)
             setCreatePinModalDisplay(false)
@@ -167,7 +159,6 @@ function CreatePinModal({createPinModalDisplay, setCreatePinModalDisplay, setMul
                     setSomeError(false)
                 }, 1000 )
             }
-            console.log('error', error)
         }
     }
 
@@ -181,7 +172,7 @@ function CreatePinModal({createPinModalDisplay, setCreatePinModalDisplay, setMul
                                 <Text style={{color: 'red', marginTop: '5%', textAlign: 'center', fontSize: RFValue(12)}}>
                                     {showErrorMessage ? "There is a pin nearby, please join that one!" : null}
                                     {showPinNameErrorMessage ? "Give your pin a name!" : null}
-                                    {showUnexpectedErrorMessage ? "Unexpected Error sorry!" : null}
+                                    {showUnexpectedErrorMessage ? "Unexpected Error. Try again!" : null}
                                 </Text>
                             :
                             <TextInput style={styles.createPinModalPlaceholder} placeholderTextColor='#585858' placeholder="New pin name..." autoFocus={true}

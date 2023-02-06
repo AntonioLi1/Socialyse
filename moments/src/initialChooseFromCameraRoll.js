@@ -1,4 +1,4 @@
-import React, { useContext,useEffect } from 'react';
+import React, { useContext,useEffect,useState } from 'react';
 import { View, Text, Pressable, SafeAreaView, Image, Alert } from 'react-native';
 import styles from './styles';
 import MIIcon from 'react-native-vector-icons/MaterialIcons';
@@ -10,36 +10,12 @@ import storage from '@react-native-firebase/storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { PERMISSIONS, check, openSettings, request } from 'react-native-permissions';
 
-
 const screenWidth = Dimensions.get("window").width
 const screenHeight = Dimensions.get("window").height
 
 const displayPhotoKey = '@app:displayPhoto'
 
-async function getCameraRollPermission() {
-    if (Platform.OS === 'ios') {
-        check(PERMISSIONS.IOS.PHOTO_LIBRARY)
-        .then(async (result) => {
-            if (result !== 'granted') {
-                request(PERMISSIONS.IOS.PHOTO_LIBRARY).then(res => {
-                    Alert.alert(
-                        'Permission required',
-                        'We need location permission to work this app, Please allow location permission in your settings',
-                        [
-                        {
-                            text: 'Cancel',
-                            onPress: () => console.log('Cancel Pressed'),
-                            style: 'cancel',
-                        },
-                        {text: 'Open Settings', onPress: () => openSettings()},
-                        ],
-                        {cancelable: false},
-                    );
-                })
-            }
-        }) 
-    }
-}
+
 
 async function UploadProfilePic(ProfilePicDownloadedURL, uid) {
 
@@ -62,18 +38,52 @@ async function UploadProfilePic(ProfilePicDownloadedURL, uid) {
 function InitialChooseFromCameraRoll ({navigation}) {
 
     const { dpURL, setDpURL, user } = useContext(LoggedInContext);
+    const [havePermissions, setHavePermission] = useState(false)
+
 
     const reference = storage().ref(`/ProfilePics/${user.uid}`)
 
-    function PickImage() {
-        ImagePicker.openPicker({
-            width: screenWidth * 0.9,
-            height: screenHeight * 0.55,
-            cropping: true,
+    async function getCameraRollPermission() {
+        if (Platform.OS === 'ios') {
+            check(PERMISSIONS.IOS.PHOTO_LIBRARY)
+            .then(async (result) => {
+                if (result !== 'granted') {
+                    request(PERMISSIONS.IOS.PHOTO_LIBRARY).then(res => {
+                        Alert.alert(
+                            'Permission required',
+                            'We need your permission to access your photos for your profile pic!',
+                            [
+                            {
+                                text: 'Cancel',
+                                //onPress: () => console.log('Cancel Pressed'),
+                                style: 'cancel',
+                            },
+                            {text: 'Open Settings', onPress: () => openSettings()},
+                            ],
+                            {cancelable: false},
+                        );
+                    })
+                }
+                else {
+                    setHavePermission(true)
+                }
+            }) 
+        }
+    }
 
-        }).then(image => {
-            setDpURL(image.path)
-        });
+    function PickImage() {
+        if (havePermissions === true) {
+            ImagePicker.openPicker({
+                width: screenWidth * 0.9,
+                height: screenHeight * 0.55,
+                cropping: true,
+    
+            }).then(image => {
+                console.log('selected',image.path)
+                setDpURL(image.path)
+            });
+        }
+        
     }
 
     async function setInitialDP () {

@@ -15,6 +15,8 @@ import { openSettings } from 'react-native-permissions';
 
 async function CreatePost(UserID, Caption, Image, ChannelID, selectedPinId) {
 
+	//console.log('create post channelid', ChannelID)
+
 	// store image into storage
 	const reference = storage().ref(`/Posts/${UserID}/${Image}`)
 	await reference.putFile(Image);
@@ -39,7 +41,7 @@ async function CreatePost(UserID, Caption, Image, ChannelID, selectedPinId) {
 	.then(function(docRef) {
 	  	docID = docRef.id;
 	}); 
-	console.log('create to channels posts')
+	//console.log('create to channels posts')
   
 	// add doc id to the post
 	await firestore()
@@ -50,7 +52,7 @@ async function CreatePost(UserID, Caption, Image, ChannelID, selectedPinId) {
 	.update({
 		PostID: docID,
 	});
-	console.log('update to channels posts')
+	//console.log('update to channels posts')
 
   
 	// add it under users for their own reference
@@ -66,7 +68,7 @@ async function CreatePost(UserID, Caption, Image, ChannelID, selectedPinId) {
 	  UserID: UserID,
 	  PostID: docID
 	});
-	console.log('create to users userposts')
+	//console.log('create to users userposts')
 
 
 	// added 02/01, for storing when a user last posted. Helped checking if 
@@ -77,7 +79,7 @@ async function CreatePost(UserID, Caption, Image, ChannelID, selectedPinId) {
 	.update({
 		LastPosted: messageSendTime,
 	})
-	console.log('update to user ')
+	//console.log('update to user ')
 
 	
 	// add post with doc id to UserPostLikes
@@ -89,7 +91,7 @@ async function CreatePost(UserID, Caption, Image, ChannelID, selectedPinId) {
 	  PostOwnerID: UserID
 
 	});
-	console.log('create to postlikes')
+	//console.log('create to postlikes')
 
 
 	// update channels lastActive
@@ -101,7 +103,7 @@ async function CreatePost(UserID, Caption, Image, ChannelID, selectedPinId) {
 	.update({
 		LastActive: messageSendTime
 	})
-	console.log('update to pin channels')
+	//console.log('update to pin channels')
 
 
 	// update pins lastActive
@@ -111,8 +113,8 @@ async function CreatePost(UserID, Caption, Image, ChannelID, selectedPinId) {
 	.update({
 		LastActive: messageSendTime
 	})
-	console.log('update to pins lastactive')
-
+	//console.log('update to pins lastactive')
+	//console.log('finished create post')
 }
 
 async function JoinChannel(UserID, ChannelID, PinID) {
@@ -129,7 +131,7 @@ async function JoinChannel(UserID, ChannelID, PinID) {
 			usersOldChannel = data.CurrentChannel
 		}
 	})
-	console.log('read from users')
+	//console.log('read from users')
 
 	// if user is part of old channel
 	if (usersOldChannel !== null) {
@@ -142,8 +144,8 @@ async function JoinChannel(UserID, ChannelID, PinID) {
 		.then(docSnapshot => {
 			let data = docSnapshot.data()
 			parentPinID = data.PinID
+			//console.log('joinchannel read from channels', parentPinID)
 		})
-		console.log('joinchannel read from channels')
 		// decrease users count
 		let oldUserCount = null
 		await firestore()
@@ -156,7 +158,7 @@ async function JoinChannel(UserID, ChannelID, PinID) {
 			let data = docSnapshot.data()
 			oldUserCount = data.ActiveUsers
 		})
-		console.log('joinchannel read from pins channels')
+		//console.log('joinchannel read from pins channels', oldUserCount)
 
 		oldUserCount = oldUserCount - 1
 		// update
@@ -168,7 +170,7 @@ async function JoinChannel(UserID, ChannelID, PinID) {
 		.update({
 			ActiveUsers: oldUserCount
 		})
-		console.log('joinchannel update pins channels')
+		//console.log('joinchannel update pins channels')
 
 	}
 
@@ -181,7 +183,7 @@ async function JoinChannel(UserID, ChannelID, PinID) {
 		ChannelJoined: messageSendTime,
 	  	CurrentChannel: ChannelID
 	});
-	console.log('joinchannel update to users')
+	//console.log('joinchannel update to users')
 
   
 	let activeUserCount = 0;
@@ -197,7 +199,7 @@ async function JoinChannel(UserID, ChannelID, PinID) {
 		  activeUserCount = docSnapshot.data().ActiveUsers
 		} 
 	});
-	console.log('joinchannel read from pins channels')
+	//console.log('joinchannel read from pins channels')
 
 	activeUserCount += 1;
   
@@ -209,7 +211,7 @@ async function JoinChannel(UserID, ChannelID, PinID) {
 	.update({
 	  ActiveUsers: activeUserCount
 	});
-	console.log('joinchannel update to pins channels')
+	//console.log('joinchannel finsihed')
 
 }
 
@@ -231,6 +233,7 @@ function MakeAPost() {
 	const [addedCaption, setAddedCaption] = useState(false);
 	const [captionModal, setCaptionModal] = useState(false);
 	const [showFooter, setShowFooter] = useState(true)
+	const [cameraDisabled, setCameraDisabled] = useState(false)
 	const cameraref = useRef();
 
 	const takePhoto = async () => {
@@ -259,23 +262,26 @@ function MakeAPost() {
 	const getCameraPermission = useCallback(async () => {
 		const permission = await Camera.requestCameraPermission()
 		if (permission === 'denied') {
+			setCameraDisabled(true)
 			Alert.alert(
 				'Permission required',
 				'You need to enable your camera to take a photo!',
 				[
 				  {
 					text: 'Cancel',
-					onPress: () => console.log('Cancel Pressed'),
 					style: 'cancel',
 				  },
 				  {text: 'Open Settings', onPress: () => openSettings()},
 				],
 				{cancelable: false},
 			);
+		} else {
+			setCameraDisabled(false)
 		}
 	}, []) 
 
 	const callback = ()=>{
+		setTakePhotoButton(true)
         navigation.navigate('PostsFeed')
 	};
 
@@ -285,7 +291,7 @@ function MakeAPost() {
 			await CreatePost(UserID, Caption, Image, selectedChannelId, selectedPinId)
 			callback();
 		} catch (error) {
-			console.log('idiot', error)
+			//console.log('error', error)
 		}
 	}
 
@@ -297,9 +303,6 @@ function MakeAPost() {
 		<SafeAreaView style={styles.MBBackground}>
 			<View style={{flexDirection: 'row', width: '100%', justifyContent: 'center'}}>
 				<Text style={styles.takeAPhotoText}>
-					{/* TAKE A PHOTO TO {'\n'}
-				
-					SOCIALYSE */}
 					Take a photo to 
 					{'\n'}
 					Socialyse!
@@ -370,7 +373,7 @@ function MakeAPost() {
 			}
 			{
 				takePhotoButton ? 
-				<Pressable onPress={() => takePhotoAndButton() }>
+				<Pressable disabled={cameraDisabled} onPress={() => takePhotoAndButton() }>
 					<View style={styles.takePhotoButton}>
 						<IIcon name="ios-camera-outline" size={scale(36)} color='white'/>
 					</View> 

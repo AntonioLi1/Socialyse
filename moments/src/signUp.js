@@ -27,20 +27,6 @@ class UsernameError extends Error {
     }
 }
 
-async function CheckUsernameTaken(signUpUsername) {
-    await firestore()
-    .collection('UsernameAndDP')
-    .get()
-    .then((querySnapshot) => {
-        querySnapshot.forEach(snapshot => {
-            let data = snapshot.data()
-            if (data.Username == signUpUsername) {
-                throw new UsernameError("username taken error")
-            }
-        }) 
-    })
-}
-
 async function checkPhoneNumberExists(signUpPhoneNumber) {
     await firestore()
     .collection('PhoneNumbers')
@@ -49,6 +35,19 @@ async function checkPhoneNumberExists(signUpPhoneNumber) {
     .then(docSnapshot => {
         if (docSnapshot.exists) {
             throw new PhoneNumberError('phone number already exists error')
+        }
+    })
+}
+
+async function CheckUsernameTaken(signUpUsername) {
+    await firestore()
+    .collection('Usernames')
+    .doc(signUpUsername)
+    .get()
+    .then(docSnapshot => {
+        if (docSnapshot.exists) {
+            throw new UsernameError("username taken error")
+
         }
     })
 }
@@ -73,7 +72,6 @@ function SignUp ({navigation}) {
     const [dateIsSet, setDateIsSet] = useState(false)
     const [confirmCodeErrorMessage, setConfirmCodeErrorMessage] = useState(false)
 
-
     //const {user, setUser} = useContext(LoggedInContext);
     const {signUpName, setSignUpName, signUpUsername, setSignUpUsername, signUpPhoneNumber, setSignUpPhoneNumber, setSignUpDoB} = useContext(LoggedOutContext)
 
@@ -89,6 +87,7 @@ function SignUp ({navigation}) {
     // Handle the button press
     async function signInWithPhoneNumber(signUpPhoneNumber) {
         const newNumber = '+61' + signUpPhoneNumber.substring(1);
+        //console.log('newnumer', newNumber)
         const confirmation = await auth().signInWithPhoneNumber(newNumber);
         setConfirm(confirmation);
     }
@@ -99,6 +98,7 @@ function SignUp ({navigation}) {
             await checkPhoneNumberExists(signUpPhoneNumber)
             await CheckUsernameTaken(signUpUsername)
             await signInWithPhoneNumber(signUpPhoneNumber)
+            
         } catch (error){
             if (error.name === "PhoneNumberError") {
                 setShowLoading(false)
@@ -126,11 +126,14 @@ function SignUp ({navigation}) {
             await confirm.confirm(code);
         } catch (error) {
             setConfirmCodeErrorMessage(true)
+            setCode('')
             setTimeout(() => {
                 setConfirmCodeErrorMessage(false)
             }, 1500)
         }  
     }
+
+    
 
     useEffect(() => {
         setTimeout(() => {
@@ -150,7 +153,7 @@ function SignUp ({navigation}) {
         if (supported) {
             await Linking.openURL(URL)
         } else {
-            console.log('gg didnt wokr')
+            //console.log('gg didnt wokr')
         }
     }
 
@@ -160,7 +163,7 @@ function SignUp ({navigation}) {
         if (supported) {
             await Linking.openURL(URL)
         } else {
-            console.log('gg didnt wokr')
+            //console.log('gg didnt wokr')
         }
     }
     
@@ -183,7 +186,7 @@ function SignUp ({navigation}) {
                     <View style={styles.signUpInputs}>
                     {
                         showPhoneNumberErrorMessage ?
-                        <Text style={{color: '#FF0000', marginTop: '1%', fontFamily: 'Helvetica'}}>
+                        <Text style={{color: '#FF0000', marginTop: '1%', fontFamily: 'Helvetica', fontSize: screenHeight * 0.018, textAlign: 'center'}}>
                             Phone Number taken. Please log in instead!
                         </Text>
                         :
@@ -208,7 +211,7 @@ function SignUp ({navigation}) {
                     <View style={styles.signUpInputs}>
                         {
                             showUsernameErrorMessage ?
-                            <Text style={{color: '#FF0000', marginTop: '1%', fontFamily: 'Helvetica'}}>
+                            <Text style={{color: '#FF0000', marginTop: '1%', fontFamily: 'Helvetica', fontSize: screenHeight * 0.018, textAlign: 'center'}}>
                             Username taken. Please try another one!
                             </Text>
                             :
@@ -342,6 +345,14 @@ function SignUp ({navigation}) {
                         Confirm code
                     </Text>
                 </Pressable>
+                {
+                    confirmCodeErrorMessage ?
+                    <Text style={{color: '#FF0000', marginTop: '1%', fontFamily: 'Helvetica', position: 'absolute', marginTop: screenHeight * 0.4}}>
+                        Incorrect Code!
+                    </Text>
+                    :
+                    null
+                }
             </View>
         </SafeAreaView>
     )     

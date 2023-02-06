@@ -596,7 +596,6 @@ PODS:
     - abseil/base/base_internal
     - abseil/base/config
     - abseil/meta/type_traits
-  - BEMCheckBox (1.4.1)
   - boost (1.76.0)
   - BoringSSL-GRPC (0.0.24):
     - BoringSSL-GRPC/Implementation (= 0.0.24)
@@ -993,8 +992,6 @@ PODS:
   - React-jsinspector (0.70.6)
   - React-logger (0.70.6):
     - glog
-  - react-native-blur (4.3.0):
-    - React-Core
   - react-native-date-picker (4.2.6):
     - React-Core
   - react-native-geolocation-service (5.3.1):
@@ -1078,11 +1075,6 @@ PODS:
     - React-logger (= 0.70.6)
     - React-perflogger (= 0.70.6)
   - RNCAsyncStorage (1.17.11):
-    - React-Core
-  - RNCCheckbox (0.5.14):
-    - BEMCheckBox (~> 1.4)
-    - React-Core
-  - RNCClipboard (1.5.1):
     - React-Core
   - RNCMaskedView (0.1.11):
     - React
@@ -1190,7 +1182,6 @@ DEPENDENCIES:
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
-  - "react-native-blur (from `../node_modules/@react-native-community/blur`)"
   - react-native-date-picker (from `../node_modules/react-native-date-picker`)
   - react-native-geolocation-service (from `../node_modules/react-native-geolocation-service`)
   - react-native-google-maps (from `../node_modules/react-native-maps`)
@@ -1209,8 +1200,6 @@ DEPENDENCIES:
   - React-runtimeexecutor (from `../node_modules/react-native/ReactCommon/runtimeexecutor`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
-  - "RNCCheckbox (from `../node_modules/@react-native-community/checkbox`)"
-  - "RNCClipboard (from `../node_modules/@react-native-community/clipboard`)"
   - "RNCMaskedView (from `../node_modules/@react-native-community/masked-view`)"
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
   - "RNFBAuth (from `../node_modules/@react-native-firebase/auth`)"
@@ -1230,7 +1219,6 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - abseil
-    - BEMCheckBox
     - BoringSSL-GRPC
     - Firebase
     - FirebaseAppCheckInterop
@@ -1308,8 +1296,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
   React-logger:
     :path: "../node_modules/react-native/ReactCommon/logger"
-  react-native-blur:
-    :path: "../node_modules/@react-native-community/blur"
   react-native-date-picker:
     :path: "../node_modules/react-native-date-picker"
   react-native-geolocation-service:
@@ -1346,10 +1332,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   RNCAsyncStorage:
     :path: "../node_modules/@react-native-async-storage/async-storage"
-  RNCCheckbox:
-    :path: "../node_modules/@react-native-community/checkbox"
-  RNCClipboard:
-    :path: "../node_modules/@react-native-community/clipboard"
   RNCMaskedView:
     :path: "../node_modules/@react-native-community/masked-view"
   RNFBApp:
@@ -1383,7 +1365,6 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   abseil: ebe5b5529fb05d93a8bdb7951607be08b7fa71bc
-  BEMCheckBox: 5ba6e37ade3d3657b36caecc35c8b75c6c2b1a4e
   boost: a7c83b31436843459a1961bfd74b96033dc77234
   BoringSSL-GRPC: 3175b25143e648463a56daeaaa499c6cb86dad33
   BVLinearGradient: 34a999fda29036898a09c6a6b728b0b4189e1a44
@@ -1432,7 +1413,6 @@ SPEC CHECKSUMS:
   React-jsiexecutor: b4a65947391c658450151275aa406f2b8263178f
   React-jsinspector: 60769e5a0a6d4b32294a2456077f59d0266f9a8b
   React-logger: 1623c216abaa88974afce404dc8f479406bbc3a0
-  react-native-blur: 50c9feabacbc5f49b61337ebc32192c6be7ec3c3
   react-native-date-picker: 93e43b3084cea595b4d68b1405d6d99849663bd6
   react-native-geolocation-service: 608e1da71a1ac31b4de64d9ef2815f697978c55b
   react-native-google-maps: 035ad2f9b4974f22af3d4d4c6993960a181b0aaf
@@ -1451,8 +1431,6 @@ SPEC CHECKSUMS:
   React-runtimeexecutor: 15437b576139df27635400de0599d9844f1ab817
   ReactCommon: 349be31adeecffc7986a0de875d7fb0dcf4e251c
   RNCAsyncStorage: 8616bd5a58af409453ea4e1b246521bb76578d60
-  RNCCheckbox: 38989bbd3d7d536adf24ba26c6b3e6cefe0bea6f
-  RNCClipboard: 41d8d918092ae8e676f18adada19104fa3e68495
   RNCMaskedView: 0e1bc4bfa8365eba5fbbb71e07fbdc0555249489
   RNFBApp: 9295dac8a4e8857918bcff90328b197807ee0dc1
   RNFBAuth: 751f700af31914ed7cf1ec401066f884834fe5de

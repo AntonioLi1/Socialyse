@@ -8,30 +8,30 @@
 
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* momentsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* momentsTests.m */; };
+		064835EB617E4384A2F6082B /* Epilogue-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5F726506C380491B940C4A25 /* Epilogue-LightItalic.ttf */; };
+		099CE18EB0964B7797201949 /* Epilogue-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7D926CDD9B5643008CC0F0ED /* Epilogue-Thin.ttf */; };
+		0C33368C1E7E44E3A5E4E5C9 /* Epilogue-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 270204BD68A04C0995FD3437 /* Epilogue-Bold.ttf */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		D1715CB1797EEF5168DA610B /* Pods_moments.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E416B8EDF677CE46FD8FA31D /* Pods_moments.framework */; };
-		F9E8317C2972DB8400BD594D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F9E8317B2972DB8300BD594D /* GoogleService-Info.plist */; };
-		D9FA87CD6676416780AF51D9 /* Epilogue-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 28DE5B716D454C0C8B82D7B8 /* Epilogue-Black.ttf */; };
-		F7FFA304652B48139713B0CB /* Epilogue-BlackItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A8EDBF3252924E6BAF0972F1 /* Epilogue-BlackItalic.ttf */; };
-		0C33368C1E7E44E3A5E4E5C9 /* Epilogue-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 270204BD68A04C0995FD3437 /* Epilogue-Bold.ttf */; };
-		8720CCE8A88443ACA9F71CA2 /* Epilogue-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 880F44CEA43F48C59843ACAF /* Epilogue-BoldItalic.ttf */; };
-		37EAF714890142089CAE1DFB /* Epilogue-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3BA08641EE0E421AAA8148CA /* Epilogue-ExtraBold.ttf */; };
-		FBE30BA62E5144B4A10C8F2D /* Epilogue-ExtraBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D344941833CE46A8956102CA /* Epilogue-ExtraBoldItalic.ttf */; };
-		D8A11E82E8FB4F8CAC813822 /* Epilogue-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9707E18FC93549F9948385F7 /* Epilogue-ExtraLight.ttf */; };
-		45364568D16941A482DAD561 /* Epilogue-ExtraLightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C86F50EF4ED14F3B9FB6FC93 /* Epilogue-ExtraLightItalic.ttf */; };
-		A20AF6D7E21D4A9AB6BDC2CF /* Epilogue-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E5C8BED7C1234CE6A87A86C3 /* Epilogue-Italic.ttf */; };
-		6F25FA3A1A4748A3A3B93B61 /* Epilogue-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 344B2AEBD0394357B0491690 /* Epilogue-Light.ttf */; };
-		064835EB617E4384A2F6082B /* Epilogue-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5F726506C380491B940C4A25 /* Epilogue-LightItalic.ttf */; };
-		65325B935A304D1BA0DB8260 /* Epilogue-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 22182AA47F1C47D8BBCD25FB /* Epilogue-Medium.ttf */; };
-		4B318675A9894C3A88D23BEE /* Epilogue-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 00168FDD9CD341D9BF4287DE /* Epilogue-MediumItalic.ttf */; };
 		211AF8A4683545EE93D20EBA /* Epilogue-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 11B0C3E10CF741558ED74EF7 /* Epilogue-Regular.ttf */; };
-		E1ACE804F55F4DE3A24712FE /* Epilogue-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F519F15A3DFB4A58B20940F5 /* Epilogue-SemiBold.ttf */; };
-		E020759BA5404054B1CDA5B6 /* Epilogue-SemiBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 150F6236FDE14106BC04AD71 /* Epilogue-SemiBoldItalic.ttf */; };
-		099CE18EB0964B7797201949 /* Epilogue-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7D926CDD9B5643008CC0F0ED /* Epilogue-Thin.ttf */; };
+		37EAF714890142089CAE1DFB /* Epilogue-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3BA08641EE0E421AAA8148CA /* Epilogue-ExtraBold.ttf */; };
+		45364568D16941A482DAD561 /* Epilogue-ExtraLightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C86F50EF4ED14F3B9FB6FC93 /* Epilogue-ExtraLightItalic.ttf */; };
+		4B318675A9894C3A88D23BEE /* Epilogue-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 00168FDD9CD341D9BF4287DE /* Epilogue-MediumItalic.ttf */; };
+		65325B935A304D1BA0DB8260 /* Epilogue-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 22182AA47F1C47D8BBCD25FB /* Epilogue-Medium.ttf */; };
+		6F25FA3A1A4748A3A3B93B61 /* Epilogue-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 344B2AEBD0394357B0491690 /* Epilogue-Light.ttf */; };
+		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		8720CCE8A88443ACA9F71CA2 /* Epilogue-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 880F44CEA43F48C59843ACAF /* Epilogue-BoldItalic.ttf */; };
+		A20AF6D7E21D4A9AB6BDC2CF /* Epilogue-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E5C8BED7C1234CE6A87A86C3 /* Epilogue-Italic.ttf */; };
 		CD7FC85028D247F9BBCDCF96 /* Epilogue-ThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 35B2D4E07B384C4687489551 /* Epilogue-ThinItalic.ttf */; };
+		D1715CB1797EEF5168DA610B /* Pods_moments.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E416B8EDF677CE46FD8FA31D /* Pods_moments.framework */; };
+		D8A11E82E8FB4F8CAC813822 /* Epilogue-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9707E18FC93549F9948385F7 /* Epilogue-ExtraLight.ttf */; };
+		D9FA87CD6676416780AF51D9 /* Epilogue-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 28DE5B716D454C0C8B82D7B8 /* Epilogue-Black.ttf */; };
+		E020759BA5404054B1CDA5B6 /* Epilogue-SemiBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 150F6236FDE14106BC04AD71 /* Epilogue-SemiBoldItalic.ttf */; };
+		E1ACE804F55F4DE3A24712FE /* Epilogue-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F519F15A3DFB4A58B20940F5 /* Epilogue-SemiBold.ttf */; };
+		F7FFA304652B48139713B0CB /* Epilogue-BlackItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A8EDBF3252924E6BAF0972F1 /* Epilogue-BlackItalic.ttf */; };
+		F9E8317C2972DB8400BD594D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F9E8317B2972DB8300BD594D /* GoogleService-Info.plist */; };
+		FBE30BA62E5144B4A10C8F2D /* Epilogue-ExtraBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D344941833CE46A8956102CA /* Epilogue-ExtraBoldItalic.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,41 +45,41 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		00168FDD9CD341D9BF4287DE /* Epilogue-MediumItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Epilogue-MediumItalic.ttf"; path = "../Assets/Fonts/Epilogue-MediumItalic.ttf"; sourceTree = "<group>"; };
 		00E356EE1AD99517003FC87E /* momentsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = momentsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* momentsTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = momentsTests.m; sourceTree = "<group>"; };
+		11B0C3E10CF741558ED74EF7 /* Epilogue-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Epilogue-Regular.ttf"; path = "../Assets/Fonts/Epilogue-Regular.ttf"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* Socialyse.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Socialyse.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = moments/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = moments/AppDelegate.mm; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = moments/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = moments/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = moments/main.m; sourceTree = "<group>"; };
+		150F6236FDE14106BC04AD71 /* Epilogue-SemiBoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Epilogue-SemiBoldItalic.ttf"; path = "../Assets/Fonts/Epilogue-SemiBoldItalic.ttf"; sourceTree = "<group>"; };
+		22182AA47F1C47D8BBCD25FB /* Epilogue-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Epilogue-Medium.ttf"; path = "../Assets/Fonts/Epilogue-Medium.ttf"; sourceTree = "<group>"; };
+		270204BD68A04C0995FD3437 /* Epilogue-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Epilogue-Bold.ttf"; path = "../Assets/Fonts/Epilogue-Bold.ttf"; sourceTree = "<group>"; };
+		28DE5B716D454C0C8B82D7B8 /* Epilogue-Black.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Epilogue-Black.ttf"; path = "../Assets/Fonts/Epilogue-Black.ttf"; sourceTree = "<group>"; };
+		344B2AEBD0394357B0491690 /* Epilogue-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Epilogue-Light.ttf"; path = "../Assets/Fonts/Epilogue-Light.ttf"; sourceTree = "<group>"; };
+		35B2D4E07B384C4687489551 /* Epilogue-ThinItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Epilogue-ThinItalic.ttf"; path = "../Assets/Fonts/Epilogue-ThinItalic.ttf"; sourceTree = "<group>"; };
 		3B4392A12AC88292D35C810B /* Pods-moments.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-moments.debug.xcconfig"; path = "Target Support Files/Pods-moments/Pods-moments.debug.xcconfig"; sourceTree = "<group>"; };
+		3BA08641EE0E421AAA8148CA /* Epilogue-ExtraBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Epilogue-ExtraBold.ttf"; path = "../Assets/Fonts/Epilogue-ExtraBold.ttf"; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-moments.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-moments.release.xcconfig"; path = "Target Support Files/Pods-moments/Pods-moments.release.xcconfig"; sourceTree = "<group>"; };
+		5F726506C380491B940C4A25 /* Epilogue-LightItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Epilogue-LightItalic.ttf"; path = "../Assets/Fonts/Epilogue-LightItalic.ttf"; sourceTree = "<group>"; };
+		7D926CDD9B5643008CC0F0ED /* Epilogue-Thin.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Epilogue-Thin.ttf"; path = "../Assets/Fonts/Epilogue-Thin.ttf"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = moments/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		880F44CEA43F48C59843ACAF /* Epilogue-BoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Epilogue-BoldItalic.ttf"; path = "../Assets/Fonts/Epilogue-BoldItalic.ttf"; sourceTree = "<group>"; };
+		9707E18FC93549F9948385F7 /* Epilogue-ExtraLight.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Epilogue-ExtraLight.ttf"; path = "../Assets/Fonts/Epilogue-ExtraLight.ttf"; sourceTree = "<group>"; };
+		A8EDBF3252924E6BAF0972F1 /* Epilogue-BlackItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Epilogue-BlackItalic.ttf"; path = "../Assets/Fonts/Epilogue-BlackItalic.ttf"; sourceTree = "<group>"; };
+		C86F50EF4ED14F3B9FB6FC93 /* Epilogue-ExtraLightItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Epilogue-ExtraLightItalic.ttf"; path = "../Assets/Fonts/Epilogue-ExtraLightItalic.ttf"; sourceTree = "<group>"; };
+		D344941833CE46A8956102CA /* Epilogue-ExtraBoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Epilogue-ExtraBoldItalic.ttf"; path = "../Assets/Fonts/Epilogue-ExtraBoldItalic.ttf"; sourceTree = "<group>"; };
 		E416B8EDF677CE46FD8FA31D /* Pods_moments.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_moments.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E5C8BED7C1234CE6A87A86C3 /* Epilogue-Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Epilogue-Italic.ttf"; path = "../Assets/Fonts/Epilogue-Italic.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		F519F15A3DFB4A58B20940F5 /* Epilogue-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Epilogue-SemiBold.ttf"; path = "../Assets/Fonts/Epilogue-SemiBold.ttf"; sourceTree = "<group>"; };
 		F916D4FD2978D05500E91A84 /* moments.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = moments.entitlements; path = moments/moments.entitlements; sourceTree = "<group>"; };
 		F9BBB3C829702AC100172F34 /* libFirebaseStorage.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libFirebaseStorage.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		F9E8317B2972DB8300BD594D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		28DE5B716D454C0C8B82D7B8 /* Epilogue-Black.ttf */ = {isa = PBXFileReference; name = "Epilogue-Black.ttf"; path = "../Assets/Fonts/Epilogue-Black.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		A8EDBF3252924E6BAF0972F1 /* Epilogue-BlackItalic.ttf */ = {isa = PBXFileReference; name = "Epilogue-BlackItalic.ttf"; path = "../Assets/Fonts/Epilogue-BlackItalic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		270204BD68A04C0995FD3437 /* Epilogue-Bold.ttf */ = {isa = PBXFileReference; name = "Epilogue-Bold.ttf"; path = "../Assets/Fonts/Epilogue-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		880F44CEA43F48C59843ACAF /* Epilogue-BoldItalic.ttf */ = {isa = PBXFileReference; name = "Epilogue-BoldItalic.ttf"; path = "../Assets/Fonts/Epilogue-BoldItalic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		3BA08641EE0E421AAA8148CA /* Epilogue-ExtraBold.ttf */ = {isa = PBXFileReference; name = "Epilogue-ExtraBold.ttf"; path = "../Assets/Fonts/Epilogue-ExtraBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		D344941833CE46A8956102CA /* Epilogue-ExtraBoldItalic.ttf */ = {isa = PBXFileReference; name = "Epilogue-ExtraBoldItalic.ttf"; path = "../Assets/Fonts/Epilogue-ExtraBoldItalic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		9707E18FC93549F9948385F7 /* Epilogue-ExtraLight.ttf */ = {isa = PBXFileReference; name = "Epilogue-ExtraLight.ttf"; path = "../Assets/Fonts/Epilogue-ExtraLight.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		C86F50EF4ED14F3B9FB6FC93 /* Epilogue-ExtraLightItalic.ttf */ = {isa = PBXFileReference; name = "Epilogue-ExtraLightItalic.ttf"; path = "../Assets/Fonts/Epilogue-ExtraLightItalic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		E5C8BED7C1234CE6A87A86C3 /* Epilogue-Italic.ttf */ = {isa = PBXFileReference; name = "Epilogue-Italic.ttf"; path = "../Assets/Fonts/Epilogue-Italic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		344B2AEBD0394357B0491690 /* Epilogue-Light.ttf */ = {isa = PBXFileReference; name = "Epilogue-Light.ttf"; path = "../Assets/Fonts/Epilogue-Light.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		5F726506C380491B940C4A25 /* Epilogue-LightItalic.ttf */ = {isa = PBXFileReference; name = "Epilogue-LightItalic.ttf"; path = "../Assets/Fonts/Epilogue-LightItalic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		22182AA47F1C47D8BBCD25FB /* Epilogue-Medium.ttf */ = {isa = PBXFileReference; name = "Epilogue-Medium.ttf"; path = "../Assets/Fonts/Epilogue-Medium.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		00168FDD9CD341D9BF4287DE /* Epilogue-MediumItalic.ttf */ = {isa = PBXFileReference; name = "Epilogue-MediumItalic.ttf"; path = "../Assets/Fonts/Epilogue-MediumItalic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		11B0C3E10CF741558ED74EF7 /* Epilogue-Regular.ttf */ = {isa = PBXFileReference; name = "Epilogue-Regular.ttf"; path = "../Assets/Fonts/Epilogue-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		F519F15A3DFB4A58B20940F5 /* Epilogue-SemiBold.ttf */ = {isa = PBXFileReference; name = "Epilogue-SemiBold.ttf"; path = "../Assets/Fonts/Epilogue-SemiBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		150F6236FDE14106BC04AD71 /* Epilogue-SemiBoldItalic.ttf */ = {isa = PBXFileReference; name = "Epilogue-SemiBoldItalic.ttf"; path = "../Assets/Fonts/Epilogue-SemiBoldItalic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		7D926CDD9B5643008CC0F0ED /* Epilogue-Thin.ttf */ = {isa = PBXFileReference; name = "Epilogue-Thin.ttf"; path = "../Assets/Fonts/Epilogue-Thin.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		35B2D4E07B384C4687489551 /* Epilogue-ThinItalic.ttf */ = {isa = PBXFileReference; name = "Epilogue-ThinItalic.ttf"; path = "../Assets/Fonts/Epilogue-ThinItalic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -501,15 +501,17 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = moments/moments.entitlements;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 6S9H37C442;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = moments/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Socialyse;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.2;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -520,8 +522,12 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = .com.moments;
 				PRODUCT_NAME = Socialyse;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -533,14 +539,16 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = moments/moments.entitlements;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 6S9H37C442;
 				INFOPLIST_FILE = moments/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Socialyse;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.2;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -551,7 +559,11 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = .com.moments;
 				PRODUCT_NAME = Socialyse;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
